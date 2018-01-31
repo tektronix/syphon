@@ -10,7 +10,7 @@ def prompt_date() -> str:
     Returns:
         str: Verified date.
     """
-    from .verification.verifydate import verify_date
+    from syphon.verification import verify_date
 
     while True:
         prompt = '\n  Enter the current date in MM/DD/YYYY format: '

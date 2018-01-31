@@ -10,7 +10,7 @@ def prompt_release_version() -> str:
     Returns:
         str: Verified release version.
     """
-    from .verification.verifyreleaseversion import verify_release_version
+    from syphon.verification import verify_release_version
 
     # release version
     while True:

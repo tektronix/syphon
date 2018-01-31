@@ -4,7 +4,7 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from .common.settings import Settings
+from syphon.common import Settings
 
 def prompt_switch(root: str, settings: Settings) -> str:
     """Prompt the user for the new archive directory if none was specified.

@@ -5,3 +5,4 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
+from .main import syphon

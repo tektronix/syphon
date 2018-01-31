@@ -4,7 +4,7 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from .common.settings import Settings
+from syphon.common import Settings
 
 def rebuild(root: str, settings: Settings, verbose: bool):
     """Handle the `rebuild` subcommand.
@@ -19,7 +19,7 @@ def rebuild(root: str, settings: Settings, verbose: bool):
     from os.path import join
     from os.path import normpath
 
-    from .management.cacheengine import CacheEngine
+    from syphon.management import CacheEngine
 
     # get the absolute path to the archive directory
     archive_dir = normpath(join(root, settings.archive_dir))

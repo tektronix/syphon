@@ -6,7 +6,7 @@
 """
 from argparse import Namespace
 
-from .common.settings import Settings
+from syphon.common import Settings
 
 def purge(args: Namespace, settings: Settings) -> bool:
     """Handle the `purge` subcommand.
@@ -32,12 +32,12 @@ def purge(args: Namespace, settings: Settings) -> bool:
 
             if assured.lower() == 'yes':
                 if args.archives:
-                    from .management import purge_archives
+                    from syphon.management import purge_archives
                     purge_archives(settings.archive_dir)
                     print(' Archives purged')
 
                 if args.cache:
-                    from .management import purge_cache
+                    from syphon.management import purge_cache
                     purge_cache(settings.data_cache)
                     print(' Cache purged')
 

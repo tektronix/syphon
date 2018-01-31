@@ -8,18 +8,18 @@ from os import path
 from os import mkdir
 from sys import stderr
 
-from .common import ArchiveNotFoundError
-from .common import Metadata
-from .common import ReadError
-from .common import Settings
-from .common import SourceFileNotFoundError
-from .common import WriteError
-from .management import ArchiveEngine
-from .management import ColumnExistsError
-from .management import CopyError
-from .management import CopyValidationError
-from .management import CacheEngine
-from .verification import verify
+from syphon.common import ArchiveNotFoundError
+from syphon.common import Metadata
+from syphon.common import ReadError
+from syphon.common import Settings
+from syphon.common import SourceFileNotFoundError
+from syphon.common import WriteError
+from syphon.management import ArchiveEngine
+from syphon.management import ColumnExistsError
+from syphon.management import CopyError
+from syphon.management import CopyValidationError
+from syphon.management import CacheEngine
+from syphon.verification import verify
 
 from .getparser import get_parser
 from .getdataextension import get_data_extension

@@ -10,7 +10,7 @@ def prompt_build_version() -> str:
     Returns:
         str: Verified build version.
     """
-    from .verification.verifybuildversion import verify_build_version
+    from syphon.verification import verify_build_version
 
     # build version
     while True:

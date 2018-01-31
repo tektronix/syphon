@@ -4,8 +4,8 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from ..common import Metadata
-from ..common import Settings
+from syphon.common import Metadata
+from syphon.common import Settings
 
 def verify(metadata: Metadata, settings: Settings) -> (bool, str):
     """Contains methods for performing required filename and metadata verification.
