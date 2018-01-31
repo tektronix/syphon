@@ -32,7 +32,7 @@ setup(
     name=NAME,
     version='1.3.0',
     description=DESCRIPTION,
-    LONG_DESCRIPTION=LONG_DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
