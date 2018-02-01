@@ -87,16 +87,18 @@ class CacheEngine:
 
         # ensure everything is still valid
         if not path.exists(self._collated_data_file):
-            message = SourceFileNotFoundError.generate_message('Caching',
-                                                               self._collated_data_file
-                                                              )
-            raise SourceFileNotFoundError(message)
+            raise SourceFileNotFoundError(
+                'Caching error. '
+                'Unable to locate source file {}'
+                .format(self._collated_data_file)
+            )
 
         if not path.exists(self._collated_metadata_file):
-            message = SourceFileNotFoundError.generate_message('Caching',
-                                                               self._collated_metadata_file
-                                                              )
-            raise SourceFileNotFoundError(message)
+            raise SourceFileNotFoundError(
+                'Caching error. '
+                'Unable to locate source file {}'
+                .format(self._collated_metadata_file)
+            )
 
         # read data
         data = DataFrame()

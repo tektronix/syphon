@@ -34,8 +34,11 @@ class Metadata:
             return
 
         if not path.exists(metafile):
-            message = SourceFileNotFoundError.generate_message('Metadata', metafile)
-            raise SourceFileNotFoundError(message)
+            raise SourceFileNotFoundError(
+                'Metadata error. '
+                'Unable to locate source file {}'
+                .format(metafile)
+            )
 
         # import metadata
         metadata = DataFrame()

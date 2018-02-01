@@ -18,16 +18,3 @@ class SourceFileNotFoundError(Exception):
     def message(self) -> str:
         """Return a string representing the error message."""
         return self._message
-
-    @staticmethod
-    def generate_message(process: str, location: str) -> str:
-        """Return a generated message string.
-
-        Args:
-            process (str): Name of the process which will raise the `SourceFileNotFoundError`.
-            location (str): The expected location of the source file.
-        """
-        capital_process = process.capitalize()
-        return '{} error. Unable to locate source file: {}'.format(capital_process,
-                                                                   location
-                                                                  )

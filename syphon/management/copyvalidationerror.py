@@ -18,12 +18,3 @@ class CopyValidationError(Exception):
     def message(self) -> str:
         """Return a string representing the error message."""
         return self._message
-
-    @staticmethod
-    def generate_message(location: str) -> str:
-        """Return a generated message string.
-
-        Args:
-            location (str): The source filepath that failed to copy.
-        """
-        return 'Archival error. Failed to archive: {}'.format(location)

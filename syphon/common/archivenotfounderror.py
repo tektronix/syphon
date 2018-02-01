@@ -18,16 +18,3 @@ class ArchiveNotFoundError(Exception):
     def message(self) -> str:
         """Return a string representing the error message."""
         return self._message
-
-    @staticmethod
-    def generate_message(process: str, location: str) -> str:
-        """Return a generated message string.
-
-        Args:
-            process (str): Name of the process which will raise the `ArchiveNotFoundError`.
-            location (str): The expected location of the archive directory.
-        """
-        capital_process = process.capitalize()
-        return '{} error. Unable to locate archive directory {}'.format(capital_process,
-                                                                        location
-                                                                       )

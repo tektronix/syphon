@@ -38,12 +38,18 @@ class ArchiveEngine:
                 ):
         # ensure everything is valid
         if not path.exists(data_file):
-            message = SourceFileNotFoundError.generate_message('Archival', data_file)
-            raise SourceFileNotFoundError(message)
+            raise SourceFileNotFoundError(
+                'Archival error. '
+                'Unable to locate source file {}'
+                .format(data_file)
+            )
 
         if not path.exists(path.join(root, settings.archive_dir)):
-            message = ArchiveNotFoundError.generate_message('Archival', settings.archive_dir)
-            raise ArchiveNotFoundError(message)
+            raise ArchiveNotFoundError(
+                'Archival error. '
+                'Unable to locate archive directory {}'
+                .format(settings.archive_dir)
+            )
 
         # save locations now that we know they're valid
         self._archive_dir = path.join(root, settings.archive_dir)
@@ -107,12 +113,18 @@ class ArchiveEngine:
 
         # ensure everything is still valid
         if not path.exists(self._data_file):
-            message = SourceFileNotFoundError.generate_message('Archival', self._data_file)
-            raise SourceFileNotFoundError(message)
+            raise SourceFileNotFoundError(
+                'Archival error. '
+                'Unable to locate source file {}'
+                .format(self._data_file)
+            )
 
         if not path.exists(self._archive_dir):
-            message = ArchiveNotFoundError.generate_message('Archival', self._archive_dir)
-            raise ArchiveNotFoundError(message)
+            raise ArchiveNotFoundError(
+                'Archival error. '
+                'Unable to locate archive directory {}'
+                .format(self._archive_dir)
+            )
 
         target_data_dir, _ = path.split(self._target_data_filepath)
         target_metadata_dir, _ = path.split(self._target_meta_filepath)
@@ -127,11 +139,17 @@ class ArchiveEngine:
 
         # check if the destination files already exist
         if path.isfile(self._target_data_filepath):
-            message = ArchiveFileExistsError.generate_message(self._target_data_filepath)
-            raise ArchiveFileExistsError(message)
+            raise ArchiveFileExistsError(
+                'Archival error. '
+                'File already exists: {}'
+                .format(self._target_data_filepath)
+            )
         elif path.isfile(self._target_meta_filepath):
-            message = ArchiveFileExistsError.generate_message(self._target_meta_filepath)
-            raise ArchiveFileExistsError(message)
+            raise ArchiveFileExistsError(
+                'Archival error. '
+                'File already exists: {}'
+                .format(self._target_meta_filepath)
+            )
         else:
             # create metadata lists
             common_list = list(self._common_tags.items())
@@ -157,10 +175,16 @@ class ArchiveEngine:
 
         # check for successful data copy
         if not path.isfile(self._target_data_filepath):
-            message = CopyValidationError.generate_message(self._target_data_filepath)
-            raise CopyValidationError(message)
+            raise CopyValidationError(
+                'Archival error. '
+                'Failed to archive: {}'
+                .format(self._target_data_filepath)
+            )
 
         # check for successful metadata copy
         if not path.isfile(self._target_meta_filepath):
-            message = CopyValidationError.generate_message(self._target_meta_filepath)
-            raise CopyValidationError(message)
+            raise CopyValidationError(
+                'Archival error. '
+                'Failed to archive: {}'
+                .format(self._target_meta_filepath)
+            )
