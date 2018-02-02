@@ -1,1 +1,1 @@
-include LICENSE README.md settings.json
+include LICENSE README.rst settings.json
