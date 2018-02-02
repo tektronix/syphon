@@ -5,4 +5,5 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
+from .getdatafiles import get_data_files
 from .main import syphon
