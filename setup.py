@@ -10,6 +10,8 @@ import os
 
 from setuptools import find_packages, setup
 
+from syphon.__version__ import __version__
+
 # Package meta-data
 NAME = 'syphon'
 DESCRIPTION = 'A storage and management engine for CSV data.'
@@ -30,7 +32,7 @@ with io.open(os.path.join(HERE, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name=NAME,
-    version='1.3.0',
+    version=__version__,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     author=AUTHOR,
