@@ -6,13 +6,13 @@
 """
 from syphon import get_data_files
 
-def test_absolute_path(dataset_factory):
+def test_absolute_path(dataset_factory, extension_fixture):
     import re
     from os import walk
     from os.path import abspath, join
 
     # make regex file pattern matcher
-    regex = re.compile('.*\.csv')
+    regex = re.compile('.*{}'.format(extension_fixture))
 
     expected_list = []
     # get CSV files manually
@@ -23,18 +23,18 @@ def test_absolute_path(dataset_factory):
         break
 
     # test
-    actual_list = get_data_files(abspath(dataset_factory), '.csv')
+    actual_list = get_data_files(abspath(dataset_factory), extension_fixture)
 
     # check
     assert set(actual_list) == set(expected_list)
 
-def test_relative_path(dataset_factory):
+def test_relative_path(dataset_factory, extension_fixture):
     import re
     from os import walk
     from os.path import dirname, join, relpath
 
     # make regex file pattern matcher
-    regex = re.compile('.*\.csv')
+    regex = re.compile('.*{}'.format(extension_fixture))
 
     # get relative path to the temp directory
     path = relpath(dataset_factory, start=dirname(__file__))
@@ -48,6 +48,6 @@ def test_relative_path(dataset_factory):
         break
 
     # test
-    actual_list = get_data_files(path, '.csv')
+    actual_list = get_data_files(path, extension_fixture)
 
     assert set(actual_list) == set(expected_list)
