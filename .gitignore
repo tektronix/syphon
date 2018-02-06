@@ -2,8 +2,6 @@
 **/data/**/
 
 # Data & Metadata
-archive/
-import/
 *.csv
 *.meta
 
