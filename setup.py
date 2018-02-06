@@ -10,12 +10,13 @@ import os
 
 from setuptools import find_packages, setup
 
+from syphon.__url__ import __url__
 from syphon.__version__ import __version__
 
 # Package meta-data
 NAME = 'syphon'
 DESCRIPTION = 'A storage and management engine for CSV data.'
-URL = 'https://github.com/ethall/syphon'
+URL = __url__
 EMAIL = 'evan.tom.hall@gmail.com'
 AUTHOR = 'Evan Hall'
 
