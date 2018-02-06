@@ -22,7 +22,8 @@ AUTHOR = 'Evan Hall'
 
 # Required packages
 REQUIRED = [
-    'pandas'
+    'pandas',
+    'sortedcontainers'
 ]
 
 HERE = os.path.abspath(os.path.dirname(__file__))
