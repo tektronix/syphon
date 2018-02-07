@@ -1,0 +1,19 @@
+"""syphon.schema.__init__.py
+
+   Copyright (c) 2017-2018 Keithley Instruments, LLC.
+   Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
+
+"""
+from .checkcolumns import check_columns
+from .load import load
+from .resolvepath import resolve_path
+from .save import save
+
+class SchemaExistsError(FileExistsError):
+    """Schema file already exists."""
+
+__all__ = ['check_columns',
+           'load',
+           'resolve_path',
+           'save',
+           'SchemaExistsError']
