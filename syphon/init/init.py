@@ -6,14 +6,11 @@
 """
 from syphon.common import Context
 
-def init(context: Context) -> int:
+def init(context: Context):
     """Create a schema file in the given directory
 
     Args:
         context (Context): Runtime settings object.
-    
-    Returns:
-        int: An integer exit code. `0` for success or `1` for failure.
 
     Raises:
         OSError: File operation error. Error type raised may be a subclass
@@ -27,5 +24,3 @@ def init(context: Context) -> int:
         save(context.schema, schema_path, context.overwrite)
     except:
         raise
-    else:
-        return 0
