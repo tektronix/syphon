@@ -114,10 +114,9 @@ def archive(context: Context):
             try:
                 path = resolve_path(context, data)
                 makedirs(path, exist_ok=True)
+                data.to_csv(join(path, datafilename), index=False)
             except:
                 raise
-
-            data.to_csv(join(path, datafilename), index=False)
 
     while len(lock_list) > 0:
         lock = lock_list.pop()
