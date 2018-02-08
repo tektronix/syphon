@@ -14,7 +14,7 @@ def archive(context: Context):
     """
     from glob import glob
     from os import makedirs
-    from os.path import join, split
+    from os.path import exists, join, split
 
     from pandas import concat, DataFrame, read_csv, Series
     from pandas.errors import EmptyDataError
@@ -113,8 +113,18 @@ def archive(context: Context):
             path = None
             try:
                 path = resolve_path(context, data)
+            except:
+                raise
+
+            target_filename = join(path, datafilename)
+
+            if exists(target_filename) and not context.overwrite:
+                raise FileExistsError('Archive error: file already exists @ '
+                                      '{}'.format(target_filename))
+
+            try:
                 makedirs(path, exist_ok=True)
-                data.to_csv(join(path, datafilename), index=False)
+                data.to_csv(target_filename, index=False)
             except:
                 raise
 
