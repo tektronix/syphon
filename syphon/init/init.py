@@ -4,7 +4,7 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from syphon.common import Context
+from syphon import Context
 
 def init(context: Context):
     """Create a schema file in the given directory

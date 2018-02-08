@@ -5,7 +5,7 @@
 
 """
 from pandas import DataFrame
-from syphon.common import Context
+from syphon import Context
 
 def _normalize(directory: str) -> str:
     """Make lowercase and replace spaces with underscores."""

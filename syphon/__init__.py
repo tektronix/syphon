@@ -8,3 +8,4 @@
 from .getdataextension import get_data_extension
 from .getdatafiles import get_data_files
 from .main import syphon
+from .context import Context

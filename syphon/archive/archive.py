@@ -4,7 +4,7 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from syphon.common import Context
+from syphon import Context
 
 def archive(context: Context):
     """Store the files specified in the current context.
