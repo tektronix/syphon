@@ -5,7 +5,7 @@
 
 """
 from pandas import DataFrame
-from syphon import Context
+from sortedcontainers import SortedDict
 
 def _normalize(directory: str) -> str:
     """Make lowercase and replace spaces with underscores."""
@@ -13,32 +13,35 @@ def _normalize(directory: str) -> str:
     directory = directory.replace(' ', '_')
     return directory
 
-def resolve_path(context: Context, datapool: DataFrame) -> str:
-    """Use the given context and dataset to make a path.
+def resolve_path(
+        archive: str, schema: SortedDict, datapool: DataFrame) -> str:
+    """Use the given schema and dataset to make a path.
 
-    The base path is `Context.archive`. Additional directories are appended
-    for the value of each `Context.schema` entry in the given `DataFrame`.
+    The base path is `archive`. Additional directories are appended
+    for the value of each `SortedDict` entry in the given `DataFrame`.
 
-    It is important that columns corresponding to a `Context.schema` entry
-    contain a single value.
+    It is important that columns corresponding to a `SortedDict` entry
+    contain a single value. A `ValueError` will be raised if more than
+    one value exists in a target column.
 
     Args:
-        context (Context): Runtime settings object.
+        archive (str): Directory where data is stored.
+        schema (SortedDict): Archive directory storage schema.
         datapool (DataFrame): Data to use during path resolution.
 
     Return:
         str: The resolved path.
 
     Raises:
-        ValueError: A column corresponding to a `Context.schema` entry
+        ValueError: When a column corresponding to a `SortedDict` entry
             contains more than one value.
     """
     from os.path import join
 
-    result = context.archive
+    result = archive
 
-    for key in context.schema:
-        header = context.schema[key]
+    for key in schema:
+        header = schema[key]
         if len(datapool.get(header).drop_duplicates().values) > 1:
             raise ValueError('More than one value exists under the {} column.'
                              .format(header))

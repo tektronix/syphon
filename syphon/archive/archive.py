@@ -112,7 +112,7 @@ def archive(context: Context):
         for data in filtered_data:
             path = None
             try:
-                path = resolve_path(context, data)
+                path = resolve_path(context.archive, context.schema, data)
             except:
                 raise
 
