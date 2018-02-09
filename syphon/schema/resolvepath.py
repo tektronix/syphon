@@ -33,6 +33,8 @@ def resolve_path(
         str: The resolved path.
 
     Raises:
+        IndexError: Schema value is not a column header of the given
+            DataFrame.
         ValueError: When a column corresponding to a `SortedDict` entry
             contains more than one value.
     """
@@ -42,6 +44,9 @@ def resolve_path(
 
     for key in schema:
         header = schema[key]
+        if header not in list(datapool.columns):
+            raise IndexError('Schema value {} is not a column in the current '
+                             'DataFrame.'.format(header))
         if len(datapool.get(header).drop_duplicates().values) > 1:
             raise ValueError('More than one value exists under the {} column.'
                              .format(header))
