@@ -19,6 +19,7 @@ class TestCheckColumns(object):
         '1': 'column3',
         '2': 'column4'
     })
+    multi_schema3 = SortedDict({'0': 'column2', '1': 'column7'})
 
     single_column = 'column1'
     single_schema = SortedDict({'0': 'column1'})
@@ -42,7 +43,8 @@ class TestCheckColumns(object):
         (single_schema2, DataFrame(read_csv(StringIO(single_column)))),
         (single_schema2, DataFrame(read_csv(StringIO(multi_column)))),
         (multi_schema, DataFrame(read_csv(StringIO(single_column)))),
-        (multi_schema2, DataFrame(read_csv(StringIO(single_column))))
+        (multi_schema2, DataFrame(read_csv(StringIO(single_column)))),
+        (multi_schema3, DataFrame(read_csv(StringIO(multi_column))))
     ])
     def test_check_columns_fail(self, schema, data):
         with pytest.raises(IndexError):
