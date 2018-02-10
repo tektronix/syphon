@@ -40,6 +40,8 @@ def resolve_path(
     """
     from os.path import join
 
+    from numpy import nan
+
     result = archive
 
     for key in schema:
@@ -47,11 +49,13 @@ def resolve_path(
         if header not in list(datapool.columns):
             raise IndexError('Schema value {} is not a column in the current '
                              'DataFrame.'.format(header))
-        if len(datapool.get(header).drop_duplicates().values) > 1:
+        row_values = list(datapool.get(header).drop_duplicates().values)
+        if nan in row_values:
+            row_values.remove(nan)
+        if len(row_values) > 1:
             raise ValueError('More than one value exists under the {} column.'
                              .format(header))
-        # faster than calling datapool.get(header)...values again
-        value = datapool.get(header).iloc[0]
+        value = row_values.pop()
         result = join(result, _normalize(value))
 
     return result
