@@ -8,8 +8,6 @@ from os.path import join
 
 import pytest
 from numpy import nan
-from pandas import DataFrame, read_csv
-from pandas.compat import StringIO
 from pandas.util.testing import makeCustomIndex
 from sortedcontainers import SortedDict
 from syphon.schema import resolve_path
