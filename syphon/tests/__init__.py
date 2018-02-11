@@ -4,6 +4,9 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
+from string import ascii_letters, digits
+from random import choice
+
 from pandas import DataFrame
 
 def get_data_path() -> str:
@@ -57,3 +60,14 @@ def make_dataframe_value(nrows: int, ncols: int) -> str:
         str: "RxCy" based on the given position.
     """
     return 'R{}C{}'.format(nrows, ncols)
+
+def rand_string(size=6) -> str:
+    """Generate a random string from the set of a-z, A-Z, and 0-9.
+
+    Args:
+        size: Length of the random string. Default is 6.
+
+    Returns:
+        str: Random string.
+    """
+    return ''.join(choice(ascii_letters + digits) for _ in range(size))
