@@ -14,7 +14,7 @@ from syphon import Context
 from syphon.init import init
 
 @pytest.fixture
-def archive_fixture(tmpdir):
+def init_archive_fixture(tmpdir):
     return tmpdir.mkdir('archive')
 
 @pytest.fixture(params=[
@@ -22,27 +22,26 @@ def archive_fixture(tmpdir):
     {'0': 'column2', '1': 'column4'},
     {'0': 'column1', '1': 'column3', '2': 'column4'},
 ])
-def schema_fixture(request):
+def init_schema_fixture(request):
     return SortedDict(request.param)
 
-@pytest.fixture(params=[True, False])
-def overwrite_fixture(request):
-    return request.param
-
 @pytest.fixture
-def context_fixture(archive_fixture, schema_fixture, overwrite_fixture):
+def init_context_fixture(init_archive_fixture,
+                         init_schema_fixture,
+                         overwrite_fixture):
     context = Context()
-    context.archive = archive_fixture
-    context.schema = schema_fixture
+    context.archive = init_archive_fixture
+    context.schema = init_schema_fixture
     context.overwrite = overwrite_fixture
     return context
 
-def test_init(context_fixture):
-    init(context_fixture)
+def test_init(init_context_fixture):
+    init(init_context_fixture)
 
-    schema_path = join(context_fixture.archive, context_fixture.schema_file)
+    schema_path = join(init_context_fixture.archive,
+        init_context_fixture.schema_file)
     actual = None
     with open(schema_path, 'r') as f:
         actual = SortedDict(loads(f.read()))
 
-    assert actual == context_fixture.schema
+    assert actual == init_context_fixture.schema
