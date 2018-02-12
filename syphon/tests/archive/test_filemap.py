@@ -9,9 +9,9 @@ from sortedcontainers import SortedDict, SortedList
 from syphon.archive import file_map
 
 def test_multi_filemap(new_random_files):
-    data = new_random_files['data']
-    meta = new_random_files['meta']
-    expected = new_random_files['filemap']
+    data = new_random_files.data_files
+    meta = new_random_files.meta_files
+    expected = new_random_files.filemap
 
     str_data = SortedList()
     for d in data:
@@ -34,9 +34,9 @@ def test_multi_filemap(new_random_files):
     assert actual == str_expected
 
 def test_name_filemap(new_matching_files):
-    data = new_matching_files['data']
-    meta = new_matching_files['meta']
-    expected = new_matching_files['filemap']
+    data = new_matching_files.data_files
+    meta = new_matching_files.meta_files
+    expected = new_matching_files.filemap
 
     str_data = SortedList()
     for d in data:

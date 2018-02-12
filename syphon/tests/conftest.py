@@ -7,7 +7,7 @@
 import pytest
 from sortedcontainers import SortedDict, SortedList
 
-from . import rand_string
+from . import rand_string, UnitTestData
 
 MAX_DATA_FILES = 4
 
@@ -17,43 +17,41 @@ def import_dir(tmpdir):
 
 @pytest.fixture(params=[x for x in range(1, MAX_DATA_FILES)])
 def new_datafiles(request, import_dir):
+    test_data = UnitTestData()
     files = SortedList()
     for _ in range(request.param):
         new_file = import_dir
         files.add(new_file.join('{}.csv'.format(rand_string())))
-    return files
+    test_data.data_files = files
+    return test_data
 
 @pytest.fixture(params=[x for x in range(0, MAX_DATA_FILES*2)])
 def new_random_files(request, import_dir, new_datafiles):
-    result = SortedDict({'data': new_datafiles})
-
     files = SortedList()
     for _ in range(request.param):
         new_file = import_dir
         files.add(new_file.join('{}.meta'.format(rand_string())))
-    result['meta'] = files
+    new_datafiles.meta_files = files
 
     match_dict = SortedDict()
-    for f in new_datafiles:
+    for f in new_datafiles.data_files:
         match_dict[str(f)] = files
-    result['filemap'] = match_dict
+    new_datafiles.filemap = match_dict
 
-    return result
+    return new_datafiles
 
 @pytest.fixture
 def new_matching_files(new_datafiles):
-    result = SortedDict({'data': new_datafiles})
-
     files = SortedList()
     match_dict = SortedDict()
-    for f in new_datafiles:
+    for f in new_datafiles.data_files:
         new_file = f.new(ext='meta')
         files.add(new_file)
         match_dict[str(f)] = [new_file]
-    result['meta'] = files
-    result['filemap'] = match_dict
+    new_datafiles.meta_files = files
+    new_datafiles.filemap = match_dict
 
-    return result
+    return new_datafiles
 
 @pytest.fixture(params=[True, False])
 def overwrite_fixture(request):

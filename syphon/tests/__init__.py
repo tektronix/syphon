@@ -9,6 +9,8 @@ from random import choice
 
 from pandas import DataFrame
 
+from .unittestdata import UnitTestData
+
 def get_data_path() -> str:
     """Return an absolute path to the dataset directory.
 
