@@ -7,8 +7,12 @@
 from pandas import DataFrame
 from sortedcontainers import SortedDict
 
-def _datafilter(schema: SortedDict, datapool: DataFrame, filtered=[]) -> list:
+def _datafilter(schema: SortedDict, datapool: DataFrame, filtered=None) -> list:
     """The `filtered` parameter should only be used internally."""
+    # prevent mutable default parameter
+    if filtered is None:
+        filtered = []
+
     this_schema = schema.copy()
     header = None
     try:
@@ -18,6 +22,9 @@ def _datafilter(schema: SortedDict, datapool: DataFrame, filtered=[]) -> list:
         return filtered
     except:
         raise
+
+    if header not in datapool.columns:
+        return filtered
 
     for value in datapool.get(header).drop_duplicates().values:
         new_pool = datapool.loc[datapool.get(header) == value]
@@ -38,7 +45,8 @@ def datafilter(schema: SortedDict, datapool: DataFrame) -> list:
         datapool (DataFrame): Data to filter.
 
     Returns:
-        list: The filtered `DataFrame` objects.
+        list: The filtered `DataFrame` objects. An empty list is
+            returned if no schema values could be found.
     """
     try:
         return _datafilter(schema, datapool)

@@ -7,7 +7,7 @@
 from string import ascii_letters, digits
 from random import choice
 
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 from .unittestdata import UnitTestData
 
@@ -42,9 +42,15 @@ def make_dataframe(nrows: int, ncols: int, data_gen_f=None) -> DataFrame:
     """
     from pandas.util.testing import makeCustomDataframe
 
-    return makeCustomDataframe(nrows, ncols,
-                               c_idx_names=False, r_idx_names=False,
-                               data_gen_f=data_gen_f, r_idx_type='i')
+    # pandas bug (?) in makeCustomIndex when nentries = 1
+    if ncols == 1:
+        return DataFrame({
+            'C_l0_g0': [make_dataframe_value(x, 0) for x in range(nrows)]
+        })
+    else:
+        return makeCustomDataframe(nrows, ncols,
+                                   c_idx_names=False, r_idx_names=False,
+                                   data_gen_f=data_gen_f, r_idx_type='i')
 
 def make_dataframe_value(nrows: int, ncols: int) -> str:
     """The default value generator for
