@@ -108,6 +108,9 @@ def archive(context: Context):
             filtered_data = datafilter(context.schema, data_frame)
         except:
             raise
+        else:
+            if len(filtered_data) is 0:
+                filtered_data = [data_frame]
 
         for data in filtered_data:
             path = None
