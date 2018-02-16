@@ -28,12 +28,14 @@ def archive(context: Context):
     lock_manager = LockManager()
     lock_list = list()
 
+    # add '#lock' file to all data directories
     data_list = SortedList(glob(context.data))
     try:
         lock_list.append(lock_manager.lock(split(data_list[0])[0]))
     except:
         raise
 
+    # add '#lock' file to all metadata directories
     meta_list = SortedList()
     if context.meta is not None:
         meta_list = SortedList(glob(context.meta))
