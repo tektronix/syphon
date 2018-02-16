@@ -1,9 +1,8 @@
-# Dataset test environments
-**/data/**/
-
 # Data & Metadata
 *.csv
 *.meta
+!**/data/*.csv
+!**/data/*.meta
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
