@@ -21,6 +21,10 @@ def seed():
     random.seed(a=int(environ['PYTHONHASHSEED']))
 
 @pytest.fixture
+def archive_dir(tmpdir):
+    return tmpdir.mkdir('archive')
+
+@pytest.fixture
 def import_dir(tmpdir):
     return tmpdir.mkdir('import')
 

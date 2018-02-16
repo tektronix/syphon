@@ -13,10 +13,6 @@ from sortedcontainers import SortedDict
 from syphon import Context
 from syphon.init import init
 
-@pytest.fixture
-def init_archive_fixture(tmpdir):
-    return tmpdir.mkdir('archive')
-
 @pytest.fixture(params=[
     {'0': 'column1'},
     {'0': 'column2', '1': 'column4'},
@@ -26,11 +22,11 @@ def init_schema_fixture(request):
     return SortedDict(request.param)
 
 @pytest.fixture
-def init_context_fixture(init_archive_fixture,
+def init_context_fixture(archive_dir,
                          init_schema_fixture,
                          overwrite_fixture):
     context = Context()
-    context.archive = init_archive_fixture
+    context.archive = archive_dir
     context.schema = init_schema_fixture
     context.overwrite = overwrite_fixture
     return context
