@@ -14,12 +14,13 @@ class LockManager(object):
     that may be in use.
     """
     def __init__(self):
+        self._filename = '#lock'
         self._locks = list()
 
     @property
     def filename(self) -> str:
         """Lock file name."""
-        return '#lock'
+        return self._filename
 
     @property
     def locks(self) -> list:
