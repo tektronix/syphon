@@ -17,7 +17,7 @@ class LockManager(object):
         self._locks = list()
 
     @property
-    def filename(self):
+    def filename(self) -> str:
         """Lock file name."""
         return '#lock'
 
