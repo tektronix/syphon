@@ -16,6 +16,20 @@ MAX_DATA_FILES = 4
 MAX_METADATA_COLS = 5
 MAX_VALUES_PER_META_COL = 3
 
+def pytest_addoption(parser):
+    parser.addoption('--slow',
+                     action='store_true',
+                     default=False,
+                     help='Run slow tests.')
+
+def pytest_collection_modifyitems(config, items):
+    if config.getoption('--slow'):
+        return
+    slow_skip = pytest.mark.skip(reason='Need --slow flag to run.')
+    for item in items:
+        if 'slow' in item.keywords:
+            item.add_marker(slow_skip)
+
 @pytest.fixture(scope='session')
 def seed():
     random.seed(a=int(environ['PYTHONHASHSEED']))
