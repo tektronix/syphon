@@ -28,7 +28,7 @@ def test_context_schema_property_default():
     assert Context().schema is None
 
 def test_context_schema_file_property_default():
-    assert Context().schema_file == '.schema.json'
+    assert Context().schema_file is Context()._schema_file
     assert isinstance(Context().schema_file, str)
 
 def test_context_verbose_property_default():
