@@ -21,6 +21,11 @@ class LockManager(object):
         """Lock file name."""
         return '#lock'
 
+    @property
+    def locks(self) -> list:
+        """List of current lock files."""
+        return self._locks
+
     @staticmethod
     def _delete(filepath: str):
         """Delete a given file."""
