@@ -86,3 +86,14 @@ class LockManager(object):
                 pass
             except:
                 raise
+
+    def release_all(self):
+        """Remove all lock files."""
+        while len(self._locks) is not 0:
+            lock = self._locks.pop()
+            try:
+                LockManager._delete(lock)
+            except FileNotFoundError:
+                pass
+            except:
+                raise
