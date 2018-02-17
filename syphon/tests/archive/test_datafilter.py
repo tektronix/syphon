@@ -78,6 +78,48 @@ class TestDataFilter(object):
 
         return (expected, actual)
 
+    @pytest.mark.less_coverage
+    def test_datafilter_fixed_uniform_meta(self, metadata_columns):
+        expected, actual = self._test_dataframes(MAX_ROWS, MAX_COLS,
+                                                 metadata_columns)
+
+        if len(expected) is len(actual):
+            assert True
+            return
+
+        for e in expected:
+            match = None
+            for a in actual:
+                if e.equals(a):
+                    match = a.copy()
+                    break
+            if match is not None:
+                assert_frame_equal(e, match)
+            else:
+                msg='Could not find a matching frame in the filtered list.'
+                pytest.fail(msg=msg)
+
+    @pytest.mark.less_coverage
+    def test_datafilter_fixed_uneven_meta(self, metadata_random_columns):
+        expected, actual = self._test_dataframes(MAX_ROWS, MAX_COLS,
+                                                 metadata_random_columns)
+
+        if len(expected) is len(actual):
+            assert True
+            return
+
+        for e in expected:
+            match = None
+            for a in actual:
+                if e.equals(a):
+                    match = a.copy()
+                    break
+            if match is not None:
+                assert_frame_equal(e, match)
+            else:
+                msg='Could not find a matching frame in the filtered list.'
+                pytest.fail(msg=msg)
+
     @pytest.mark.slow
     @pytest.mark.parametrize('rows', [r for r in range(1, MAX_ROWS + 1)])
     @pytest.mark.parametrize('cols', [c for c in range(1, MAX_COLS + 1)])

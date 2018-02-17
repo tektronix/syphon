@@ -24,6 +24,10 @@ def pytest_addoption(parser):
 
 def pytest_collection_modifyitems(config, items):
     if config.getoption('--slow'):
+        skip_less = pytest.mark.skip(reason='Covered by slow tests.')
+        for item in items:
+            if 'less_coverage' in item.keywords:
+                item.add_marker(skip_less)
         return
     slow_skip = pytest.mark.skip(reason='Need --slow flag to run.')
     for item in items:
