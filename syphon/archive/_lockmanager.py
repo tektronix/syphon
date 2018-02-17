@@ -4,7 +4,7 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from os.path import abspath, isdir, join
+from os.path import abspath
 
 class LockManager(object):
     """Lock file helper.
@@ -57,6 +57,8 @@ class LockManager(object):
         Returns:
             str: Absolute filepath of the created lock file.
         """
+        from os.path import join
+
         filepath = join(abspath(path), self.filename)
 
         try:
@@ -70,16 +72,12 @@ class LockManager(object):
         return filepath
 
     def release(self, filepath: str):
-        """Remove the given lock file or the lock file in the given
-        directory.
+        """Remove the given lock file.
 
         Args:
             filepath (str): Location of a lock file.
         """
         fullpath = abspath(filepath)
-
-        if isdir(fullpath):
-            fullpath = join(fullpath, self._filename)
 
         if fullpath in self._locks:
             self._locks.remove(fullpath)
