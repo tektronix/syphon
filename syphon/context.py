@@ -15,6 +15,7 @@ class Context(object):
         self._meta = None
         self._overwrite = False
         self._schema = None
+        self._schema_file = '.schema.json'
         self._verbose = False
 
     @property
@@ -74,7 +75,7 @@ class Context(object):
     @property
     def schema_file(self) -> str:
         """`str`: Name of the file containing the archive storage schema."""
-        return '.schema.json'
+        return self._schema_file
 
     @property
     def verbose(self) -> bool:
