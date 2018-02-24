@@ -43,6 +43,10 @@ def archive_dir(tmpdir):
     return tmpdir.mkdir('archive')
 
 @pytest.fixture
+def cache_file(tmpdir):
+    return tmpdir.join('cache.csv')
+
+@pytest.fixture
 def import_dir(tmpdir):
     return tmpdir.mkdir('import')
 
