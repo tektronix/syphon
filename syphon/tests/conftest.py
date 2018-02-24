@@ -127,5 +127,5 @@ def new_matching_files(new_datafiles):
     return new_datafiles
 
 @pytest.fixture(params=[True, False])
-def overwrite_fixture(request):
+def overwrite(request):
     return request.param

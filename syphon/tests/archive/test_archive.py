@@ -17,11 +17,11 @@ from syphon.init import init
 from .. import get_data_path
 
 class TestArchive(object):
-    def test_archive_iris(self, archive_dir, overwrite_fixture):
+    def test_archive_iris(self, archive_dir, overwrite):
         context = Context()
         context.archive = archive_dir
         context.data = os.path.join(get_data_path(), 'iris.csv')
-        context.overwrite = overwrite_fixture
+        context.overwrite = overwrite
         context.schema = SortedDict({'0': 'Name'})
 
         init(context)
@@ -60,11 +60,11 @@ class TestArchive(object):
         assert expected_paths == actual_paths
         assert_frame_equal(expected_frame, actual_frame)
 
-    def test_archive_iris_no_schema(self, archive_dir, overwrite_fixture):
+    def test_archive_iris_no_schema(self, archive_dir, overwrite):
         context = Context()
         context.archive = archive_dir
         context.data = os.path.join(get_data_path(), 'iris.csv')
-        context.overwrite = overwrite_fixture
+        context.overwrite = overwrite
         context.schema = SortedDict()
 
         expected_frame = DataFrame(read_csv(context.data, dtype=str))

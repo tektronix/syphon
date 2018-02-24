@@ -24,11 +24,11 @@ def init_schema_fixture(request):
 @pytest.fixture
 def init_context_fixture(archive_dir,
                          init_schema_fixture,
-                         overwrite_fixture):
+                         overwrite):
     context = Context()
     context.archive = archive_dir
     context.schema = init_schema_fixture
-    context.overwrite = overwrite_fixture
+    context.overwrite = overwrite
     return context
 
 def test_init(init_context_fixture):
