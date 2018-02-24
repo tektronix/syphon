@@ -41,3 +41,15 @@ def test_init(init_context_fixture):
         actual = SortedDict(loads(f.read()))
 
     assert actual == init_context_fixture.schema
+
+def test_init_fileexistserror(archive_dir, init_schema_fixture):
+    context = Context()
+    context.archive = archive_dir
+    context.overwrite = False
+    context.schema = init_schema_fixture
+
+    with open(str(archive_dir.join(context.schema_file)), mode='w') as f:
+        f.write('content')
+
+    with pytest.raises(FileExistsError):
+        init(context)
