@@ -17,13 +17,11 @@ def save(schema: SortedDict, filepath: str, overwrite: bool):
     Raises:
         OSError: File operation error. Error type raised may be a subclass
             of `OSError`.
-        SchemaExistsError: Schema file exists and overwrite is `False`.
+        FileExistsError: Schema file exists and overwrite is `False`.
     """
     from json import dumps
     from os import remove
     from os.path import exists
-
-    from . import SchemaExistsError
 
     if exists(filepath) and overwrite:
         try:
@@ -31,7 +29,7 @@ def save(schema: SortedDict, filepath: str, overwrite: bool):
         except:
             raise
     elif exists(filepath) and not overwrite:
-        raise SchemaExistsError('Schema file already exists')
+        raise FileExistsError('Schema file already exists')
 
     try:
         with open(filepath, 'w', encoding='utf-8') as f:

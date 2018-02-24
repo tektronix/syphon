@@ -8,7 +8,7 @@ import pytest
 from json import dumps, loads
 from sortedcontainers import SortedDict
 
-from syphon.schema import save, SchemaExistsError
+from syphon.schema import save
 
 class TestSave(object):
     multi_schema = SortedDict({'0': 'column2', '1': 'column4'})
@@ -37,9 +37,9 @@ class TestSave(object):
 
         assert SortedDict(loads(tmpfile.read())) == schema
 
-    def test_save_exists_fail(self, tmpdir):
+    def test_save_fileexistserror(self, tmpdir):
         tmpfile = tmpdir.mkdir('test_save').join('.schema.json')
         tmpfile.write('content')
 
-        with pytest.raises(SchemaExistsError):
+        with pytest.raises(FileExistsError):
             save(TestSave.single_schema, str(tmpfile), False)
