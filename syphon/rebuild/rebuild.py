@@ -11,13 +11,21 @@ def rebuild(context: Context):
 
     Args:
         context (Context): Runtime settings object.
+
+    Raises:
+        OSError: File operation error. Error type raised may be a subclass
+            of `OSError`.
+        FileExistsError: Cache file exists and overwrite is `False`.
     """
     from os import walk
-    from os.path import join
+    from os.path import exists, join
 
     from pandas import DataFrame, read_csv
 
     file_list = list()
+
+    if exists(context.cache) and not context.overwrite:
+        raise FileExistsError('Cache file already exists')
 
     for root, _, files in walk(context.archive):
         for f in files:
