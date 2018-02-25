@@ -19,7 +19,7 @@ from .. import get_data_path
 class TestArchive(object):
     def test_archive_iris(self, archive_dir, overwrite):
         context = Context()
-        context.archive = archive_dir
+        context.archive = str(archive_dir)
         context.data = os.path.join(get_data_path(), 'iris.csv')
         context.overwrite = overwrite
         context.schema = SortedDict({'0': 'Name'})
@@ -29,9 +29,9 @@ class TestArchive(object):
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
 
         expected_paths = SortedList([
-            os.path.join(str(context.archive), 'iris-setosa', 'iris.csv'),
-            os.path.join(str(context.archive), 'iris-versicolor', 'iris.csv'),
-            os.path.join(str(context.archive), 'iris-virginica', 'iris.csv')
+            os.path.join(context.archive, 'iris-setosa', 'iris.csv'),
+            os.path.join(context.archive, 'iris-versicolor', 'iris.csv'),
+            os.path.join(context.archive, 'iris-virginica', 'iris.csv')
         ])
 
         if context.overwrite:
@@ -62,7 +62,7 @@ class TestArchive(object):
 
     def test_archive_iris_no_schema(self, archive_dir, overwrite):
         context = Context()
-        context.archive = archive_dir
+        context.archive = str(archive_dir)
         context.data = os.path.join(get_data_path(), 'iris.csv')
         context.overwrite = overwrite
         context.schema = SortedDict()
@@ -70,7 +70,7 @@ class TestArchive(object):
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
 
         expected_paths = SortedList([
-            os.path.join(str(context.archive), 'iris.csv')
+            os.path.join(context.archive, 'iris.csv')
         ])
 
         if context.overwrite:
@@ -101,7 +101,7 @@ class TestArchive(object):
 
     def test_archive_fileexistserror(self, archive_dir):
         context = Context()
-        context.archive = archive_dir
+        context.archive = str(archive_dir)
         context.data = os.path.join(get_data_path(), 'iris.csv')
         context.overwrite = False
         context.schema = SortedDict({'0': 'Name'})
@@ -109,9 +109,9 @@ class TestArchive(object):
         init(context)
 
         expected_paths = SortedList([
-            os.path.join(str(context.archive), 'iris-setosa', 'iris.csv'),
-            os.path.join(str(context.archive), 'iris-versicolor', 'iris.csv'),
-            os.path.join(str(context.archive), 'iris-virginica', 'iris.csv')
+            os.path.join(context.archive, 'iris-setosa', 'iris.csv'),
+            os.path.join(context.archive, 'iris-versicolor', 'iris.csv'),
+            os.path.join(context.archive, 'iris-virginica', 'iris.csv')
         ])
 
         for e in expected_paths:

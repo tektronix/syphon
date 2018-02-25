@@ -34,8 +34,8 @@ class TestRebuild(object):
             raise
 
         context = Context()
-        context.archive = archive_dir
-        context.cache = cache_file
+        context.archive = str(archive_dir)
+        context.cache = str(cache_file)
         context.data = os.path.join(get_data_path(), 'iris.csv')
         context.overwrite = overwrite
         context.schema = SortedDict({'0': 'Name'})
@@ -46,12 +46,12 @@ class TestRebuild(object):
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
 
         if context.overwrite:
-            with open(str(context.cache), mode='w') as f:
+            with open(context.cache, mode='w') as f:
                 f.write('content')
 
         rebuild(context)
 
-        actual_frame = DataFrame(read_csv(str(context.cache), dtype=str))
+        actual_frame = DataFrame(read_csv(context.cache, dtype=str))
 
         assert_frame_equal(expected_frame, actual_frame)
 
@@ -64,8 +64,8 @@ class TestRebuild(object):
             raise
 
         context = Context()
-        context.archive = archive_dir
-        context.cache = cache_file
+        context.archive = str(archive_dir)
+        context.cache = str(cache_file)
         context.data = os.path.join(get_data_path(), 'iris.csv')
         context.overwrite = overwrite
         context.schema = SortedDict()
@@ -75,12 +75,12 @@ class TestRebuild(object):
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
 
         if context.overwrite:
-            with open(str(context.cache), mode='w') as f:
+            with open(context.cache, mode='w') as f:
                 f.write('content')
 
         rebuild(context)
 
-        actual_frame = DataFrame(read_csv(str(context.cache), dtype=str))
+        actual_frame = DataFrame(read_csv(context.cache, dtype=str))
 
         assert_frame_equal(expected_frame, actual_frame)
 
@@ -93,15 +93,15 @@ class TestRebuild(object):
             raise
 
         context = Context()
-        context.archive = archive_dir
-        context.cache = cache_file
+        context.archive = str(archive_dir)
+        context.cache = str(cache_file)
         context.data = os.path.join(get_data_path(), 'iris.csv')
         context.overwrite = False
         context.schema = SortedDict()
 
         archive(context)
 
-        with open(str(context.cache), mode='w') as f:
+        with open(context.cache, mode='w') as f:
             f.write('content')
 
         with pytest.raises(FileExistsError):

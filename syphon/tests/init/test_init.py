@@ -26,7 +26,7 @@ def init_context_fixture(archive_dir,
                          init_schema_fixture,
                          overwrite):
     context = Context()
-    context.archive = archive_dir
+    context.archive = str(archive_dir)
     context.schema = init_schema_fixture
     context.overwrite = overwrite
     return context
@@ -44,7 +44,7 @@ def test_init(init_context_fixture):
 
 def test_init_fileexistserror(archive_dir, init_schema_fixture):
     context = Context()
-    context.archive = archive_dir
+    context.archive = str(archive_dir)
     context.overwrite = False
     context.schema = init_schema_fixture
 

@@ -170,7 +170,7 @@ def test_lockmanager_modifiedtime_updated(tmpdir):
     else:
         lockfile = tmpdir.join(lockman.filename)
 
-    assert isfile(lockfile)
+    assert isfile(str(lockfile))
 
     pre_time = lockfile.mtime()
     sleep(1)
