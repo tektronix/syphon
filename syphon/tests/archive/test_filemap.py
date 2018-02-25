@@ -4,56 +4,34 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
+from os.path import splitext
+
 from sortedcontainers import SortedDict, SortedList
 
 from syphon.archive import file_map
 
-def test_multi_filemap(new_random_files):
-    data = new_random_files.data_files
-    meta = new_random_files.meta_files
-    expected = new_random_files.filemap
+def test_filemap_loose_metadata(random_data, random_metadata):
+    data = random_data
+    meta = random_metadata
 
-    str_data = SortedList()
+    expected = SortedDict()
     for d in data:
-        str_data.add(str(d))
+        expected[d] = SortedList(meta)
 
-    str_meta = SortedList()
-    for m in meta:
-        str_meta.add(str(m))
+    actual = file_map(SortedList(data), SortedList(meta))
 
-    str_expected = SortedDict()
-    for key in expected:
-        match_list = expected[key]
-        str_list = []
-        for m in match_list:
-            str_list.append(str(m))
-        str_expected[key] = str_list
+    assert actual == expected
 
-    actual = file_map(str_data, str_meta)
+def test_filemap_data_metadata_pairs(random_data):
+    data = random_data
 
-    assert actual == str_expected
-
-def test_name_filemap(new_matching_files):
-    data = new_matching_files.data_files
-    meta = new_matching_files.meta_files
-    expected = new_matching_files.filemap
-
-    str_data = SortedList()
+    meta = list()
+    expected = SortedDict()
     for d in data:
-        str_data.add(str(d))
+        new_file = '{}{}'.format(splitext(d)[0], '.meta')
+        meta.append(new_file)
+        expected[d] = [new_file]
 
-    str_meta = SortedList()
-    for m in meta:
-        str_meta.add(str(m))
+    actual = file_map(SortedList(data), SortedList(meta))
 
-    str_expected = SortedDict()
-    for key in expected:
-        match_list = expected[key]
-        str_list = []
-        for m in match_list:
-            str_list.append(str(m))
-        str_expected[key] = str_list
-
-    actual = file_map(str_data, str_meta)
-
-    assert actual == str_expected
+    assert actual == expected

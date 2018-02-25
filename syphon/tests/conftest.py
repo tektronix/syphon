@@ -10,7 +10,7 @@ from os import environ
 from pandas.util.testing import makeCustomIndex
 from sortedcontainers import SortedDict, SortedList
 
-from . import rand_string, UnitTestData
+from . import rand_string
 
 MAX_DATA_FILES = 4
 MAX_METADATA_COLS = 5
@@ -93,42 +93,18 @@ def metadata_random_columns(seed, metadata_column_headers):
     return columns
 
 @pytest.fixture(params=[x for x in range(1, MAX_DATA_FILES)])
-def new_datafiles(request, import_dir):
-    test_data = UnitTestData()
-    files = SortedList()
+def random_data(request, import_dir):
+    files = list()
     for _ in range(request.param):
-        new_file = import_dir
-        files.add(new_file.join('{}.csv'.format(rand_string())))
-    test_data.data_files = files
-    return test_data
+        files.append(str(import_dir.join('{}.csv'.format(rand_string()))))
+    return files
 
 @pytest.fixture(params=[x for x in range(0, MAX_DATA_FILES*2)])
-def new_random_files(request, import_dir, new_datafiles):
-    files = SortedList()
+def random_metadata(request, import_dir):
+    files = list()
     for _ in range(request.param):
-        new_file = import_dir
-        files.add(new_file.join('{}.meta'.format(rand_string())))
-    new_datafiles.meta_files = files
-
-    match_dict = SortedDict()
-    for f in new_datafiles.data_files:
-        match_dict[str(f)] = files
-    new_datafiles.filemap = match_dict
-
-    return new_datafiles
-
-@pytest.fixture
-def new_matching_files(new_datafiles):
-    files = SortedList()
-    match_dict = SortedDict()
-    for f in new_datafiles.data_files:
-        new_file = f.new(ext='meta')
-        files.add(new_file)
-        match_dict[str(f)] = [new_file]
-    new_datafiles.meta_files = files
-    new_datafiles.filemap = match_dict
-
-    return new_datafiles
+        files.append(str(import_dir.join('{}.meta'.format(rand_string()))))
+    return files
 
 @pytest.fixture(params=[True, False])
 def overwrite(request):
