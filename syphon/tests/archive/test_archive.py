@@ -13,26 +13,34 @@ from sortedcontainers import SortedDict, SortedList
 from syphon import Context
 from syphon.archive import archive
 from syphon.init import init
+from syphon.schema.resolvepath import _normalize
 
 from .. import get_data_path
 
-class TestArchive(object):
-    def test_archive_iris(self, archive_dir, overwrite):
+class TestArchiveIris(object):
+    filename = 'iris.csv'
+    schema = SortedDict({'0': 'Name'})
+
+    def test_archive(self, archive_dir, overwrite):
         context = Context()
         context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), 'iris.csv')
+        context.data = os.path.join(get_data_path(), self.filename)
         context.overwrite = overwrite
-        context.schema = SortedDict({'0': 'Name'})
+        context.schema = self.schema
 
         init(context)
 
-        expected_frame = DataFrame(read_csv(context.data, dtype=str))
+        expected_df = DataFrame(read_csv(context.data, dtype=str))
+        expected_df.sort_values(list(expected_df.columns), inplace=True)
+        expected_df.reset_index(drop=True, inplace=True)
 
-        expected_paths = SortedList([
-            os.path.join(context.archive, 'iris-setosa', 'iris.csv'),
-            os.path.join(context.archive, 'iris-versicolor', 'iris.csv'),
-            os.path.join(context.archive, 'iris-virginica', 'iris.csv')
-        ])
+        expected_paths = SortedList()
+        for name in expected_df[self.schema['0']].drop_duplicates().values:
+            expected_paths.add(os.path.join(
+                context.archive,
+                _normalize(name),
+                self.filename
+            ))
 
         if context.overwrite:
             for e in expected_paths:
@@ -55,22 +63,25 @@ class TestArchive(object):
                         DataFrame(read_csv(filepath, dtype=str))
                     ])
 
+        actual_frame.sort_values(list(actual_frame.columns), inplace=True)
         actual_frame.reset_index(drop=True, inplace=True)
 
         assert expected_paths == actual_paths
-        assert_frame_equal(expected_frame, actual_frame)
+        assert_frame_equal(expected_df, actual_frame)
 
-    def test_archive_iris_no_schema(self, archive_dir, overwrite):
+    def test_archive_no_schema(self, archive_dir, overwrite):
         context = Context()
         context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), 'iris.csv')
+        context.data = os.path.join(get_data_path(), self.filename)
         context.overwrite = overwrite
         context.schema = SortedDict()
 
-        expected_frame = DataFrame(read_csv(context.data, dtype=str))
+        expected_df = DataFrame(read_csv(context.data, dtype=str))
+        expected_df.sort_values(list(expected_df.columns), inplace=True)
+        expected_df.reset_index(drop=True, inplace=True)
 
         expected_paths = SortedList([
-            os.path.join(context.archive, 'iris.csv')
+            os.path.join(context.archive, self.filename)
         ])
 
         if context.overwrite:
@@ -94,25 +105,30 @@ class TestArchive(object):
                         DataFrame(read_csv(filepath, dtype=str))
                     ])
 
+        actual_frame.sort_values(list(actual_frame.columns), inplace=True)
         actual_frame.reset_index(drop=True, inplace=True)
 
         assert expected_paths == actual_paths
-        assert_frame_equal(expected_frame, actual_frame)
+        assert_frame_equal(expected_df, actual_frame)
 
     def test_archive_fileexistserror(self, archive_dir):
         context = Context()
         context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), 'iris.csv')
+        context.data = os.path.join(get_data_path(), self.filename)
         context.overwrite = False
-        context.schema = SortedDict({'0': 'Name'})
+        context.schema = self.schema
 
         init(context)
 
-        expected_paths = SortedList([
-            os.path.join(context.archive, 'iris-setosa', 'iris.csv'),
-            os.path.join(context.archive, 'iris-versicolor', 'iris.csv'),
-            os.path.join(context.archive, 'iris-virginica', 'iris.csv')
-        ])
+        expected_df = DataFrame(read_csv(context.data, dtype=str))
+
+        expected_paths = SortedList()
+        for name in expected_df[self.schema['0']].drop_duplicates().values:
+            expected_paths.add(os.path.join(
+                context.archive,
+                _normalize(name),
+                self.filename
+            ))
 
         for e in expected_paths:
             path = archive_dir.new()
