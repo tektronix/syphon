@@ -11,6 +11,8 @@ def _normalize(directory: str) -> str:
     """Make lowercase and replace spaces with underscores."""
     directory = directory.lower()
     directory = directory.replace(' ', '_')
+    if directory[-1] == '.':
+        directory = directory[:-1]
     return directory
 
 def resolve_path(

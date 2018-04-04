@@ -72,11 +72,11 @@ class TestResolvePath(object):
     @staticmethod
     def data_gen_normalizable(row: int, col: int):
         valmap = [
-            ['Value 1', 'Value 1', 'Value 1', 'Value 1'],
-            ['Value 1',       nan, 'Value 1', 'Value 1'],
-            ['Value 1',       nan, 'Value 1',       nan],
-            [      nan,       nan, 'Value 1',       nan],
-            [      nan,       nan, 'Value 1',       nan]
+            ['Value 1.', 'Value 1.', 'Value 1.', 'Value 1.'],
+            ['Value 1.',        nan, 'Value 1.', 'Value 1.'],
+            ['Value 1.',        nan, 'Value 1.',        nan],
+            [       nan,        nan, 'Value 1.',        nan],
+            [       nan,        nan, 'Value 1.',        nan]
         ]
 
         if row < len(valmap):
