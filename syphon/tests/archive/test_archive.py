@@ -25,6 +25,10 @@ from .. import get_data_path
     (
         'iris_plus.csv',
         SortedDict({'0': 'Species', '1': 'PetalColor'})
+    ),
+    (
+        'auto-mpg.csv',
+        SortedDict({'0': 'model year', '1': 'cylinders', '2': 'origin'})
     )
 ])
 def archive_params(request):
@@ -53,6 +57,8 @@ def _get_expected_paths(path: str, schema: SortedDict, subset: DataFrame,
         new_subset = subset.loc[subset.get(header) == value]
         try:
             value = value.lower().replace(' ', '_')
+            if value[-1] == '.':
+                value = value[:-1]
             path_list = _get_expected_paths(
                 os.path.join(path, value),
                 this_schema,
