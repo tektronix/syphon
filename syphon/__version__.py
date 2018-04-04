@@ -4,5 +4,5 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-VERSION = (1, 3, 0)
+VERSION = (2, 0, 0)
 __version__ = '.'.join(map(str, VERSION))
