@@ -17,260 +17,174 @@ from syphon.schema.resolvepath import _normalize
 
 from .. import get_data_path
 
-class TestArchiveIris(object):
-    filename = 'iris.csv'
-    schema = SortedDict({'0': 'Name'})
+@pytest.fixture(params=[
+    (
+        'iris.csv',
+        SortedDict({'0': 'Name'})
+    ),
+    (
+        'iris_plus.csv',
+        SortedDict({'0': 'Species', '1': 'PetalColor'})
+    )
+])
+def archive_params(request):
+    return request.param
 
-    def test_archive(self, archive_dir, overwrite):
-        context = Context()
-        context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), self.filename)
-        context.overwrite = overwrite
-        context.schema = self.schema
+def _get_expected_paths(path: str, schema: SortedDict, subset: DataFrame,
+    filename: str, path_list=None) -> SortedList:
+    # prevent mutable default parameter
+    if path_list is None:
+        path_list = SortedList()
 
-        init(context)
+    this_schema = schema.copy()
+    header = None
+    try:
+        _, header = this_schema.popitem(last=False)
+    except KeyError:
+        path_list.add(os.path.join(path, filename))
+        return path_list
+    except:
+        raise
 
-        expected_df = DataFrame(read_csv(context.data, dtype=str))
-        expected_df.sort_values(list(expected_df.columns), inplace=True)
-        expected_df.reset_index(drop=True, inplace=True)
+    if header not in subset.columns:
+        return path_list
 
-        expected_paths = SortedList()
-        for name in expected_df[self.schema['0']].drop_duplicates().values:
-            expected_paths.add(os.path.join(
-                context.archive,
-                _normalize(name),
-                self.filename
-            ))
+    for value in subset.get(header).drop_duplicates().values:
+        new_subset = subset.loc[subset.get(header) == value]
+        try:
+            value = value.lower().replace(' ', '_')
+            path_list = _get_expected_paths(
+                os.path.join(path, value),
+                this_schema,
+                new_subset,
+                filename,
+                path_list=path_list
+            )
+        except:
+            raise
+    return path_list
 
-        if context.overwrite:
-            for e in expected_paths:
-                path = archive_dir.new()
-                path.mkdir(os.path.basename(os.path.dirname(e)))
-                with open(e, mode='w') as f:
-                    f.write('content')
+def test_archive(archive_params, archive_dir, overwrite):
+    filename, schema = archive_params
 
-        archive(context)
+    context = Context()
+    context.archive = str(archive_dir)
+    context.data = os.path.join(get_data_path(), filename)
+    context.overwrite = overwrite
+    context.schema = schema
 
-        actual_frame = DataFrame()
-        actual_paths = SortedList()
-        for root, _, files in os.walk(context.archive):
-            for f in files:
-                if '.csv' in f:
-                    filepath = os.path.join(root, f)
-                    actual_paths.add(filepath)
-                    actual_frame = concat([
-                        actual_frame,
-                        DataFrame(read_csv(filepath, dtype=str))
-                    ])
+    init(context)
 
-        actual_frame.sort_values(list(actual_frame.columns), inplace=True)
-        actual_frame.reset_index(drop=True, inplace=True)
+    expected_df = DataFrame(read_csv(context.data, dtype=str))
+    expected_df.sort_values(list(expected_df.columns), inplace=True)
+    expected_df.reset_index(drop=True, inplace=True)
 
-        assert expected_paths == actual_paths
-        assert_frame_equal(expected_df, actual_frame)
+    expected_paths = _get_expected_paths(
+        context.archive,
+        schema,
+        expected_df,
+        filename
+    )
 
-    def test_archive_no_schema(self, archive_dir, overwrite):
-        context = Context()
-        context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), self.filename)
-        context.overwrite = overwrite
-        context.schema = SortedDict()
+    if context.overwrite:
+        for e in expected_paths:
+            os.makedirs(os.path.dirname(e), exist_ok=True)
+            with open(e, mode='w') as f:
+                f.write('content')
 
-        expected_df = DataFrame(read_csv(context.data, dtype=str))
-        expected_df.sort_values(list(expected_df.columns), inplace=True)
-        expected_df.reset_index(drop=True, inplace=True)
+    archive(context)
 
-        expected_paths = SortedList([
-            os.path.join(context.archive, self.filename)
-        ])
+    actual_frame = DataFrame()
+    actual_paths = SortedList()
+    for root, _, files in os.walk(context.archive):
+        for f in files:
+            if '.csv' in f:
+                filepath = os.path.join(root, f)
+                actual_paths.add(filepath)
+                actual_frame = concat([
+                    actual_frame,
+                    DataFrame(read_csv(filepath, dtype=str))
+                ])
 
-        if context.overwrite:
-            for e in expected_paths:
-                path = archive_dir.new()
-                path.mkdir(os.path.basename(os.path.dirname(e)))
-                with open(e, mode='w') as f:
-                    f.write('content')
+    actual_frame.sort_values(list(actual_frame.columns), inplace=True)
+    actual_frame.reset_index(drop=True, inplace=True)
 
-        archive(context)
+    assert expected_paths == actual_paths
+    assert_frame_equal(expected_df, actual_frame)
 
-        actual_frame = DataFrame()
-        actual_paths = SortedList()
-        for root, _, files in os.walk(context.archive):
-            for f in files:
-                if '.csv' in f:
-                    filepath = os.path.join(root, f)
-                    actual_paths.add(filepath)
-                    actual_frame = concat([
-                        actual_frame,
-                        DataFrame(read_csv(filepath, dtype=str))
-                    ])
+def test_archive_no_schema(archive_params, archive_dir, overwrite):
+    filename, _ = archive_params
 
-        actual_frame.sort_values(list(actual_frame.columns), inplace=True)
-        actual_frame.reset_index(drop=True, inplace=True)
+    context = Context()
+    context.archive = str(archive_dir)
+    context.data = os.path.join(get_data_path(), filename)
+    context.overwrite = overwrite
+    context.schema = SortedDict()
 
-        assert expected_paths == actual_paths
-        assert_frame_equal(expected_df, actual_frame)
+    expected_df = DataFrame(read_csv(context.data, dtype=str))
+    expected_df.sort_values(list(expected_df.columns), inplace=True)
+    expected_df.reset_index(drop=True, inplace=True)
 
-    def test_archive_fileexistserror(self, archive_dir):
-        context = Context()
-        context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), self.filename)
-        context.overwrite = False
-        context.schema = self.schema
+    expected_paths = SortedList([
+        os.path.join(context.archive, filename)
+    ])
 
-        init(context)
-
-        expected_df = DataFrame(read_csv(context.data, dtype=str))
-
-        expected_paths = SortedList()
-        for name in expected_df[self.schema['0']].drop_duplicates().values:
-            expected_paths.add(os.path.join(
-                context.archive,
-                _normalize(name),
-                self.filename
-            ))
-
+    if context.overwrite:
         for e in expected_paths:
             path = archive_dir.new()
             path.mkdir(os.path.basename(os.path.dirname(e)))
             with open(e, mode='w') as f:
                 f.write('content')
 
-        with pytest.raises(FileExistsError):
-            archive(context)
+    archive(context)
 
-        try:
-            os.remove(os.path.join(get_data_path(), '#lock'))
-        except:
-            raise
+    actual_frame = DataFrame()
+    actual_paths = SortedList()
+    for root, _, files in os.walk(context.archive):
+        for f in files:
+            if '.csv' in f:
+                filepath = os.path.join(root, f)
+                actual_paths.add(filepath)
+                actual_frame = concat([
+                    actual_frame,
+                    DataFrame(read_csv(filepath, dtype=str))
+                ])
 
-class TestArchiveIrisPlus(object):
-    filename = 'iris_plus.csv'
-    schema = SortedDict({'0': 'Species', '1': 'PetalColor'})
+    actual_frame.sort_values(list(actual_frame.columns), inplace=True)
+    actual_frame.reset_index(drop=True, inplace=True)
 
-    def test_archive(self, archive_dir, overwrite):
-        context = Context()
-        context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), self.filename)
-        context.overwrite = overwrite
-        context.schema = self.schema
+    assert expected_paths == actual_paths
+    assert_frame_equal(expected_df, actual_frame)
 
-        init(context)
+def test_archive_fileexistserror(archive_params, archive_dir):
+    filename, schema = archive_params
 
-        expected_df = DataFrame(read_csv(context.data, dtype=str))
-        expected_df.sort_values(list(expected_df.columns), inplace=True)
-        expected_df.reset_index(drop=True, inplace=True)
+    context = Context()
+    context.archive = str(archive_dir)
+    context.data = os.path.join(get_data_path(), filename)
+    context.overwrite = False
+    context.schema = schema
 
-        expected_paths = SortedList()
-        for species in expected_df[self.schema['0']].drop_duplicates().values:
-            subset = expected_df.loc[expected_df[self.schema['0']] == species]
-            for color in subset[self.schema['1']].drop_duplicates().values:
-                expected_paths.add(os.path.join(
-                    context.archive,
-                    _normalize(species),
-                    _normalize(color),
-                    self.filename
-                ))
+    init(context)
 
-        if context.overwrite:
-            for e in expected_paths:
-                os.makedirs(os.path.dirname(e), exist_ok=True)
-                with open(e, mode='w') as f:
-                    f.write('content')
+    expected_df = DataFrame(read_csv(context.data, dtype=str))
 
+    expected_paths = _get_expected_paths(
+        context.archive,
+        schema,
+        expected_df,
+        filename
+    )
+
+    for e in expected_paths:
+        os.makedirs(os.path.dirname(e), exist_ok=True)
+        with open(e, mode='w') as f:
+            f.write('content')
+
+    with pytest.raises(FileExistsError):
         archive(context)
 
-        actual_frame = DataFrame()
-        actual_paths = SortedList()
-        for root, _, files in os.walk(context.archive):
-            for f in files:
-                if '.csv' in f:
-                    filepath = os.path.join(root, f)
-                    actual_paths.add(filepath)
-                    actual_frame = concat([
-                        actual_frame,
-                        DataFrame(read_csv(filepath, dtype=str))
-                    ])
-
-        actual_frame.sort_values(list(actual_frame.columns), inplace=True)
-        actual_frame.reset_index(drop=True, inplace=True)
-
-        assert expected_paths == actual_paths
-        assert_frame_equal(expected_df, actual_frame)
-
-    def test_archive_no_schema(self, archive_dir, overwrite):
-        context = Context()
-        context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), self.filename)
-        context.overwrite = overwrite
-        context.schema = SortedDict()
-
-        expected_df = DataFrame(read_csv(context.data, dtype=str))
-        expected_df.sort_values(list(expected_df.columns), inplace=True)
-        expected_df.reset_index(drop=True, inplace=True)
-
-        expected_paths = SortedList([
-            os.path.join(context.archive, self.filename)
-        ])
-
-        if context.overwrite:
-            for e in expected_paths:
-                path = archive_dir.new()
-                path.mkdir(os.path.basename(os.path.dirname(e)))
-                with open(e, mode='w') as f:
-                    f.write('content')
-
-        archive(context)
-
-        actual_frame = DataFrame()
-        actual_paths = SortedList()
-        for root, _, files in os.walk(context.archive):
-            for f in files:
-                if '.csv' in f:
-                    filepath = os.path.join(root, f)
-                    actual_paths.add(filepath)
-                    actual_frame = concat([
-                        actual_frame,
-                        DataFrame(read_csv(filepath, dtype=str))
-                    ])
-
-        actual_frame.sort_values(list(actual_frame.columns), inplace=True)
-        actual_frame.reset_index(drop=True, inplace=True)
-
-        assert expected_paths == actual_paths
-        assert_frame_equal(expected_df, actual_frame)
-
-    def test_archive_fileexistserror(self, archive_dir):
-        context = Context()
-        context.archive = str(archive_dir)
-        context.data = os.path.join(get_data_path(), self.filename)
-        context.overwrite = False
-        context.schema = self.schema
-
-        init(context)
-
-        expected_df = DataFrame(read_csv(context.data, dtype=str))
-
-        expected_paths = SortedList()
-        for species in expected_df[self.schema['0']].drop_duplicates().values:
-            subset = expected_df.loc[expected_df[self.schema['0']] == species]
-            for color in subset[self.schema['1']].drop_duplicates().values:
-                expected_paths.add(os.path.join(
-                    context.archive,
-                    _normalize(species),
-                    _normalize(color),
-                    self.filename
-                ))
-
-        for e in expected_paths:
-            os.makedirs(os.path.dirname(e), exist_ok=True)
-            with open(e, mode='w') as f:
-                f.write('content')
-
-        with pytest.raises(FileExistsError):
-            archive(context)
-
-        try:
-            os.remove(os.path.join(get_data_path(), '#lock'))
-        except:
-            raise
+    try:
+        os.remove(os.path.join(get_data_path(), '#lock'))
+    except:
+        raise
