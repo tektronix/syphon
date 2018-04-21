@@ -23,6 +23,11 @@ def _main(argv: list) -> int:
     from . import Context, get_parser, __version__
 
     parser = get_parser()
+
+    if len(argv) is 1:
+        parser.print_usage()
+        return 0
+
     args = parser.parse_args(argv[1:])
 
     if args.help is True:
