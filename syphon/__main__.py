@@ -18,8 +18,7 @@ def _main(argv: list) -> int:
     from syphon.init import init
     from syphon.schema import load
 
-    from .__version__ import __version__
-    from . import Context, get_parser
+    from . import Context, get_parser, __version__
 
     parser = get_parser()
     args = parser.parse_args(argv[1:])

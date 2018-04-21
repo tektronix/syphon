@@ -4,7 +4,7 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from syphon.__version__ import __version__
+from syphon import __version__
 from syphon.__main__ import _main
 
 def test_main_version(capsys):

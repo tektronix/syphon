@@ -1,1 +1,2 @@
-include LICENSE README.rst
+include LICENSE README.rst versioneer.py
+include syphon/_version.py

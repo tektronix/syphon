@@ -7,11 +7,11 @@
 """
 import io
 import os
+import versioneer
 
 from setuptools import find_packages, setup
 
 from syphon.__url__ import __url__
-from syphon.__version__ import __version__
 
 # Package meta-data
 NAME = 'syphon'
@@ -34,7 +34,7 @@ with io.open(os.path.join(HERE, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name=NAME,
-    version=__version__,
+    version=versioneer.get_version(),
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     author=AUTHOR,
@@ -43,6 +43,7 @@ setup(
     packages=find_packages(),
     install_requires=REQUIRED,
     include_package_data=True,
+    cmdclass=versioneer.get_cmdclass(),
     license='MIT',
     classifiers=[
         # Trove classifiers
