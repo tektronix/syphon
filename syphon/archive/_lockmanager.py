@@ -6,12 +6,13 @@
 """
 from os.path import abspath
 
+
 class LockManager(object):
     """Lock file helper.
-    
-    A lock file is any file named `#lock`. Lock files allow communication
-    between programs with lock file support to prevent the removal of files
-    that may be in use.
+
+    A lock file is any file named #lock. Lock files allow
+    communication between programs with lock file support to prevent
+    the removal of files that may be in use.
     """
     def __init__(self):
         self._filename = '#lock'
@@ -29,23 +30,33 @@ class LockManager(object):
 
     @staticmethod
     def _delete(filepath: str):
-        """Delete a given file."""
+        """Delete a given file.
+
+        Raises:
+            OSError: File operation error. Error type raised may be
+                a subclass of OSError.
+        """
         from os import remove
-        
+
         try:
             remove(filepath)
-        except:
+        except OSError:
             raise
 
     @staticmethod
     def _touch(filepath: str):
-        """Linux touch-like command."""
+        """Linux touch-like command.
+
+        Raises:
+            OSError: File operation error. Error type raised may be
+                a subclass of OSError.
+        """
         from os import utime
 
         try:
             with open(filepath, 'a'):
                 utime(filepath, None)
-        except:
+        except OSError:
             raise
 
     def lock(self, path: str) -> str:
@@ -56,6 +67,10 @@ class LockManager(object):
 
         Returns:
             str: Absolute filepath of the created lock file.
+
+        Raises:
+            OSError: File operation error. Error type raised may be
+                a subclass of OSError.
         """
         from os.path import join
 
@@ -63,7 +78,7 @@ class LockManager(object):
 
         try:
             LockManager._touch(filepath)
-        except:
+        except OSError:
             raise
         else:
             if filepath not in self._locks:
@@ -76,6 +91,10 @@ class LockManager(object):
 
         Args:
             filepath (str): Location of a lock file.
+
+        Raises:
+            OSError: File operation error. Error type raised may be
+                a subclass of OSError.
         """
         fullpath = abspath(filepath)
 
@@ -85,16 +104,21 @@ class LockManager(object):
                 LockManager._delete(fullpath)
             except FileNotFoundError:
                 pass
-            except:
+            except OSError:
                 raise
 
     def release_all(self):
-        """Remove all lock files."""
+        """Remove all lock files.
+
+        Raises:
+            OSError: File operation error. Error type raised may be
+                a subclass of OSError.
+        """
         while len(self._locks) is not 0:
             lock = self._locks.pop()
             try:
                 LockManager._delete(lock)
             except FileNotFoundError:
                 pass
-            except:
+            except OSError:
                 raise

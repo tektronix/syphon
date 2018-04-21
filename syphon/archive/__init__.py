@@ -4,9 +4,12 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
-from ._lockmanager import LockManager
 from .archive import archive
 from .datafilter import datafilter
 from .filemap import file_map
 
-__all__ = ['archive', 'datafilter', 'file_map']
+__all__ = [
+    'archive',
+    'datafilter',
+    'file_map',
+]

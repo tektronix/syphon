@@ -5,10 +5,11 @@
 
 """
 import pytest
-from json import dumps, loads
+from json import loads
 from sortedcontainers import SortedDict
 
 from syphon.schema import save
+
 
 class TestSave(object):
     multi_schema = SortedDict({'0': 'column2', '1': 'column4'})

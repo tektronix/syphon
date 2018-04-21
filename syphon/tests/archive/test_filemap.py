@@ -10,6 +10,7 @@ from sortedcontainers import SortedDict, SortedList
 
 from syphon.archive import file_map
 
+
 def test_filemap_loose_metadata(random_data, random_metadata):
     data = random_data
     meta = random_metadata
@@ -21,6 +22,7 @@ def test_filemap_loose_metadata(random_data, random_metadata):
     actual = file_map(SortedList(data), SortedList(meta))
 
     assert actual == expected
+
 
 def test_filemap_data_metadata_pairs(random_data):
     data = random_data

@@ -17,12 +17,13 @@ from syphon.build_ import build
 
 from .. import get_data_path
 
+
 class TestBuild(object):
     @staticmethod
     def _delete_cache(file: str):
         try:
             os.remove(file)
-        except:
+        except OSError:
             raise
 
     def test_build_iris(self, archive_dir, cache_file, overwrite):
@@ -30,7 +31,7 @@ class TestBuild(object):
             TestBuild._delete_cache(str(cache_file))
         except FileNotFoundError:
             pass
-        except:
+        except OSError:
             raise
 
         context = Context()
@@ -60,7 +61,7 @@ class TestBuild(object):
             TestBuild._delete_cache(str(cache_file))
         except FileNotFoundError:
             pass
-        except:
+        except OSError:
             raise
 
         context = Context()
@@ -89,7 +90,7 @@ class TestBuild(object):
             TestBuild._delete_cache(str(cache_file))
         except FileNotFoundError:
             pass
-        except:
+        except OSError:
             raise
 
         context = Context()

@@ -11,6 +11,7 @@ from sortedcontainers import SortedDict
 
 from syphon.schema import check_columns
 
+
 class TestCheckColumns(object):
     multi_column = 'column1,column2,column3,column4'
     multi_schema = SortedDict({'0': 'column2', '1': 'column4'})
@@ -36,8 +37,6 @@ class TestCheckColumns(object):
             check_columns(schema, data)
         except IndexError:
             pytest.fail()
-        except:
-            raise
 
     @pytest.mark.parametrize('schema, data', [
         (single_schema2, DataFrame(read_csv(StringIO(single_column)))),

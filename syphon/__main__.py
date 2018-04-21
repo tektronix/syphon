@@ -4,9 +4,11 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
+
+
 def _main(argv: list) -> int:
     """Main entry point.
-    
+
     Returns:
         int: An integer exit code. `0` for success or `1` for failure.
     """
@@ -71,6 +73,7 @@ def _main(argv: list) -> int:
         return 1
 
     return 0
+
 
 if __name__ == '__main__':
     from sys import argv

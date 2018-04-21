@@ -14,6 +14,7 @@ from syphon.schema import resolve_path
 
 from .. import make_dataframe, make_dataframe_value
 
+
 class TestResolvePath(object):
     archive = '.\\'
     headers = makeCustomIndex(7, 1, prefix='C')
@@ -45,7 +46,7 @@ class TestResolvePath(object):
             ['val', 'val', 'xxx', 'val'],
             ['val',   nan, 'val', 'val'],
             ['val',   nan, 'val',   nan],
-            [  nan,   nan, 'val', 'xxx'],
+            [  nan,   nan, 'val', 'xxx'],   # noqa: E201
             ['xxx',   nan, 'val',   nan]
         ]
 
@@ -60,8 +61,8 @@ class TestResolvePath(object):
             ['val', 'val', 'val', 'val'],
             ['val',   nan, 'val', 'val'],
             ['val',   nan, 'val',   nan],
-            [  nan,   nan, 'val',   nan],
-            [  nan,   nan, 'val',   nan]
+            [  nan,   nan, 'val',   nan],   # noqa: E201
+            [  nan,   nan, 'val',   nan]    # noqa: E201
         ]
 
         if row < len(valmap):
@@ -75,8 +76,8 @@ class TestResolvePath(object):
             ['Value 1.', 'Value 1.', 'Value 1.', 'Value 1.'],
             ['Value 1.',        nan, 'Value 1.', 'Value 1.'],
             ['Value 1.',        nan, 'Value 1.',        nan],
-            [       nan,        nan, 'Value 1.',        nan],
-            [       nan,        nan, 'Value 1.',        nan]
+            [       nan,        nan, 'Value 1.',        nan],   # noqa: E201
+            [       nan,        nan, 'Value 1.',        nan]    # noqa: E201
         ]
 
         if row < len(valmap):
@@ -102,8 +103,8 @@ class TestResolvePath(object):
         (multi_schema2, join(archive, 'value_1', 'value_1', 'value_1'))
     ])
     def test_resolve_path_normalized(self, schema, expected):
-        data = make_dataframe(5, 4,
-                              data_gen_f=TestResolvePath.data_gen_normalizable)
+        data = make_dataframe(
+            5, 4, data_gen_f=TestResolvePath.data_gen_normalizable)
 
         actual = resolve_path(self.archive, schema, data)
 
@@ -125,9 +126,8 @@ class TestResolvePath(object):
         multi_schema2,
     ])
     def test_resolve_path_valueerror(self, schema):
-        data = make_dataframe(5, 4,
-                              data_gen_f=TestResolvePath.data_gen_invalid)
+        data = make_dataframe(
+            5, 4, data_gen_f=TestResolvePath.data_gen_invalid)
 
         with pytest.raises(ValueError):
             resolve_path(self.archive, schema, data)
-

@@ -8,10 +8,10 @@
 import io
 import os
 import versioneer
-
 from setuptools import find_packages, setup
 
-from syphon.__url__ import __url__
+from syphon import __url__
+
 
 # Package meta-data
 NAME = 'syphon'
@@ -54,5 +54,4 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Topic :: Scientific/Engineering'
-    ]
-)
+    ])

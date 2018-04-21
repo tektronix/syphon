@@ -13,9 +13,9 @@ from sortedcontainers import SortedDict, SortedList
 from syphon import Context
 from syphon.archive import archive
 from syphon.init import init
-from syphon.schema.resolvepath import _normalize
 
 from .. import get_data_path
+
 
 @pytest.fixture(params=[
     (
@@ -34,8 +34,10 @@ from .. import get_data_path
 def archive_params(request):
     return request.param
 
-def _get_expected_paths(path: str, schema: SortedDict, subset: DataFrame,
-    filename: str, path_list=None) -> SortedList:
+
+def _get_expected_paths(
+        path: str, schema: SortedDict, subset: DataFrame, filename: str,
+        path_list=None) -> SortedList:
     # prevent mutable default parameter
     if path_list is None:
         path_list = SortedList()
@@ -47,28 +49,23 @@ def _get_expected_paths(path: str, schema: SortedDict, subset: DataFrame,
     except KeyError:
         path_list.add(os.path.join(path, filename))
         return path_list
-    except:
-        raise
 
     if header not in subset.columns:
         return path_list
 
     for value in subset.get(header).drop_duplicates().values:
         new_subset = subset.loc[subset.get(header) == value]
-        try:
-            value = value.lower().replace(' ', '_')
-            if value[-1] == '.':
-                value = value[:-1]
-            path_list = _get_expected_paths(
-                os.path.join(path, value),
-                this_schema,
-                new_subset,
-                filename,
-                path_list=path_list
-            )
-        except:
-            raise
+        value = value.lower().replace(' ', '_')
+        if value[-1] == '.':
+            value = value[:-1]
+        path_list = _get_expected_paths(
+            os.path.join(path, value),
+            this_schema,
+            new_subset,
+            filename,
+            path_list=path_list)
     return path_list
+
 
 def test_archive(archive_params, archive_dir, overwrite):
     filename, schema = archive_params
@@ -118,6 +115,7 @@ def test_archive(archive_params, archive_dir, overwrite):
     assert expected_paths == actual_paths
     assert_frame_equal(expected_df, actual_frame)
 
+
 def test_archive_no_schema(archive_params, archive_dir, overwrite):
     filename, _ = archive_params
 
@@ -162,6 +160,7 @@ def test_archive_no_schema(archive_params, archive_dir, overwrite):
     assert expected_paths == actual_paths
     assert_frame_equal(expected_df, actual_frame)
 
+
 def test_archive_fileexistserror(archive_params, archive_dir):
     filename, schema = archive_params
 
@@ -192,5 +191,5 @@ def test_archive_fileexistserror(archive_params, archive_dir):
 
     try:
         os.remove(os.path.join(get_data_path(), '#lock'))
-    except:
+    except OSError:
         raise

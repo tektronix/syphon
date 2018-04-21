@@ -7,6 +7,7 @@
 from pandas import DataFrame
 from sortedcontainers import SortedDict
 
+
 def _normalize(directory: str) -> str:
     """Make lowercase and replace spaces with underscores."""
     directory = directory.lower()
@@ -14,6 +15,7 @@ def _normalize(directory: str) -> str:
     if directory[-1] == '.':
         directory = directory[:-1]
     return directory
+
 
 def resolve_path(
         archive: str, schema: SortedDict, datapool: DataFrame) -> str:
@@ -35,10 +37,10 @@ def resolve_path(
         str: The resolved path.
 
     Raises:
-        IndexError: Schema value is not a column header of the given
-            DataFrame.
-        ValueError: When a column corresponding to a `SortedDict` entry
-            contains more than one value.
+        IndexError: Schema value is not a column header of the
+            given DataFrame.
+        ValueError: When a column corresponding to a SortedDict
+            entry contains more than one value.
     """
     from os.path import join
 
@@ -49,14 +51,16 @@ def resolve_path(
     for key in schema:
         header = schema[key]
         if header not in list(datapool.columns):
-            raise IndexError('Schema value {} is not a column in the current '
-                             'DataFrame.'.format(header))
+            raise IndexError(
+                'Schema value {} is not a column in the current DataFrame.'
+                .format(header))
         row_values = list(datapool.get(header).drop_duplicates().values)
         if nan in row_values:
             row_values.remove(nan)
         if len(row_values) > 1:
-            raise ValueError('More than one value exists under the {} column.'
-                             .format(header))
+            raise ValueError(
+                'More than one value exists under the {} column.'
+                .format(header))
         value = row_values.pop()
         result = join(result, _normalize(value))
 

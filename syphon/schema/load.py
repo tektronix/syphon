@@ -6,6 +6,7 @@
 """
 from sortedcontainers import SortedDict
 
+
 def load(filepath: str) -> SortedDict:
     """Return a `SortedDict` from a schema file.
 
@@ -16,8 +17,8 @@ def load(filepath: str) -> SortedDict:
         SortedDict: Ordered archive directory storage schema.
 
     Raises:
-        OSError: File operation error. Error type raised may be a subclass
-            of `OSError`.
+        OSError: File operation error. Error type raised may be
+            a subclass of OSError.
     """
     from json import loads
 
@@ -25,7 +26,7 @@ def load(filepath: str) -> SortedDict:
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             result = SortedDict(loads(f.read()))
-    except:
+    except OSError:
         raise
     else:
         return result

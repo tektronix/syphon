@@ -6,6 +6,7 @@
 """
 from syphon import Context
 
+
 def init(context: Context):
     """Create a schema file in the given directory
 
@@ -13,8 +14,8 @@ def init(context: Context):
         context (Context): Runtime settings object.
 
     Raises:
-        OSError: File operation error. Error type raised may be a subclass
-            of `OSError`.
+        OSError: File operation error. Error type raised may be
+            a subclass of OSError.
     """
     from os.path import join
     from syphon.schema import save
@@ -22,5 +23,5 @@ def init(context: Context):
     schema_path = join(context.archive, context.schema_file)
     try:
         save(context.schema, schema_path, context.overwrite)
-    except:
+    except OSError:
         raise

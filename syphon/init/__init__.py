@@ -6,4 +6,6 @@
 """
 from .init import init
 
-__all__ = ['init']
+__all__ = [
+    'init',
+]

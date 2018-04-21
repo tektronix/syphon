@@ -10,6 +10,7 @@ from sortedcontainers import SortedDict
 
 from syphon.schema import load
 
+
 class TestLoad(object):
     multi_schema = SortedDict({'0': 'column2', '1': 'column4'})
     single_schema = SortedDict({'0': 'column1'})

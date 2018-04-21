@@ -6,24 +6,36 @@
 """
 from syphon import Context
 
+
 def archive(context: Context):
     """Store the files specified in the current context.
 
     Args:
         context (Context): Runtime settings object.
+
+    Raises:
+        FileExistsError: An archive file already exists with
+            the same filepath.
+        IndexError: Schema value is not a column header of a
+            given DataFrame.
+        OSError: File operation error. Error type raised may be
+            a subclass of OSError.
+        ParserError: Error raised by pandas.read_csv.
+        ValueError: More than one unique metadata value exists
+            under a column header.
     """
     from glob import glob
     from os import makedirs
     from os.path import exists, join, split
 
     from pandas import concat, DataFrame, read_csv, Series
-    from pandas.errors import EmptyDataError
+    from pandas.errors import EmptyDataError, ParserError
     from sortedcontainers import SortedList
     from syphon.schema import check_columns, resolve_path
 
     from . import datafilter
     from . import file_map
-    from . import LockManager
+    from ._lockmanager import LockManager
 
     lock_manager = LockManager()
     lock_list = list()
@@ -32,7 +44,7 @@ def archive(context: Context):
     data_list = SortedList(glob(context.data))
     try:
         lock_list.append(lock_manager.lock(split(data_list[0])[0]))
-    except:
+    except OSError:
         raise
 
     # add '#lock' file to all metadata directories
@@ -41,7 +53,7 @@ def archive(context: Context):
         meta_list = SortedList(glob(context.meta))
         try:
             lock_list.append(lock_manager.lock(split(meta_list[0])[0]))
-        except:
+        except OSError:
             raise
 
     fmap = file_map(data_list, meta_list)
@@ -51,12 +63,12 @@ def archive(context: Context):
 
         data_frame = None
         try:
-            #TODO: Issue #9 - 'open file' abstractions here
+            # TODO: Issue #9 - 'open file' abstractions here
             data_frame = DataFrame(read_csv(datafile, dtype=str))
         except EmptyDataError:
             # trigger the empty check below
             data_frame = DataFrame()
-        except:
+        except ParserError:
             raise
 
         if data_frame.empty:
@@ -72,23 +84,25 @@ def archive(context: Context):
         meta_frame = None
         for metafile in fmap[datafile]:
             try:
-                #TODO: Issue #9 - 'open file' abstractions here
+                # TODO: Issue #9 - 'open file' abstractions here
                 new_frame = DataFrame(read_csv(metafile, dtype=str))
-            except:
+            except ParserError:
                 raise
 
             new_frame.dropna(axis=1, how='all', inplace=True)
             for header in list(new_frame.columns.values):
                 # complain if there's more than one value in a column
                 if len(new_frame[header].drop_duplicates().values) > 1:
-                    raise ValueError('More than one value exists under '
-                                        'the {} column.'.format(header))
+                    raise ValueError(
+                        'More than one value exists under the {} column.'
+                        .format(header))
 
                 if len(new_frame[header]) is total_rows:
                     if meta_frame is None:
                         meta_frame = new_frame[header]
                     else:
-                        meta_frame = concat([meta_frame, new_frame[header]], axis=1)
+                        meta_frame = concat(
+                            [meta_frame, new_frame[header]], axis=1)
                 else:
                     meta_value = new_frame[header].iloc[0]
                     series = Series([meta_value] * total_rows, name=header)
@@ -102,23 +116,22 @@ def archive(context: Context):
 
         try:
             check_columns(context.schema, data_frame)
-        except:
+        except IndexError:
             raise
 
         filtered_data = None
-        try:
-            filtered_data = datafilter(context.schema, data_frame)
-        except:
-            raise
-        else:
-            if len(filtered_data) is 0:
-                filtered_data = [data_frame]
+        filtered_data = datafilter(context.schema, data_frame)
+
+        if len(filtered_data) is 0:
+            filtered_data = [data_frame]
 
         for data in filtered_data:
             path = None
             try:
                 path = resolve_path(context.archive, context.schema, data)
-            except:
+            except IndexError:
+                raise
+            except ValueError:
                 raise
 
             target_filename = join(path, datafilename)
@@ -130,12 +143,12 @@ def archive(context: Context):
             try:
                 makedirs(path, exist_ok=True)
                 data.to_csv(target_filename, index=False)
-            except:
+            except OSError:
                 raise
 
     while len(lock_list) > 0:
         lock = lock_list.pop()
         try:
             lock_manager.release(lock)
-        except:
+        except OSError:
             raise

@@ -6,6 +6,7 @@
 """
 from syphon import Context
 
+
 def build(context: Context):
     """Combine all archived data files into a single file.
 
@@ -13,9 +14,10 @@ def build(context: Context):
         context (Context): Runtime settings object.
 
     Raises:
-        OSError: File operation error. Error type raised may be a subclass
-            of `OSError`.
-        FileExistsError: Cache file exists and overwrite is `False`.
+        OSError: File operation error. Error type raised may be
+            a subclass of OSError.
+        FileExistsError: Cache file exists and overwrite is
+            False.
     """
     from os import walk
     from os.path import exists, join
@@ -38,12 +40,12 @@ def build(context: Context):
         try:
             data = DataFrame(read_csv(file, dtype=str))
             cache = cache.append(data)
-        except:
+        except OSError:
             raise
         else:
             cache.reset_index(drop=True, inplace=True)
 
     try:
         cache.to_csv(context.cache, index=False)
-    except:
+    except OSError:
         raise

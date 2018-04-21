@@ -6,6 +6,7 @@
 """
 from sortedcontainers import SortedDict
 
+
 class Context(object):
     """Runtime settings container."""
     def __init__(self):

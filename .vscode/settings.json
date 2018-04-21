@@ -7,5 +7,17 @@
             72,
             79
         ]
-    }
+    },
+    "python.linting.enabled": true,
+    "python.linting.flake8CategorySeverity.E": "Error",
+    "python.linting.flake8CategorySeverity.F": "Error",
+    "python.linting.flake8CategorySeverity.W": "Warning",
+    "python.linting.flake8Enabled": true,
+    "python.linting.ignorePatterns": [
+        ".vscode/*.py",
+        "**/.tox/**/*.py",
+        "**/build/**/*.py",
+        "syphon/_version.py",
+        "versioneer.py"
+    ]
 }

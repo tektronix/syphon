@@ -7,6 +7,7 @@
 from syphon import __version__
 from syphon.__main__ import _main
 
+
 def test_main_version(capsys):
     arguments = ['syphon', '--version']
     _main(arguments)
