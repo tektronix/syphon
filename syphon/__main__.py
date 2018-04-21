@@ -25,11 +25,15 @@ def _main(argv: list) -> int:
     parser = get_parser()
     args = parser.parse_args(argv[1:])
 
-    this_context = Context()
+    if args.help is True:
+        parser.print_help()
+        return 0
 
     if args.version is True:
         print(__version__)
         return 0
+
+    this_context = Context()
 
     this_context.overwrite = args.force
     this_context.verbose = args.verbose

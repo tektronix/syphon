@@ -19,6 +19,7 @@ def get_parser() -> argparse.ArgumentParser:
     # formatter_class=RawDescriptionHelpFormatter -- format descriptions
     #   before output
     parser = argparse.ArgumentParser(
+        add_help=False,
         conflict_handler='resolve',
         description='A data storage and management engine.',
         epilog=epilog_last_line,
@@ -31,6 +32,14 @@ def get_parser() -> argparse.ArgumentParser:
         action='store_true',
         default=False,
         help='overwrite existing files',
+        required=False)
+    # help
+    parser.add_argument(
+        '-h',
+        '--help',
+        action='store_true',
+        default=False,
+        help='display this help and exit',
         required=False)
     # verbosity
     parser.add_argument(
