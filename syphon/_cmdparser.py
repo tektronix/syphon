@@ -77,20 +77,20 @@ def get_parser() -> argparse.ArgumentParser:
     # build command
     # create build subcommand parser
     build_parser = subparsers.add_parser('build',
-                                           epilog=epilog_last_line,
-                                           help='combine archives into a single file')
+                                         epilog=epilog_last_line,
+                                         help='combine archives into a single file')
     # optional, hidden argument that is true when using this subparser
     build_parser.add_argument('--build',
-                                 action='store_true',
-                                 default=True,
-                                 help=argparse.SUPPRESS,
-                                 required=False)
+                              action='store_true',
+                              default=True,
+                              help=argparse.SUPPRESS,
+                              required=False)
     # required source directory
     build_parser.add_argument('source',
-                                help='directory where data is stored')
+                              help='directory where data is stored')
     # required destination file
     build_parser.add_argument('destination',
-                                help='filename of the output file')
+                              help='filename of the output file')
 
     # init command
     # create init subcommand parser
@@ -99,10 +99,10 @@ def get_parser() -> argparse.ArgumentParser:
                                         help='create an archive directory storage schema')
     # optional, hidden argument that is true when using this subparser
     init_parser.add_argument('--init',
-                               action='store_true',
-                               default=True,
-                               help=argparse.SUPPRESS,
-                               required=False)
+                             action='store_true',
+                             default=True,
+                             help=argparse.SUPPRESS,
+                             required=False)
     # required destination directory
     init_parser.add_argument('destination',
                              help='directory where data is archived')
