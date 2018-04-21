@@ -51,7 +51,6 @@ def get_parser() -> argparse.ArgumentParser:
     # archive command
     # create archive subcommand parser
     archive_parser = subparsers.add_parser('archive',
-                                           aliases=['import'],
                                            epilog=epilog_last_line,
                                            help='import files into the archive directory')
     # optional, hidden argument that is true when using this subparser
