@@ -13,8 +13,8 @@ def _main(argv: list) -> int:
     from os.path import abspath, join
     from sortedcontainers import SortedDict
 
-    from syphon.rebuild import rebuild
     from syphon.archive import archive
+    from syphon.build_ import build
     from syphon.init import init
     from syphon.schema import load
 
@@ -37,7 +37,7 @@ def _main(argv: list) -> int:
         this_context.data = abspath(args.data)
 
     if getattr(args, 'destination', False):
-        if getattr(args, 'rebuild', False):
+        if getattr(args, 'build', False):
             this_context.cache = abspath(args.destination)
         else:
             this_context.archive = abspath(args.destination)
@@ -65,8 +65,8 @@ def _main(argv: list) -> int:
         if getattr(args, 'init', False):
             init(this_context)
 
-        if getattr(args, 'rebuild', False):
-            rebuild(this_context)
+        if getattr(args, 'build', False):
+            build(this_context)
     except OSError as err:
         print(str(err))
         return 1

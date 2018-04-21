@@ -75,23 +75,22 @@ def get_parser() -> argparse.ArgumentParser:
                                 help='metadata file or glob pattern',
                                 required=False)
 
-    # rebuild command
-    # create rebuild subcommand parser
-    rebuild_parser = subparsers.add_parser('rebuild',
-                                           aliases=['build'],
+    # build command
+    # create build subcommand parser
+    build_parser = subparsers.add_parser('build',
                                            epilog=epilog_last_line,
                                            help='combine archives into a single file')
     # optional, hidden argument that is true when using this subparser
-    rebuild_parser.add_argument('--rebuild',
+    build_parser.add_argument('--build',
                                  action='store_true',
                                  default=True,
                                  help=argparse.SUPPRESS,
                                  required=False)
     # required source directory
-    rebuild_parser.add_argument('source',
+    build_parser.add_argument('source',
                                 help='directory where data is stored')
     # required destination file
-    rebuild_parser.add_argument('destination',
+    build_parser.add_argument('destination',
                                 help='filename of the output file')
 
     # init command

@@ -1,4 +1,4 @@
-"""syphon.rebuild.rebuild.py
+"""syphon.build_.build.py
 
    Copyright (c) 2017-2018 Keithley Instruments, LLC.
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
@@ -6,7 +6,7 @@
 """
 from syphon import Context
 
-def rebuild(context: Context):
+def build(context: Context):
     """Combine all archived data files into a single file.
 
     Args:
