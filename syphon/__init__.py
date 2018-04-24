@@ -1,4 +1,4 @@
-#!python3
+# flake8: noqa
 """syphon.__init__.py
 
    Copyright (c) 2017-2018 Keithley Instruments, LLC.
@@ -8,14 +8,10 @@
 from ._cmdparser import get_parser
 from .context import Context
 from ._url import get_url
-from ._version import get_versions
 
 
 __url__ = get_url()
 del get_url
-
-__version__ = get_versions()['version']
-del get_versions
 
 __all__ = [
     'get_parser',
@@ -23,3 +19,7 @@ __all__ = [
     '__url__',
     '__version__',
 ]
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
