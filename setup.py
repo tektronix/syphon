@@ -15,7 +15,7 @@ from syphon import __url__
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 # Import README to use as the long-description
-with io.open(os.path.join(HERE, 'README.rst'), encoding='utf-8') as f:
+with io.open(os.path.join(HERE, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = '\n' + f.read()
 
 # Trove classifiers
