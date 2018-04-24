@@ -4,6 +4,16 @@
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """
+from sys import argv
+
+
+def bootstrap(args=None):
+    if args is None:
+        args = argv[1:]
+    try:
+        _main(args)
+    except KeyboardInterrupt:
+        raise SystemExit(2)
 
 
 def _main(argv: list) -> int:
@@ -24,7 +34,7 @@ def _main(argv: list) -> int:
 
     parser = get_parser()
 
-    if len(argv) is 1:
+    if len(argv) <= 1:
         parser.print_usage()
         return 0
 
@@ -85,6 +95,4 @@ def _main(argv: list) -> int:
 
 
 if __name__ == '__main__':
-    from sys import argv
-
-    exit(_main(argv))
+    bootstrap(argv)

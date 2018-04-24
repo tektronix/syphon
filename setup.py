@@ -52,6 +52,12 @@ EXTRAS_REQUIRE = {
     ],
 }
 
+ENTRY_POINTS = {
+    'console_scripts': [
+        'syphon=syphon.__main__:bootstrap'
+    ]
+}
+
 setup(
     name='syphon',
     version=versioneer.get_version(),
@@ -67,6 +73,7 @@ setup(
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     python_requires='>=3,!=3.0.*,!=3.2.*,!=3.3.*,!=3.4.*,<4',
+    entry_points=ENTRY_POINTS,
     maintainer='Keithley Instruments, LLC. et al.',
     include_package_data=True,
     cmdclass=versioneer.get_cmdclass(),
