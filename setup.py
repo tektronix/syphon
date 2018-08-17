@@ -39,8 +39,8 @@ PROJECT_URLS = {
 }
 
 INSTALL_REQUIRES = [
-    'pandas',
-    'sortedcontainers'
+    'pandas<=0.23.*',
+    'sortedcontainers<=1.6.*'
 ]
 
 EXTRAS_REQUIRE = {
