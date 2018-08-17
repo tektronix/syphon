@@ -11,7 +11,7 @@ def bootstrap(args=None):
     if args is None:
         args = argv[1:]
     try:
-        _main(args)
+        exit(_main(args))
     except KeyboardInterrupt:
         raise SystemExit(2)
 
