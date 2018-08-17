@@ -72,7 +72,7 @@ setup(
     packages=find_packages(),
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
-    python_requires='>=3,!=3.0.*,!=3.2.*,!=3.3.*,!=3.4.*,<4',
+    python_requires='>=3,!=3.0.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.7.*,<4',
     entry_points=ENTRY_POINTS,
     maintainer='Keithley Instruments, LLC. et al.',
     include_package_data=True,
