@@ -10,8 +10,6 @@ import os
 import versioneer
 from setuptools import find_packages, setup
 
-from syphon import __url__
-
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 # Import README to use as the long-description
@@ -64,7 +62,7 @@ setup(
     description='A data storage and management engine.',
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
-    url=__url__,
+    url='https://github.com/ethall/syphon',
     author='Evan Hall',
     license='MIT',
     classifiers=CLASSIFIERS,
