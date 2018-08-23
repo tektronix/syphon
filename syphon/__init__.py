@@ -7,11 +7,9 @@
 """
 from ._cmdparser import get_parser
 from .context import Context
-from ._url import get_url
 
 
-__url__ = get_url()
-del get_url
+__url__ = 'https://github.com/ethall/syphon'
 
 __all__ = [
     'get_parser',

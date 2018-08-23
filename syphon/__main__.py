@@ -9,9 +9,9 @@ from sys import argv
 
 def bootstrap(args=None):
     if args is None:
-        args = argv[1:]
+        args = argv
     try:
-        _main(args)
+        exit(_main(args))
     except KeyboardInterrupt:
         raise SystemExit(2)
 
