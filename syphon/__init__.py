@@ -1,7 +1,7 @@
 # flake8: noqa
 """syphon.__init__.py
 
-   Copyright (c) 2017-2018 Keithley Instruments, LLC.
+   Copyright Keithley Instruments, LLC.
    Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
 
 """

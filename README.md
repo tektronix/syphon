@@ -62,6 +62,6 @@ tox -e ENV [-- --slow]
 License
 =======
 
-Copyright (c) Keithley Instruments, LLC. All rights reserved.
+Copyright Keithley Instruments, LLC. All rights reserved.
 
 Licensed under the [MIT](License) License.
