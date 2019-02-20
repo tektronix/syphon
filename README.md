@@ -36,8 +36,6 @@ General command line documentation and subcommand documentation can be accessed 
  python -m syphon SUBCOMMAND --help
 ```
 
-For detailed documentation, check out the [wiki](https://github.com/ethall/syphon/wiki).
-
 Unit Testing
 ============
 

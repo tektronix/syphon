@@ -1,7 +1,7 @@
 """syphon.tests.schema.test_checkcolumns.py
 
    Copyright Keithley Instruments, LLC.
-   Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
+   Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
 import pytest
