@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """setup.py
 
-   Copyright (c) 2017-2018 Keithley Instruments, LLC.
-   Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
+   Copyright Keithley Instruments, LLC.
+   Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
 import io
@@ -32,8 +32,8 @@ CLASSIFIERS = [
 ]
 
 PROJECT_URLS = {
-    'Source': 'https://github.com/ethall/syphon',
-    'Tracker': 'https://github.com/ethall/syphon/issues',
+    'Source': 'https://github.com/tektronix/syphon',
+    'Tracker': 'https://github.com/tektronix/syphon/issues',
 }
 
 INSTALL_REQUIRES = [
@@ -62,7 +62,7 @@ setup(
     description='A data storage and management engine.',
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
-    url='https://github.com/ethall/syphon',
+    url='https://github.com/tektronix/syphon',
     author='Evan Hall',
     license='MIT',
     classifiers=CLASSIFIERS,

@@ -1,7 +1,7 @@
 """syphon.tests.test_main.py
 
-   Copyright (c) 2017-2018 Keithley Instruments, LLC.
-   Licensed under MIT (https://github.com/ehall/syphon/blob/master/LICENSE)
+   Copyright Keithley Instruments, LLC.
+   Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
 from syphon import __version__

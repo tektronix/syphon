@@ -36,8 +36,6 @@ General command line documentation and subcommand documentation can be accessed 
  python -m syphon SUBCOMMAND --help
 ```
 
-For detailed documentation, check out the [wiki](https://github.com/ethall/syphon/wiki).
-
 Unit Testing
 ============
 
@@ -62,6 +60,6 @@ tox -e ENV [-- --slow]
 License
 =======
 
-Copyright (c) Keithley Instruments, LLC. All rights reserved.
+Copyright Keithley Instruments, LLC. All rights reserved.
 
 Licensed under the [MIT](License) License.
