@@ -45,6 +45,7 @@ EXTRAS_REQUIRE = {
     'dev': ['check-manifest'],
     'test': [
         'tox',
+        'pylint',
         'pytest',
         'pytest-cov',
     ],
