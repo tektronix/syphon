@@ -1,0 +1,32 @@
+comment:
+  layout: "diff, files"
+  behavior: default
+  require_changes: no
+
+coverage:
+  range: 70..100
+  round: down
+  precision: 2
+
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+        branches:
+          - master
+      canary:
+        target: 75%
+        threshold: 5%
+        branches:
+          - canary
+    patch:
+      default:
+        target: 90%
+        branches:
+          - master
+      canary:
+        target: 75%
+        branches:
+          - canary
+    changes: no

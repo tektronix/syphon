@@ -1,0 +1,23 @@
+language: python
+
+python: 3.6
+
+branches:
+  # only master, canary, and tagged commits
+  only:
+    - master
+    - canary
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+
+cache:
+  directories:
+    - ".tox"
+
+install:
+  - pip install -e .[dev,test]
+
+script:
+  - tox -- --slow --cov-report=xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -c
