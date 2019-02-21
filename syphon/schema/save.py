@@ -26,17 +26,9 @@ def save(schema: SortedDict, filepath: str, overwrite: bool):
     from os.path import exists
 
     if exists(filepath) and overwrite:
-        try:
-            remove(filepath)
-        except OSError:
-            raise
+        remove(filepath)
     elif exists(filepath) and not overwrite:
         raise FileExistsError('Schema file already exists')
 
-    try:
-        with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(dumps(schema, indent=2))
-    except OSError:
-        raise
-    else:
-        return
+    with open(filepath, 'w', encoding='utf-8') as file:
+        file.write(dumps(schema, indent=2))

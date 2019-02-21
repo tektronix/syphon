@@ -5,11 +5,12 @@
 
 """
 from time import sleep
-from os.path import isfile, join
+from os.path import exists, join
 
 import pytest
 from sortedcontainers import SortedList
 from syphon.archive._lockmanager import LockManager
+
 
 MAX_UNIQUE_LOCKS = 5
 
@@ -45,7 +46,7 @@ def test_lockmanager_lock(nlocks, tmpdir):
     assert expected_list == actual_list
 
     for e in expected_list:
-        assert isfile(e)
+        assert exists(e)
 
 
 def test_lockmanager_lock_returns_lockfile(tmpdir):
@@ -139,7 +140,7 @@ def test_lockmanager_release_all(nlocks, tmpdir):
         assert len(lockman.locks) is 0
 
     for l in lock_list:
-        assert not isfile(l)
+        assert not exists(l)
 
 
 @pytest.mark.parametrize('nlocks', [x for x in range(1, MAX_UNIQUE_LOCKS+1)])
@@ -179,7 +180,7 @@ def test_lockmanager_modifiedtime_updated(tmpdir):
     else:
         lockfile = tmpdir.join(lockman.filename)
 
-    assert isfile(str(lockfile))
+    assert exists(str(lockfile))
 
     pre_time = lockfile.mtime()
     sleep(1)

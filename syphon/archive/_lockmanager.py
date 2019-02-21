@@ -7,7 +7,7 @@
 from os.path import abspath
 
 
-class LockManager(object):
+class LockManager:
     """Lock file helper.
 
     A lock file is any file named #lock. Lock files allow
@@ -38,10 +38,7 @@ class LockManager(object):
         """
         from os import remove
 
-        try:
-            remove(filepath)
-        except OSError:
-            raise
+        remove(filepath)
 
     @staticmethod
     def _touch(filepath: str):
@@ -53,11 +50,8 @@ class LockManager(object):
         """
         from os import utime
 
-        try:
-            with open(filepath, 'a'):
-                utime(filepath, None)
-        except OSError:
-            raise
+        with open(filepath, 'a'):
+            utime(filepath, None)
 
     def lock(self, path: str) -> str:
         """Create a lock file in a given directory.
@@ -76,13 +70,10 @@ class LockManager(object):
 
         filepath = join(abspath(path), self.filename)
 
-        try:
-            LockManager._touch(filepath)
-        except OSError:
-            raise
-        else:
-            if filepath not in self._locks:
-                self._locks.append(filepath)
+        LockManager._touch(filepath)
+
+        if filepath not in self._locks:
+            self._locks.append(filepath)
 
         return filepath
 
@@ -104,8 +95,6 @@ class LockManager(object):
                 LockManager._delete(fullpath)
             except FileNotFoundError:
                 pass
-            except OSError:
-                raise
 
     def release_all(self):
         """Remove all lock files.
@@ -120,5 +109,3 @@ class LockManager(object):
                 LockManager._delete(lock)
             except FileNotFoundError:
                 pass
-            except OSError:
-                raise

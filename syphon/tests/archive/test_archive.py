@@ -96,6 +96,7 @@ def test_archive(archive_params, archive_dir, overwrite):
                 f.write('content')
 
     archive(context)
+    assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
     actual_frame = DataFrame()
     actual_paths = SortedList()
@@ -141,6 +142,7 @@ def test_archive_no_schema(archive_params, archive_dir, overwrite):
                 f.write('content')
 
     archive(context)
+    assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
     actual_frame = DataFrame()
     actual_paths = SortedList()
@@ -189,7 +191,4 @@ def test_archive_fileexistserror(archive_params, archive_dir):
     with pytest.raises(FileExistsError):
         archive(context)
 
-    try:
-        os.remove(os.path.join(get_data_path(), '#lock'))
-    except OSError:
-        raise
+    assert not os.path.exists(os.path.join(get_data_path(), '#lock'))

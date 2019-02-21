@@ -8,6 +8,7 @@ from sys import argv
 
 
 def bootstrap(args=None):
+    """Main entry point facade."""
     if args is None:
         args = argv
     try:
@@ -16,7 +17,7 @@ def bootstrap(args=None):
         raise SystemExit(2)
 
 
-def _main(argv: list) -> int:
+def _main(args: list) -> int:
     """Main entry point.
 
     Returns:
@@ -34,11 +35,11 @@ def _main(argv: list) -> int:
 
     parser = get_parser()
 
-    if len(argv) <= 1:
+    if len(args) <= 1:
         parser.print_usage()
         return 0
 
-    args = parser.parse_args(argv[1:])
+    args = parser.parse_args(args[1:])
 
     if args.help is True:
         parser.print_help()
@@ -65,8 +66,8 @@ def _main(argv: list) -> int:
     if getattr(args, 'headers', False):
         this_context.schema = SortedDict()
         index = 0
-        for h in args.headers:
-            this_context.schema['{}'.format(index)] = h
+        for header in args.headers:
+            this_context.schema['{}'.format(index)] = header
             index += 1
 
     if getattr(args, 'source', False):

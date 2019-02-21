@@ -7,7 +7,7 @@
 from sortedcontainers import SortedDict
 
 
-class Context(object):
+class Context:
     """Runtime settings container."""
     def __init__(self):
         self._archive_dir = None

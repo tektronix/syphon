@@ -42,19 +42,13 @@ def archive(context: Context):
 
     # add '#lock' file to all data directories
     data_list = SortedList(glob(context.data))
-    try:
-        lock_list.append(lock_manager.lock(split(data_list[0])[0]))
-    except OSError:
-        raise
+    lock_list.append(lock_manager.lock(split(data_list[0])[0]))
 
     # add '#lock' file to all metadata directories
     meta_list = SortedList()
     if context.meta is not None:
         meta_list = SortedList(glob(context.meta))
-        try:
-            lock_list.append(lock_manager.lock(split(meta_list[0])[0]))
-        except OSError:
-            raise
+        lock_list.append(lock_manager.lock(split(meta_list[0])[0]))
 
     fmap = file_map(data_list, meta_list)
 
@@ -63,12 +57,12 @@ def archive(context: Context):
 
         data_frame = None
         try:
-            # TODO: Issue #9 - 'open file' abstractions here
             data_frame = DataFrame(read_csv(datafile, dtype=str))
         except EmptyDataError:
             # trigger the empty check below
             data_frame = DataFrame()
         except ParserError:
+            lock_manager.release_all()
             raise
 
         if data_frame.empty:
@@ -84,15 +78,16 @@ def archive(context: Context):
         meta_frame = None
         for metafile in fmap[datafile]:
             try:
-                # TODO: Issue #9 - 'open file' abstractions here
                 new_frame = DataFrame(read_csv(metafile, dtype=str))
             except ParserError:
+                lock_manager.release_all()
                 raise
 
             new_frame.dropna(axis=1, how='all', inplace=True)
             for header in list(new_frame.columns.values):
                 # complain if there's more than one value in a column
                 if len(new_frame[header].drop_duplicates().values) > 1:
+                    lock_manager.release_all()
                     raise ValueError(
                         'More than one value exists under the {} column.'
                         .format(header))
@@ -117,6 +112,7 @@ def archive(context: Context):
         try:
             check_columns(context.schema, data_frame)
         except IndexError:
+            lock_manager.release_all()
             raise
 
         filtered_data = None
@@ -130,13 +126,16 @@ def archive(context: Context):
             try:
                 path = resolve_path(context.archive, context.schema, data)
             except IndexError:
+                lock_manager.release_all()
                 raise
             except ValueError:
+                lock_manager.release_all()
                 raise
 
             target_filename = join(path, datafilename)
 
             if exists(target_filename) and not context.overwrite:
+                lock_manager.release_all()
                 raise FileExistsError('Archive error: file already exists @ '
                                       '{}'.format(target_filename))
 
@@ -144,11 +143,9 @@ def archive(context: Context):
                 makedirs(path, exist_ok=True)
                 data.to_csv(target_filename, index=False)
             except OSError:
+                lock_manager.release_all()
                 raise
 
-    while len(lock_list) > 0:
+    while lock_list:
         lock = lock_list.pop()
-        try:
-            lock_manager.release(lock)
-        except OSError:
-            raise
+        lock_manager.release(lock)

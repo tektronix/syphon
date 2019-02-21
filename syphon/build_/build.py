@@ -7,6 +7,9 @@
 from syphon import Context
 
 
+LINUX_HIDDEN_CHAR = '.'
+
+
 def build(context: Context):
     """Combine all archived data files into a single file.
 
@@ -30,22 +33,16 @@ def build(context: Context):
         raise FileExistsError('Cache file already exists')
 
     for root, _, files in walk(context.archive):
-        for f in files:
+        for file in files:
             # skip linux-style hidden files
-            if f[0] is not '.':
-                file_list.append(join(root, f))
+            if file[0] is not LINUX_HIDDEN_CHAR:
+                file_list.append(join(root, file))
 
     cache = DataFrame()
     for file in file_list:
-        try:
-            data = DataFrame(read_csv(file, dtype=str))
-            cache = cache.append(data)
-        except OSError:
-            raise
-        else:
-            cache.reset_index(drop=True, inplace=True)
+        data = DataFrame(read_csv(file, dtype=str))
+        cache = cache.append(data)
 
-    try:
-        cache.to_csv(context.cache, index=False)
-    except OSError:
-        raise
+        cache.reset_index(drop=True, inplace=True)
+
+    cache.to_csv(context.cache, index=False)

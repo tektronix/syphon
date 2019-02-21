@@ -21,7 +21,4 @@ def init(context: Context):
     from syphon.schema import save
 
     schema_path = join(context.archive, context.schema_file)
-    try:
-        save(context.schema, schema_path, context.overwrite)
-    except OSError:
-        raise
+    save(context.schema, schema_path, context.overwrite)

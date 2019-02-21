@@ -11,8 +11,8 @@ def _multi_map(data: SortedList, meta: SortedList) -> SortedDict:
     """Pair all metadata files to each data file."""
     result = SortedDict()
 
-    for d in data:
-        result[d] = [m for m in meta]
+    for dataname in data:
+        result[dataname] = [metaname for metaname in meta]
 
     return result
 
@@ -33,11 +33,11 @@ def _name_map(data: SortedList, meta: SortedList) -> SortedDict:
     result = SortedDict()
     target_length = len(data)
 
-    for d in data:
-        name = _get_name(d)
-        for m in meta:
-            if name == _get_name(m):
-                result[d] = [m]
+    for dataname in data:
+        name = _get_name(dataname)
+        for metaname in meta:
+            if name == _get_name(metaname):
+                result[dataname] = [metaname]
 
     if len(result.keys()) is not target_length:
         return None

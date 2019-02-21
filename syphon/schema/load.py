@@ -23,10 +23,7 @@ def load(filepath: str) -> SortedDict:
     from json import loads
 
     result = SortedDict()
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            result = SortedDict(loads(f.read()))
-    except OSError:
-        raise
-    else:
-        return result
+    with open(filepath, 'r', encoding='utf-8') as file:
+        result = SortedDict(loads(file.read()))
+
+    return result

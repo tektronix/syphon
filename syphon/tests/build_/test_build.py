@@ -43,6 +43,7 @@ class TestBuild(object):
 
         init(context)
         archive(context)
+        assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
 
@@ -72,6 +73,7 @@ class TestBuild(object):
         context.schema = SortedDict()
 
         archive(context)
+        assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
 
@@ -101,6 +103,7 @@ class TestBuild(object):
         context.schema = SortedDict()
 
         archive(context)
+        assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
         with open(context.cache, mode='w') as f:
             f.write('content')
