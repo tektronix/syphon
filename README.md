@@ -1,8 +1,8 @@
-# syphon
+# Syphon
 
 > A data storage and management engine.
 
-**syphon** is a Python package that provides a simple interface to perform common tasks on labelled data.  Its aim is to fit seamlessly into any automation pipeline that requires organization and collation of large datasets.
+Syphon is a Python package that provides a simple interface to perform common tasks on labelled data.  Its aim is to fit seamlessly into any automation pipeline that requires organization and collation of large datasets.
 
 
 ## Features
@@ -33,27 +33,6 @@ General command line documentation and subcommand documentation can be accessed 
  python -m syphon --help
 
  python -m syphon SUBCOMMAND --help
-```
-
-
-## Unit Testing
-
-Install the `tox` and `pytest` packages via pip:
-```
-pip install tox pytest
-```
-
-Run quick tests (or all tests) against all available python environments:
-```
-tox [-- --slow]
-```
-
-Print all available test environments and test against only one:
-```
-tox --listenvs
-...     # list of environments
-
-tox -e ENV [-- --slow]
 ```
 
 
