@@ -47,6 +47,8 @@ class TestBuild(object):
         assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
+        print('expected:   shape: {0}'.format(expected_frame.shape))
+        print('expected: headers: {0}'.format(expected_frame.axes[1].values))
 
         if context.overwrite:
             with open(context.cache, mode='w') as f:
@@ -55,6 +57,8 @@ class TestBuild(object):
         build(context)
 
         actual_frame = DataFrame(read_csv(context.cache, dtype=str))
+        print('  actual:   shape: {0}'.format(actual_frame.shape))
+        print('  actual: headers: {0}'.format(actual_frame.axes[1].values))
 
         assert_frame_equal(expected_frame, actual_frame, check_like=True)
 
