@@ -46,9 +46,8 @@ class TestBuild(object):
         archive(context)
         assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
-        expected_frame = DataFrame(read_csv(context.data, index_col=False))
-        expected_frame.sort_values('SepalLength', inplace=True)
-        expected_frame.reset_index(drop=True, inplace=True)
+        expected_frame = DataFrame(read_csv(context.data, index_col='Index'))
+        expected_frame.sort_index(inplace=True)
 
         if context.overwrite:
             with open(context.cache, mode='w') as f:
@@ -56,9 +55,8 @@ class TestBuild(object):
 
         build(context)
 
-        actual_frame = DataFrame(read_csv(context.cache, index_col=False))
-        actual_frame.sort_values('SepalLength', inplace=True)
-        actual_frame.reset_index(drop=True, inplace=True)
+        actual_frame = DataFrame(read_csv(context.cache, index_col='Index'))
+        actual_frame.sort_index(inplace=True)
 
         equal_shapes = expected_frame.shape == actual_frame.shape
         equal_indices = (expected_frame.index).equals(actual_frame.index)
