@@ -22,3 +22,6 @@ def init(context: Context):
 
     schema_path = join(context.archive, context.schema_file)
     save(context.schema, schema_path, context.overwrite)
+
+    if context.verbose:
+        print('Init: wrote {0}'.format(schema_path))

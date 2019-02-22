@@ -40,8 +40,20 @@ def build(context: Context):
 
     cache = DataFrame()
     for file in file_list:
+        if context.verbose:
+            print('Build: from {0}'.format(file))
+
         data = DataFrame(read_csv(file, dtype=str))
+
+        if context.verbose:
+            data_shape = data.shape
+            cache_pre_shape = cache.shape
+
         cache = cache.append(data)
+
+        if context.verbose:
+            print('Build: appending data {0} onto cache {1} => {2}'.format(
+                data_shape, cache_pre_shape, cache.shape))
 
         cache.reset_index(drop=True, inplace=True)
 

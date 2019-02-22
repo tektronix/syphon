@@ -146,6 +146,9 @@ def archive(context: Context):
                 lock_manager.release_all()
                 raise
 
+            if context.verbose:
+                print('Archive: wrote {0}'.format(target_filename))
+
     while lock_list:
         lock = lock_list.pop()
         lock_manager.release(lock)
