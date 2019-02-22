@@ -58,3 +58,6 @@ def build(context: Context):
         cache.reset_index(drop=True, inplace=True)
 
     cache.to_csv(context.cache, index=False)
+
+    if context.verbose:
+        print('Build: wrote {0}'.format(context.cache))
