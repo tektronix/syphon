@@ -48,6 +48,7 @@ class TestBuild(object):
 
         expected_frame = DataFrame(read_csv(context.data, index_col=False))
         expected_frame.sort_values('SepalLength', inplace=True)
+        expected_frame.reset_index(drop=True, inplace=True)
 
         if context.overwrite:
             with open(context.cache, mode='w') as f:
@@ -57,6 +58,7 @@ class TestBuild(object):
 
         actual_frame = DataFrame(read_csv(context.cache, index_col=False))
         actual_frame.sort_values('SepalLength', inplace=True)
+        actual_frame.reset_index(drop=True, inplace=True)
 
         equal_shapes = expected_frame.shape == actual_frame.shape
         equal_indices = (expected_frame.index).equals(actual_frame.index)
