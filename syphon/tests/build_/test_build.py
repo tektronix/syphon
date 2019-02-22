@@ -40,6 +40,7 @@ class TestBuild(object):
         context.data = os.path.join(get_data_path(), 'iris.csv')
         context.overwrite = overwrite
         context.schema = SortedDict({'0': 'Name'})
+        context.verbose = True
 
         init(context)
         archive(context)
