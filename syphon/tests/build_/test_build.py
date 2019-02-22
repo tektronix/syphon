@@ -46,8 +46,6 @@ class TestBuild(object):
         assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
-        expected_frame.sort_values('SepalLength', inplace=True)
-        expected_frame.reset_index(drop=True, inplace=True)
 
         if context.overwrite:
             with open(context.cache, mode='w') as f:
@@ -56,8 +54,6 @@ class TestBuild(object):
         build(context)
 
         actual_frame = DataFrame(read_csv(context.cache, dtype=str))
-        actual_frame.sort_values('SepalLength', inplace=True)
-        actual_frame.reset_index(drop=True, inplace=True)
 
         assert_frame_equal(expected_frame, actual_frame)
 
@@ -80,8 +76,6 @@ class TestBuild(object):
         assert not os.path.exists(os.path.join(get_data_path(), '#lock'))
 
         expected_frame = DataFrame(read_csv(context.data, dtype=str))
-        expected_frame.sort_values('SepalLength', inplace=True)
-        expected_frame.reset_index(drop=True, inplace=True)
 
         if context.overwrite:
             with open(context.cache, mode='w') as f:
@@ -90,8 +84,6 @@ class TestBuild(object):
         build(context)
 
         actual_frame = DataFrame(read_csv(context.cache, dtype=str))
-        actual_frame.sort_values('SepalLength', inplace=True)
-        actual_frame.reset_index(drop=True, inplace=True)
 
         assert_frame_equal(expected_frame, actual_frame)
 
