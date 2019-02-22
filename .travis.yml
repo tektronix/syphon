@@ -1,5 +1,9 @@
 language: python
 
+python:
+  - 3.5
+  - 3.6
+
 branches:
   # only master, canary, and tagged commits
   only:
@@ -11,16 +15,8 @@ cache:
   directories:
     - ".tox"
 
-matrix:
-  include:
-    - python: 3.5
-      env: TOXENV=py35
-
-    - python: 3.6
-      env: TOXENV=py36
-
 install:
-  - pip install -e .[dev,test]
+  - pip install tox-travis
 
 script:
   - tox -- --slow --cov-report=xml
