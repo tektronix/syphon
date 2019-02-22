@@ -55,7 +55,7 @@ class TestBuild(object):
 
         actual_frame = DataFrame(read_csv(context.cache, dtype=str))
 
-        assert_frame_equal(expected_frame, actual_frame)
+        assert_frame_equal(expected_frame, actual_frame, check_like=True)
 
     def test_build_iris_no_schema(self, archive_dir, cache_file, overwrite):
         try:
@@ -85,7 +85,7 @@ class TestBuild(object):
 
         actual_frame = DataFrame(read_csv(context.cache, dtype=str))
 
-        assert_frame_equal(expected_frame, actual_frame)
+        assert_frame_equal(expected_frame, actual_frame, check_like=True)
 
     def test_build_fileexistserror(self, archive_dir, cache_file):
         try:
