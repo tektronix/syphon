@@ -23,3 +23,13 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -c
+
+deploy:
+  provider: pypi
+  user: "Tektronix"
+  password:
+    secure: "<encrypted password>"
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
