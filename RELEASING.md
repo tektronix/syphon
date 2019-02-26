@@ -66,9 +66,9 @@ Be sure to call
 ```
 $ set +o history
 ```
-to turn off the command history before continuing.
+to turn off command history before continuing.
 
-Follow the Travis-CI [PyPI deployment](https://docs.travis-ci.com/user/deployment/pypi/) instructions (the opening section) to encrypt the password for the Tektronix PyPI account.
+Follow the Travis-CI [PyPI deployment](https://docs.travis-ci.com/user/deployment/pypi/) instructions (the opening section) to encrypt the password for the Tektronix PyPI account. You will need to add `--repo tektronix/syphon` to the `travis encrypt` command (see above link) if you're not running it from the root of the project directory.
 
 Once complete, toggle command history back on with
 
