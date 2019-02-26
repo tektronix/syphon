@@ -8,6 +8,9 @@
             79
         ]
     },
+    "[yaml]": {
+        "editor.wordWrap": "on"
+    },
     "python.linting.enabled": true,
     "python.linting.flake8CategorySeverity.E": "Error",
     "python.linting.flake8CategorySeverity.F": "Error",

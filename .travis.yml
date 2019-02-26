@@ -28,7 +28,7 @@ deploy:
   provider: pypi
   user: "Tektronix"
   password:
-    secure: "<encrypted password>"
+    secure: “NHEE0ppmy/O0y5FXzD7wJrc+JPsb03HATC1/RK3OhZN/N/JeV/qy2FAkT2n13GmZPX4FKPUxOZPpzTYxp/YdvS/k0j7zbSIcn1Ysv9POQ+NnHM9+nUcEmLZ0Mm4MRondjPoVORycuIVzhPajyt9IFD1nMZmiZ4iHqXv2OLNBXe0d5Ge68W31qca78DopcNDJ3NHumJOxbWjdWzpTNI7a/waQ6qXLI0OL3wZSTmGtMgdB+4bWGaQPpCoR6mIDCaydBGzJrmLgLUUzIviuWzXNv7zSexnBn1ThbLBMnPK5gexjB8ASVYoUFa2fe4CBb9nDGC+tuaEWq/571CBIxpiHeqCDF0eRiM0AFwo7ze6n8g46ieaQbXtjtVPf5W0Zpy+pmOYHSoCFLTpMux061WI3gLuQSLF/jWUnvojDQU1zuLdzLaxV2WRppDrmQgIMfe7xd5Jp9BX1HI3tRB5daxRpbAk2cu9LlVha9J9rnrDHbTRYIybUZvdTzon5k4rUUMTfsfwzrOUJifDZjmbY/ZDh6S9hWQofJHlfgwRw31OHe0/rW2qmxwYo3tfSU5j8ZZvdaZSVF2HE4hva60k1UvrSnnBLMXgEjKm3m45Z8rQU9oIGVcZgzJjCiL+FnRE9bZFmjKsfDNy/7L2Zxzs+TnpUYx8E3zVDe50wQ0kLPuJE9TY=”
   on:
     tags: true
   distributions: "sdist bdist_wheel"
