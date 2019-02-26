@@ -2,6 +2,8 @@
 
 > A data storage and management engine.
 
+[![build](https://api.travis-ci.com/tektronix/syphon.svg?branch=master)](https://travis-ci.com/tektronix/syphon) [![codecov](https://codecov.io/gh/tektronix/syphon/branch/master/graph/badge.svg)](https://codecov.io/gh/tektronix/syphon)
+
 Syphon is a Python package that provides a simple interface to perform common tasks on labelled data.  Its aim is to fit seamlessly into any automation pipeline that requires organization and collation of large datasets.
 
 
