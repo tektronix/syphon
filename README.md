@@ -59,7 +59,7 @@ This is not an officially supported Tektronix product. It is maintained by a sma
 
 Copyright Keithley Instruments, LLC. All rights reserved.
 
-Licensed under the [MIT](License) License.
+Licensed under the [MIT](LICENSE) License.
 <br/>
 <br/>
 <br/>
