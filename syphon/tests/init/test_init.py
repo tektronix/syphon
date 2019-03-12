@@ -4,10 +4,10 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
+from json import loads
 from os.path import join
 
 import pytest
-from json import loads
 from sortedcontainers import SortedDict
 
 from syphon import Context

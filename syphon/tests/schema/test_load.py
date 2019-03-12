@@ -4,8 +4,9 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
-import pytest
 from json import dumps, loads
+
+import pytest
 from sortedcontainers import SortedDict
 
 from syphon.schema import load

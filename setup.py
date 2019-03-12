@@ -7,8 +7,9 @@
 """
 import io
 import os
-import versioneer
 from setuptools import find_packages, setup
+
+import versioneer
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
