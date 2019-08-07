@@ -2,7 +2,7 @@
 
 > A data storage and management engine.
 
-[![build](https://api.travis-ci.com/tektronix/syphon.svg?branch=master)](https://travis-ci.com/tektronix/syphon) [![codecov](https://codecov.io/gh/tektronix/syphon/branch/master/graph/badge.svg)](https://codecov.io/gh/tektronix/syphon) [![CodeFactor](https://www.codefactor.io/repository/github/tektronix/syphon/badge)](https://www.codefactor.io/repository/github/tektronix/syphon) [![PyPI](https://img.shields.io/pypi/v/syphon.svg)](https://pypi.org/project/syphon/) [![PyPI - License](https://img.shields.io/pypi/l/syphon.svg)](https://pypi.org/project/syphon/)
+[![build](https://api.travis-ci.com/tektronix/syphon.svg?branch=master)](https://travis-ci.com/tektronix/syphon) [![codecov](https://codecov.io/gh/tektronix/syphon/branch/master/graph/badge.svg)](https://codecov.io/gh/tektronix/syphon) [![CodeFactor](https://www.codefactor.io/repository/github/tektronix/syphon/badge)](https://www.codefactor.io/repository/github/tektronix/syphon) [![PyPI](https://img.shields.io/pypi/v/syphon.svg)](https://pypi.org/project/syphon/) [![PyPI - License](https://img.shields.io/pypi/l/syphon.svg)](https://pypi.org/project/syphon/) [![Keithley](https://tektronix.github.io/media/Keithley-opensource_badge-flat.svg)](https://github.com/tektronix)
 
 Syphon is a Python package that provides a simple interface to perform common tasks on labelled data.  Its aim is to fit seamlessly into any automation pipeline that requires organization and collation of large datasets.
 
