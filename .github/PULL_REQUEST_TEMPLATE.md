@@ -1,5 +1,5 @@
 ### Pull Request Checklist
-Please review the [Contribution Guidelines](../CONTRIBUTING.md) before submitting.
+Please review the [Contribution Guidelines](https://github.com/tektronix/syphon/blob/master/CONTRIBUTING.md) before submitting.
 
 - [ ] Pulling from a topic/feature/bugfix branch (right side).
 - [ ] Pulling against the `canary` branch (left side).
