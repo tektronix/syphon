@@ -22,8 +22,8 @@ def load(filepath: str) -> SortedDict:
     """
     from json import loads
 
-    result = SortedDict()
-    with open(filepath, 'r', encoding='utf-8') as file:
+    result: SortedDict = SortedDict()
+    with open(filepath, "r", encoding="utf-8") as file:
         result = SortedDict(loads(file.read()))
 
     return result

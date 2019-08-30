@@ -4,23 +4,26 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
+from typing import Optional
+
 from sortedcontainers import SortedDict
 
 
 class Context:
     """Runtime settings container."""
+
     def __init__(self):
-        self._archive_dir = None
-        self._cache = None
-        self._data = None
-        self._meta = None
-        self._overwrite = False
-        self._schema = None
-        self._schema_file = '.schema.json'
-        self._verbose = False
+        self._archive_dir: Optional[str] = None
+        self._cache: Optional[str] = None
+        self._data: Optional[str] = None
+        self._meta: Optional[str] = None
+        self._overwrite: bool = False
+        self._schema: SortedDict = SortedDict()
+        self._schema_file: str = ".schema.json"
+        self._verbose: bool = False
 
     @property
-    def archive(self) -> str:
+    def archive(self) -> Optional[str]:
         """`str`: Absolute path to the archive directory."""
         return self._archive_dir
 
@@ -29,7 +32,7 @@ class Context:
         self._archive_dir = value
 
     @property
-    def cache(self) -> str:
+    def cache(self) -> Optional[str]:
         """`str`: Absolute filepath of the cache file."""
         return self._cache
 
@@ -38,7 +41,7 @@ class Context:
         self._cache = value
 
     @property
-    def data(self) -> str:
+    def data(self) -> Optional[str]:
         """`str`: Absolute filepath or glob pattern of data file(s)."""
         return self._data
 
@@ -47,7 +50,7 @@ class Context:
         self._data = value
 
     @property
-    def meta(self) -> str:
+    def meta(self) -> Optional[str]:
         """`str`: Absolute filepath or glob pattern of metadata files(s)."""
         return self._meta
 

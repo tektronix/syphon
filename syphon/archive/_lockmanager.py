@@ -7,16 +7,20 @@
 from os.path import abspath
 
 
-class LockManager:
+class LockManager(object):
     """Lock file helper.
 
     A lock file is any file named #lock. Lock files allow
     communication between programs with lock file support to prevent
     the removal of files that may be in use.
     """
+
     def __init__(self):
-        self._filename = '#lock'
-        self._locks = list()
+        from typing import List
+
+        super().__init__()
+        self._filename = "#lock"
+        self._locks: List[str] = list()
 
     @property
     def filename(self) -> str:
@@ -50,7 +54,7 @@ class LockManager:
         """
         from os import utime
 
-        with open(filepath, 'a'):
+        with open(filepath, "a"):
             utime(filepath, None)
 
     def lock(self, path: str) -> str:
@@ -87,7 +91,7 @@ class LockManager:
             OSError: File operation error. Error type raised may be
                 a subclass of OSError.
         """
-        fullpath = abspath(filepath)
+        fullpath: str = abspath(filepath)
 
         if fullpath in self._locks:
             self._locks.remove(fullpath)
@@ -103,7 +107,7 @@ class LockManager:
             OSError: File operation error. Error type raised may be
                 a subclass of OSError.
         """
-        while len(self._locks) is not 0:
+        while len(self._locks) != 0:
             lock = self._locks.pop()
             try:
                 LockManager._delete(lock)

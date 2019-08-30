@@ -14,14 +14,17 @@ def init(context: Context):
         context (Context): Runtime settings object.
 
     Raises:
+        AssertionError: Context.archive is None.
         OSError: File operation error. Error type raised may be
             a subclass of OSError.
     """
     from os.path import join
     from syphon.schema import save
 
-    schema_path = join(context.archive, context.schema_file)
+    if context.archive is None:
+        raise AssertionError()
+    schema_path: str = join(context.archive, context.schema_file)
     save(context.schema, schema_path, context.overwrite)
 
     if context.verbose:
-        print('Init: wrote {0}'.format(schema_path))
+        print("Init: wrote {0}".format(schema_path))

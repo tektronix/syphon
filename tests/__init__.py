@@ -4,8 +4,9 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
-from string import ascii_letters, digits
 from random import choice
+from string import ascii_letters, digits
+from typing import Any, Callable, Optional
 
 from pandas import DataFrame
 
@@ -18,10 +19,12 @@ def get_data_path() -> str:
     """
     from os.path import abspath, dirname, join
 
-    return join(abspath(dirname(__file__)), 'data')
+    return join(abspath(dirname(__file__)), "data")
 
 
-def make_dataframe(nrows: int, ncols: int, data_gen_f=None) -> DataFrame:
+def make_dataframe(
+    nrows: int, ncols: int, data_gen_f: Optional[Callable[[int, int], Any]] = None
+) -> DataFrame:
     """Local mapping of `pandas.util.testing.makeCustomDataframe`.
 
     Resulting `DataFrame` will have neither a columns name nor an index
@@ -44,13 +47,18 @@ def make_dataframe(nrows: int, ncols: int, data_gen_f=None) -> DataFrame:
 
     # pandas bug (?) in makeCustomIndex when nentries = 1
     if ncols == 1:
-        return DataFrame({
-            'C_l0_g0': [make_dataframe_value(x, 0) for x in range(nrows)]
-        })
+        return DataFrame(
+            {"C_l0_g0": [make_dataframe_value(x, 0) for x in range(nrows)]}
+        )
     else:
-        return makeCustomDataframe(nrows, ncols,
-                                   c_idx_names=False, r_idx_names=False,
-                                   data_gen_f=data_gen_f, r_idx_type='i')
+        return makeCustomDataframe(
+            nrows,
+            ncols,
+            c_idx_names=False,
+            r_idx_names=False,
+            data_gen_f=data_gen_f,
+            r_idx_type="i",
+        )
 
 
 def make_dataframe_value(nrows: int, ncols: int) -> str:
@@ -68,10 +76,10 @@ def make_dataframe_value(nrows: int, ncols: int) -> str:
     Returns:
         str: "RxCy" based on the given position.
     """
-    return 'R{}C{}'.format(nrows, ncols)
+    return "R{}C{}".format(nrows, ncols)
 
 
-def rand_string(size=6) -> str:
+def rand_string(size: int = 6) -> str:
     """Generate a random string from the set of a-z, A-Z, and 0-9.
 
     Args:
@@ -80,4 +88,4 @@ def rand_string(size=6) -> str:
     Returns:
         str: Random string.
     """
-    return ''.join(choice(ascii_letters + digits) for _ in range(size))
+    return "".join(choice(ascii_letters + digits) for _ in range(size))

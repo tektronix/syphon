@@ -6,18 +6,13 @@
 
 """
 from ._cmdparser import get_parser
+from ._version import get_versions
 from .context import Context
 
+__url__ = "https://github.com/tektronix/syphon"
 
-__url__ = 'https://github.com/tektronix/syphon'
+__all__ = ["get_parser", "Context", "__url__", "__version__"]
 
-__all__ = [
-    'get_parser',
-    'Context',
-    '__url__',
-    '__version__',
-]
 
-from ._version import get_versions
-__version__ = get_versions()['version']
+__version__ = get_versions()["version"]
 del get_versions

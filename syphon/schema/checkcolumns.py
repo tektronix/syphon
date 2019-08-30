@@ -19,9 +19,10 @@ def check_columns(schema: SortedDict, data: DataFrame):
         IndexError: Schema value is not a column header of the
             given DataFrame.
     """
-    columns = list(data.columns)
+    from typing import List
+
+    columns: List[str] = list(data.columns)
     for key in schema:
-        header = schema[key]
+        header: str = schema[key]
         if header not in columns:
-            raise IndexError(
-                'Cannot find column named "{}"'.format(header))
+            raise IndexError('Cannot find column named "{}"'.format(header))

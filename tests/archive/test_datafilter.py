@@ -4,10 +4,13 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
+from typing import Dict, List, Optional, Tuple
+
 import pytest
-from pandas import concat, DataFrame, Series
+from pandas import DataFrame, Series, concat
 from pandas.testing import assert_frame_equal
 from sortedcontainers import SortedDict
+
 from syphon.archive import datafilter
 
 from .. import make_dataframe
@@ -17,39 +20,46 @@ MAX_COLS = 5
 
 
 class TestDataFilter(object):
-    def _build_dataframes(
-            self, frame: DataFrame, meta_cvals: dict, keylist: list,
-            result=None) -> list:
-        if result is None:
-            result = []
+    fail_message = "Could not find a matching frame in the filtered list."
 
-        this_keylist = keylist.copy()
+    def _build_dataframes(
+        self,
+        frame: DataFrame,
+        meta_cvals: Dict[str, List[str]],
+        keylist: List[str],
+        data: List[DataFrame] = [],
+    ) -> List[DataFrame]:
+        result = data.copy()
+
+        this_keylist: List[str] = keylist.copy()
         this_keylist.reverse()
-        header = None
         try:
-            header = this_keylist.pop()
+            header: str = this_keylist.pop()
         except IndexError:
             result.append(frame)
             return result
 
-        if len(meta_cvals[header]) is 0:
+        if len(meta_cvals[header]) == 0:
             return result
 
         for val in meta_cvals[header]:
             rows, _ = frame.shape
-            new_col = Series([val]*rows, name=header)
-            this_frame = concat([frame.copy(), new_col], axis=1)
+            new_col = Series([val] * rows, name=header)
+            this_frame: DataFrame = concat([frame.copy(), new_col], axis=1)
             result = self._build_dataframes(
-                this_frame, meta_cvals, this_keylist, result=result)
+                this_frame, meta_cvals, this_keylist, data=result
+            )
         return result
 
-    def _test_dataframes(self, rows, cols, meta_cvals) -> (list, list):
+    def _test_dataframes(
+        self, rows: int, cols: int, meta_cvals: Dict[str, List[str]]
+    ) -> Tuple[List[DataFrame], List[DataFrame]]:
         """Return tuple is (expected, actual)."""
-        data = make_dataframe(rows, cols)
-        meta_col_vals = meta_cvals.copy()
-        keys = list(meta_cvals.keys())
+        data: DataFrame = make_dataframe(rows, cols)
+        meta_col_vals: Dict[str, List[str]] = meta_cvals.copy()
+        keys: List[str] = list(meta_cvals.keys())
 
-        expected = self._build_dataframes(data, meta_col_vals, keys)
+        expected: List[DataFrame] = self._build_dataframes(data, meta_col_vals, keys)
 
         schema = SortedDict()
         index = 0
@@ -58,28 +68,29 @@ class TestDataFilter(object):
             index += 1
 
         alldata = DataFrame()
-        if len(expected) is 0:
+        if len(expected) == 0:
             alldata = data.copy()
         else:
             for f in expected:
                 alldata = concat([alldata, f])
             alldata.reset_index(drop=True, inplace=True)
 
-        actual = datafilter(schema, alldata)
+        actual: List[DataFrame] = datafilter(schema, alldata)
 
         return (expected, actual)
 
     @pytest.mark.less_coverage
-    def test_datafilter_fixed_uniform_meta(self, metadata_columns):
-        expected, actual = self._test_dataframes(
-            MAX_ROWS, MAX_COLS, metadata_columns)
+    def test_datafilter_fixed_uniform_meta(
+        self, metadata_columns: Dict[str, List[str]]
+    ):
+        expected, actual = self._test_dataframes(MAX_ROWS, MAX_COLS, metadata_columns)
 
         if len(expected) is len(actual):
             assert True
             return
 
         for e in expected:
-            match = None
+            match: Optional[DataFrame] = None
             for a in actual:
                 if e.equals(a):
                     match = a.copy()
@@ -87,20 +98,22 @@ class TestDataFilter(object):
             if match is not None:
                 assert_frame_equal(e, match)
             else:
-                msg = 'Could not find a matching frame in the filtered list.'
-                pytest.fail(msg=msg)
+                pytest.fail(TestDataFilter.fail_message)
 
     @pytest.mark.less_coverage
-    def test_datafilter_fixed_uneven_meta(self, metadata_random_columns):
+    def test_datafilter_fixed_uneven_meta(
+        self, metadata_random_columns: Dict[str, List[str]]
+    ):
         expected, actual = self._test_dataframes(
-            MAX_ROWS, MAX_COLS, metadata_random_columns)
+            MAX_ROWS, MAX_COLS, metadata_random_columns
+        )
 
         if len(expected) is len(actual):
             assert True
             return
 
         for e in expected:
-            match = None
+            match: Optional[DataFrame] = None
             for a in actual:
                 if e.equals(a):
                     match = a.copy()
@@ -108,13 +121,14 @@ class TestDataFilter(object):
             if match is not None:
                 assert_frame_equal(e, match)
             else:
-                msg = 'Could not find a matching frame in the filtered list.'
-                pytest.fail(msg=msg)
+                pytest.fail(TestDataFilter.fail_message)
 
     @pytest.mark.slow
-    @pytest.mark.parametrize('rows', [r for r in range(1, MAX_ROWS + 1)])
-    @pytest.mark.parametrize('cols', [c for c in range(1, MAX_COLS + 1)])
-    def test_datafilter_uniform_metadata(self, rows, cols, metadata_columns):
+    @pytest.mark.parametrize("rows", [r for r in range(1, MAX_ROWS + 1)])
+    @pytest.mark.parametrize("cols", [c for c in range(1, MAX_COLS + 1)])
+    def test_datafilter_uniform_metadata(
+        self, rows: int, cols: int, metadata_columns: Dict[str, List[str]]
+    ):
         expected, actual = self._test_dataframes(rows, cols, metadata_columns)
 
         if len(expected) is len(actual):
@@ -122,7 +136,7 @@ class TestDataFilter(object):
             return
 
         for e in expected:
-            match = None
+            match: Optional[DataFrame] = None
             for a in actual:
                 if e.equals(a):
                     match = a.copy()
@@ -130,23 +144,22 @@ class TestDataFilter(object):
             if match is not None:
                 assert_frame_equal(e, match)
             else:
-                msg = 'Could not find a matching frame in the filtered list.'
-                pytest.fail(msg=msg)
+                pytest.fail(TestDataFilter.fail_message)
 
     @pytest.mark.slow
-    @pytest.mark.parametrize('rows', [r for r in range(1, MAX_ROWS + 1)])
-    @pytest.mark.parametrize('cols', [c for c in range(1, MAX_COLS + 1)])
+    @pytest.mark.parametrize("rows", [r for r in range(1, MAX_ROWS + 1)])
+    @pytest.mark.parametrize("cols", [c for c in range(1, MAX_COLS + 1)])
     def test_datafilter_uneven_metadata(
-            self, rows, cols, metadata_random_columns):
-        expected, actual = self._test_dataframes(
-            rows, cols, metadata_random_columns)
+        self, rows: int, cols: int, metadata_random_columns: Dict[str, List[str]]
+    ):
+        expected, actual = self._test_dataframes(rows, cols, metadata_random_columns)
 
         if len(expected) is len(actual):
             assert True
             return
 
         for e in expected:
-            match = None
+            match: Optional[DataFrame] = None
             for a in actual:
                 if e.equals(a):
                     match = a.copy()
@@ -154,5 +167,4 @@ class TestDataFilter(object):
             if match is not None:
                 assert_frame_equal(e, match)
             else:
-                msg = 'Could not find a matching frame in the filtered list.'
-                pytest.fail(msg=msg)
+                pytest.fail(TestDataFilter.fail_message)

@@ -4,12 +4,14 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
+from typing import Optional
+
 from sortedcontainers import SortedDict, SortedList
 
 
 def _multi_map(data: SortedList, meta: SortedList) -> SortedDict:
     """Pair all metadata files to each data file."""
-    result = SortedDict()
+    result: SortedDict = SortedDict()
 
     for dataname in data:
         result[dataname] = [metaname for metaname in meta]
@@ -17,11 +19,12 @@ def _multi_map(data: SortedList, meta: SortedList) -> SortedDict:
     return result
 
 
-def _name_map(data: SortedList, meta: SortedList) -> SortedDict:
+def _name_map(data: SortedList, meta: SortedList) -> Optional[SortedDict]:
     """Pair each data and metadata file by filename.
 
     Returns `None` is there was a data-metadata filename mismatch.
     """
+
     def _get_name(filepath: str) -> str:
         """Get the filename without the path or extension."""
         from os.path import split, splitext
@@ -30,11 +33,11 @@ def _name_map(data: SortedList, meta: SortedList) -> SortedDict:
         name, _ = splitext(full_name)
         return name
 
-    result = SortedDict()
-    target_length = len(data)
+    result: SortedDict = SortedDict()
+    target_length: int = len(data)
 
     for dataname in data:
-        name = _get_name(dataname)
+        name: str = _get_name(dataname)
         for metaname in meta:
             if name == _get_name(metaname):
                 result[dataname] = [metaname]

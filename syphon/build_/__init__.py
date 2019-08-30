@@ -6,6 +6,4 @@
 """
 from .build import build
 
-__all__ = [
-    'build',
-]
+__all__ = ["build"]

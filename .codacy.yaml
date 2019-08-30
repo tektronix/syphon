@@ -1,0 +1,4 @@
+exclude_paths:
+  - 'versioneer.py'
+  - 'syphon/_version.py'
+  - 'tests/**'

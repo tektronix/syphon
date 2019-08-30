@@ -5,13 +5,14 @@
 
 """
 from os.path import splitext
+from typing import List
 
 from sortedcontainers import SortedDict, SortedList
 
 from syphon.archive import file_map
 
 
-def test_filemap_loose_metadata(random_data, random_metadata):
+def test_filemap_loose_metadata(random_data: List[str], random_metadata: List[str]):
     data = random_data
     meta = random_metadata
 
@@ -19,21 +20,21 @@ def test_filemap_loose_metadata(random_data, random_metadata):
     for d in data:
         expected[d] = SortedList(meta)
 
-    actual = file_map(SortedList(data), SortedList(meta))
+    actual: SortedDict = file_map(SortedList(data), SortedList(meta))
 
     assert actual == expected
 
 
-def test_filemap_data_metadata_pairs(random_data):
+def test_filemap_data_metadata_pairs(random_data: List[str]):
     data = random_data
 
-    meta = list()
+    meta: List[str] = list()
     expected = SortedDict()
     for d in data:
-        new_file = '{}{}'.format(splitext(d)[0], '.meta')
+        new_file = "{}{}".format(splitext(d)[0], ".meta")
         meta.append(new_file)
         expected[d] = [new_file]
 
-    actual = file_map(SortedList(data), SortedList(meta))
+    actual: SortedDict = file_map(SortedList(data), SortedList(meta))
 
     assert actual == expected

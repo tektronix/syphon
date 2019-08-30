@@ -4,6 +4,8 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
+from sortedcontainers import SortedDict
+
 from syphon import Context
 
 
@@ -29,7 +31,7 @@ def test_context_overwrite_property_default():
 
 
 def test_context_schema_property_default():
-    assert Context().schema is None
+    assert Context().schema == SortedDict()
 
 
 def test_context_schema_file_property_default():
