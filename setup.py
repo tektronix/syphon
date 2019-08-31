@@ -29,6 +29,7 @@ CLASSIFIERS = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
     "Topic :: Scientific/Engineering",
 ]
 
@@ -54,7 +55,7 @@ setup(
     project_urls=PROJECT_URLS,
     packages=find_packages(),
     install_requires=INSTALL_REQUIRES,
-    python_requires=">=3,!=3.0.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.7.*,<4",
+    python_requires=">=3,!=3.0.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,<4",
     entry_points=ENTRY_POINTS,
     maintainer="Keithley Instruments, LLC. et al.",
     include_package_data=True,
