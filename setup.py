@@ -37,7 +37,7 @@ PROJECT_URLS = {
     "Tracker": "https://github.com/tektronix/syphon/issues",
 }
 
-INSTALL_REQUIRES = ["pandas<=0.23.*", "sortedcontainers<=1.6.*"]
+INSTALL_REQUIRES = ["pandas<0.26", "sortedcontainers~=2.1"]
 
 ENTRY_POINTS = {"console_scripts": ["syphon=syphon.__main__:bootstrap"]}
 

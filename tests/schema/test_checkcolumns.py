@@ -4,9 +4,10 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
+from io import StringIO
+
 import pytest
 from pandas import DataFrame, read_csv
-from pandas.compat import StringIO
 from sortedcontainers import SortedDict
 
 from syphon.schema import check_columns

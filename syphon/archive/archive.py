@@ -20,7 +20,7 @@ def _merge_metafiles(
     filemap: SortedDict, datafile: str, data_rows: int, lockman: LockManager
 ) -> Optional[DataFrame]:
     # merge all metadata files into a single DataFrame
-    meta_frame = None
+    meta_frame = DataFrame()
     for metafile in filemap[datafile]:
         try:
             new_frame = DataFrame(read_csv(metafile, dtype=str))
@@ -38,19 +38,13 @@ def _merge_metafiles(
                 )
 
             if len(new_frame[header]) is data_rows:
-                if meta_frame is None:
-                    meta_frame = new_frame[header]
-                else:
-                    meta_frame = concat([meta_frame, new_frame[header]], axis=1)
+                meta_frame = concat([meta_frame, new_frame[header]], axis=1)
             else:
                 meta_value = new_frame[header].iloc[0]
                 series = Series([meta_value] * data_rows, name=header)
-                if meta_frame is None:
-                    meta_frame = DataFrame(series)
-                else:
-                    meta_frame = concat([meta_frame, series], axis=1)
+                meta_frame = concat([meta_frame, series], axis=1)
 
-    return meta_frame
+    return None if meta_frame.empty else meta_frame
 
 
 def _write_filtered_data(

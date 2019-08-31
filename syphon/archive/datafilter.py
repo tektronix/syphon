@@ -18,7 +18,7 @@ def _datafilter(
 
     this_schema: SortedDict = schema.copy()
     try:
-        _, header = this_schema.popitem(last=False)
+        _, header = this_schema.popitem(index=0)
     except KeyError:
         result.append(datapool)
         return result

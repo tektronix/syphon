@@ -35,6 +35,44 @@ def archive_params(request: FixtureRequest) -> Tuple[str, SortedDict]:
     return request.param
 
 
+@pytest.fixture(
+    params=[
+        (
+            "iris-part-1-of-6",
+            "iris-part-1-of-6-combined.csv",
+            SortedDict({"0": "Species", "1": "PetalColor"}),
+        ),
+        (
+            "iris-part-2-of-6",
+            "iris-part-2-of-6-combined.csv",
+            SortedDict({"0": "Species", "1": "PetalColor"}),
+        ),
+        (
+            "iris-part-3-of-6",
+            "iris-part-3-of-6-combined.csv",
+            SortedDict({"0": "Species", "1": "PetalColor"}),
+        ),
+        (
+            "iris-part-4-of-6",
+            "iris-part-4-of-6-combined.csv",
+            SortedDict({"0": "Species", "1": "PetalColor"}),
+        ),
+        (
+            "iris-part-5-of-6",
+            "iris-part-5-of-6-combined.csv",
+            SortedDict({"0": "Species", "1": "PetalColor"}),
+        ),
+        (
+            "iris-part-6-of-6",
+            "iris-part-6-of-6-combined.csv",
+            SortedDict({"0": "Species", "1": "PetalColor"}),
+        ),
+    ]
+)
+def archive_meta_params(request: FixtureRequest) -> Tuple[str, str]:
+    return request.param
+
+
 def _get_expected_paths(
     path: str,
     schema: SortedDict,
@@ -45,9 +83,8 @@ def _get_expected_paths(
     path_list = data.copy()
 
     this_schema = schema.copy()
-    header = None
     try:
-        _, header = this_schema.popitem(last=False)
+        _, header = this_schema.popitem(index=0)
     except KeyError:
         path_list.add(os.path.join(path, filename))
         return path_list
@@ -66,7 +103,9 @@ def _get_expected_paths(
     return path_list
 
 
-def test_archive(archive_params, archive_dir: LocalPath, overwrite: bool):
+def test_archive(
+    archive_params: Tuple[str, SortedDict], archive_dir: LocalPath, overwrite: bool
+):
     filename, schema = archive_params
 
     context = Context()
@@ -112,7 +151,61 @@ def test_archive(archive_params, archive_dir: LocalPath, overwrite: bool):
     assert_frame_equal(expected_df, actual_frame)
 
 
-def test_archive_no_schema(archive_params, archive_dir: LocalPath, overwrite: bool):
+def test_archive_metadata(
+    archive_meta_params: Tuple[str, str, str], archive_dir: LocalPath, overwrite: bool
+):
+    filename, expectedfilename, schema = archive_meta_params
+
+    context = Context()
+    context.archive = str(archive_dir)
+    context.data = os.path.join(get_data_path(), filename) + ".csv"
+    context.meta = os.path.join(get_data_path(), filename) + ".meta"
+    context.overwrite = overwrite
+    context.schema = schema
+
+    init(context)
+
+    expected_df = DataFrame(
+        # Read our dedicated *-combined.csv file instead of the import target.
+        read_csv(os.path.join(get_data_path(), expectedfilename), dtype=str)
+    )
+    expected_df.sort_values(list(expected_df.columns), inplace=True)
+    expected_df.reset_index(drop=True, inplace=True)
+
+    expected_paths: SortedList = _get_expected_paths(
+        context.archive, schema, expected_df, filename + ".csv"
+    )
+
+    if context.overwrite:
+        for e in expected_paths:
+            os.makedirs(os.path.dirname(e))
+            with open(e, mode="w") as fd:
+                fd.write("content")
+
+    archive(context)
+    assert not os.path.exists(os.path.join(get_data_path(), "#lock"))
+
+    actual_df = DataFrame()
+    actual_paths = SortedList()
+    for root, _, files in os.walk(context.archive):
+        for f in files:
+            if ".csv" in f:
+                filepath: str = os.path.join(root, f)
+                actual_paths.add(filepath)
+                actual_df = concat(
+                    [actual_df, DataFrame(read_csv(filepath, dtype=str))]
+                )
+
+    actual_df.sort_values(list(actual_df.columns), inplace=True)
+    actual_df.reset_index(drop=True, inplace=True)
+
+    assert expected_paths == actual_paths
+    assert_frame_equal(expected_df, actual_df)
+
+
+def test_archive_no_schema(
+    archive_params: Tuple[str, SortedDict], archive_dir: LocalPath, overwrite: bool
+):
     filename, _ = archive_params
 
     context = Context()
@@ -155,7 +248,9 @@ def test_archive_no_schema(archive_params, archive_dir: LocalPath, overwrite: bo
     assert_frame_equal(expected_df, actual_frame)
 
 
-def test_archive_fileexistserror(archive_params, archive_dir: LocalPath):
+def test_archive_fileexistserror(
+    archive_params: Tuple[str, SortedDict], archive_dir: LocalPath
+):
     filename, schema = archive_params
 
     context = Context()

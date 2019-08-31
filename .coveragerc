@@ -1,7 +1,6 @@
 [run]
 source = syphon
 omit =
-    syphon/tests/*
     syphon/_version.py
 
 [report]
