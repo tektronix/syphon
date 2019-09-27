@@ -2,7 +2,7 @@
 Please review the [Contribution Guidelines](https://github.com/tektronix/syphon/blob/master/CONTRIBUTING.md) before submitting.
 
 - [ ] Pulling from a topic/feature/bugfix branch (right side).
-- [ ] Pulling against the `canary` branch (left side).
+- [ ] Pulling against the `tektronix/syphon/canary` branch (left side).
 - [ ] Code passes linting.
 - [ ] Code passes unit tests.
 - [ ] Code coverage is the same or better.
