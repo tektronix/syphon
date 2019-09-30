@@ -1,6 +1,49 @@
 [build-system]
 # Minimum requirements for the build system to execute.
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
+build-backend = "setuptools.build_meta"
 
 [tool.black]
 exclude = 'syphon\/_version.py'
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = format-py3, lint-py3, py36, py37
+isolated_build = True
+
+[testenv]
+deps =
+    pipenv
+setenv =
+    PIPENV_VERBOSITY = -1
+commands =
+    pipenv install --skip-lock --dev
+    pytest --cov=syphon {posargs}
+
+[testenv:format-py3]
+basepython = python3.6
+deps =
+    {[testenv]deps}
+setenv =
+    {[testenv]setenv}
+commands =
+    pipenv install --skip-lock --dev
+    isort --version-number
+    isort --check-only
+    black --version
+    black --check syphon tests setup.py
+
+[testenv:lint-py3]
+basepython = python3.6
+deps =
+    {[testenv]deps}
+setenv =
+    {[testenv]setenv}
+commands =
+    pipenv install --skip-lock --dev
+    flake8 --version
+    flake8
+    mypy --version
+    mypy
+"""

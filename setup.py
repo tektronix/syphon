@@ -10,9 +10,12 @@ import os
 
 from setuptools import find_packages, setup
 
-import versioneer
-
 HERE = os.path.abspath(os.path.dirname(__file__))
+
+# Manually import versioneer.
+versioneer = {}
+with open(os.path.join(HERE, "versioneer.py")) as fp:
+    exec(fp.read(), versioneer)
 
 # Import README to use as the long-description
 with io.open(os.path.join(HERE, "README.md"), encoding="utf-8") as f:
@@ -46,7 +49,7 @@ ENTRY_POINTS = {"console_scripts": ["syphon=syphon.__main__:main"]}
 
 setup(
     name="syphon",
-    version=versioneer.get_version(),
+    version=versioneer["get_version"](),
     description="A CSV data storage and management engine.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
@@ -61,5 +64,5 @@ setup(
     entry_points=ENTRY_POINTS,
     maintainer="Keithley Instruments, LLC. et al.",
     include_package_data=True,
-    cmdclass=versioneer.get_cmdclass(),
+    cmdclass=versioneer["get_cmdclass"](),
 )
