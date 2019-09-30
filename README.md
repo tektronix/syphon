@@ -2,7 +2,11 @@
 
 > A CSV data storage and management engine.
 
-[![build](https://api.travis-ci.com/tektronix/syphon.svg?branch=master)](https://travis-ci.com/tektronix/syphon) [![codecov](https://codecov.io/gh/tektronix/syphon/branch/master/graph/badge.svg)](https://codecov.io/gh/tektronix/syphon) [![CodeFactor](https://www.codefactor.io/repository/github/tektronix/syphon/badge)](https://www.codefactor.io/repository/github/tektronix/syphon) [![PyPI](https://img.shields.io/pypi/v/syphon.svg)](https://pypi.org/project/syphon/) [![PyPI - License](https://img.shields.io/pypi/l/syphon.svg)](https://pypi.org/project/syphon/)
+[![build](https://api.travis-ci.com/tektronix/syphon.svg?branch=master)](https://travis-ci.com/tektronix/syphon) [![codecov](https://codecov.io/gh/tektronix/syphon/branch/master/graph/badge.svg)](https://codecov.io/gh/tektronix/syphon) [![CodeFactor](https://www.codefactor.io/repository/github/tektronix/syphon/badge)](https://www.codefactor.io/repository/github/tektronix/syphon) [![PyPI](https://img.shields.io/pypi/v/syphon)](https://pypi.org/project/syphon/) [![PyPI - License](https://img.shields.io/pypi/l/syphon.svg)](https://pypi.org/project/syphon/)
+
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
+[![Keithley](https://tektronix.github.io/media/Keithley-opensource_badge-flat.svg)](https://github.com/tektronix)
 
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
