@@ -1,0 +1,35 @@
+name: Publish pre-release package
+
+on:
+  push:
+    branches:
+    - topic/github-actions
+
+jobs:
+  build-publish:
+    name: Build and publish a pre-release package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@topic/github-actions
+    - name: Set up Python3.6
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+    - name: Install pep517
+      run: >-
+        python -m
+        pip install
+        --user
+        pep517
+    - name: Build wheel and source tarball
+      run: python -m
+        pep517.build
+        --source
+        --binary
+        --out-dir dist/
+        .
+    - name: Publish distribution to TestPyPI
+      uses: pypa/gh-action-pypi-publish@topic/github-actions
+      with:
+        password: ${{ secrets.test_pypi_password }}
+        repository_url: https://test.pypi.org/legacy/
