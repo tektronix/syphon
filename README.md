@@ -1,6 +1,6 @@
 # Syphon
 
-> A data storage and management engine.
+> A CSV data storage and management engine.
 
 [![build](https://api.travis-ci.com/tektronix/syphon.svg?branch=master)](https://travis-ci.com/tektronix/syphon) [![codecov](https://codecov.io/gh/tektronix/syphon/branch/master/graph/badge.svg)](https://codecov.io/gh/tektronix/syphon) [![CodeFactor](https://www.codefactor.io/repository/github/tektronix/syphon/badge)](https://www.codefactor.io/repository/github/tektronix/syphon) [![PyPI](https://img.shields.io/pypi/v/syphon.svg)](https://pypi.org/project/syphon/) [![PyPI - License](https://img.shields.io/pypi/l/syphon.svg)](https://pypi.org/project/syphon/)
 
