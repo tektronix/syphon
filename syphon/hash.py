@@ -146,7 +146,7 @@ class HashEntry(object):
         """Create a HashEntry from a given entry string.
 
         Args:
-            entry: The string parse into a HashEntry.
+            entry: The string to be parsed into a HashEntry.
             line_split: A callable object that returns a SplitResult from a given line
                 or None if the line is in an unexpected format. Returning None raises
                 a MalformedLineError.
