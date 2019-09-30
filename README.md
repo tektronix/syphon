@@ -14,24 +14,34 @@ Syphon is a Python package that provides a simple interface to perform common ta
 ## Features
 
 * Archive file(s) into a data storage directory.
-* Automatic archive organization based on the value of a data column (if a `.schema.json` file is present).
-* Combine new data with additional "meta" data before archival.
+  * Automatic archive organization based on the value of a data column (if a `.schema.json` file is present).
+  * Quickly append new archive files onto a previously built data file.
 * Build a single data file from the contents of the archive directory.
-* Initialize new archive directories by creating a new `.schema.json` file.
+* Initialize new archive directories by creating a storage schema (`.schema.json`) file.
 
 
 ## Basic Usage
 
-Archive a single file or multiple files with a wildcard pattern:
+Initialize an archive directory:
 ```
-python -m syphon archive ./storage/folder -d /path/to/data.csv
+python -m syphon init ./storage/folder some_column_header "another column header"
+```
 
-python -m syphon archive ./storage/folder -d /path/to/*.csv
+Archive one or more files with direct paths, wildcard patterns, or a combination of both:
+```
+python -m syphon archive /path/to/data.csv ./storage/folder
+
+python -m syphon archive /path/to/data.csv /path/to/more/*.csv ./storage/folder
 ```
 
 Build a single data file from an archive directory:
 ```
-python -m syphon build /path/to/storage/folder all_data.csv
+python -m syphon build ./storage/folder all_data.csv
+```
+
+Archive additional data and append it to a previously built data file:
+```
+python -m syphon archive /path/to/still/more/*.csv ./storage/folder -i all_data.csv
 ```
 
 General command line documentation and subcommand documentation can be accessed via
