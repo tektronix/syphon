@@ -1,11 +1,11 @@
-"""syphon.tests.conftest.py
+"""tests.conftest.py
 
    Copyright Keithley Instruments, LLC.
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
 import random
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import pytest
 from _pytest.config import Config
@@ -29,25 +29,19 @@ def pytest_addoption(parser: Parser):
 
 
 def pytest_configure(config: Config):
-    from os import environ
+    import os
 
     if config.option.help:
         return
 
-    random.seed(a=int(environ["PYTHONHASHSEED"]))
+    random.seed(a=int(os.environ["PYTHONHASHSEED"]))
 
 
 def pytest_collection_modifyitems(config: Config, items: List[Item]):
-    if config.getoption("--slow"):
-        skip_less = pytest.mark.skip(reason="Covered by slow tests.")
+    if not config.getoption("--slow"):
         for item in items:
-            if "less_coverage" in item.keywords:
-                item.add_marker(skip_less)
-        return
-    slow_skip = pytest.mark.skip(reason="Need --slow flag to run.")
-    for item in items:
-        if "slow" in item.keywords:
-            item.add_marker(slow_skip)
+            if "slow" in item.keywords:
+                item.add_marker(pytest.mark.skip(reason="Need --slow flag to run."))
 
 
 @pytest.fixture
@@ -61,8 +55,18 @@ def cache_file(tmpdir: LocalPath) -> LocalPath:
 
 
 @pytest.fixture
+def hash_file(tmpdir: LocalPath) -> LocalPath:
+    return tmpdir.join("hash.sums")
+
+
+@pytest.fixture
 def import_dir(tmpdir: LocalPath) -> LocalPath:
     return tmpdir.mkdir("import")
+
+
+@pytest.fixture(params=[True, False])
+def schema_file(request: FixtureRequest, archive_dir: LocalPath) -> Optional[LocalPath]:
+    return None if request.param else archive_dir.dirpath("schemafile")
 
 
 @pytest.fixture(params=[x for x in range(0, MAX_METADATA_COLS)])
@@ -130,5 +134,20 @@ def random_metadata(request: FixtureRequest, import_dir: LocalPath) -> List[str]
 
 
 @pytest.fixture(params=[True, False])
+def incremental(request: FixtureRequest) -> bool:
+    return request.param
+
+
+@pytest.fixture(params=[True, False])
 def overwrite(request: FixtureRequest) -> bool:
+    return request.param
+
+
+@pytest.fixture(params=[True, False])
+def post_hash(request: FixtureRequest) -> bool:
+    return request.param
+
+
+@pytest.fixture(params=[True, False])
+def verbose(request: FixtureRequest) -> bool:
     return request.param

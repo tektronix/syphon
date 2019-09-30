@@ -25,4 +25,4 @@ def check_columns(schema: SortedDict, data: DataFrame):
     for key in schema:
         header: str = schema[key]
         if header not in columns:
-            raise IndexError('Cannot find column named "{}"'.format(header))
+            raise IndexError('Cannot find schema-required column "{}"'.format(header))

@@ -1,4 +1,4 @@
-"""syphon.tests.schema.test_resolvepath.py
+"""tests.schema.test_resolvepath.py
 
    Copyright Keithley Instruments, LLC.
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
@@ -32,15 +32,14 @@ class TestResolvePath(object):
     @staticmethod
     def data_gen_invalid(row: int, col: int) -> Union[float, str]:
         # Invalid data has:
-        # 1) multiple data values per column (excluding NaNs).
-        # 2) NaNs between data values.
+        # 1) multiple data values per column (excluding NaNs and empty strings).
         # fmt: off
         valmap_invalid: List[List[Union[float, str]]] = [
             ["val", "val", "xxx", "val"],
-            ["val",   nan, "val", "val"],  # noqa: E241
-            ["val",   nan, "val",   nan],  # noqa: E241
+            ["val",    "", "val", "val"],  # noqa: E241
+            [   "", "val", "val",   nan],  # noqa: E201, E241
             [  nan,   nan, "val", "xxx"],  # noqa: E201, E241
-            ["xxx",   nan, "val",   nan],  # noqa: E241
+            ["xxx",   nan,    "",   nan],  # noqa: E241
         ]
         # fmt: on
 
@@ -54,15 +53,14 @@ class TestResolvePath(object):
     @staticmethod
     def data_gen(row: int, col: int) -> Union[float, str]:
         # Valid data has:
-        # 1) the same data value for each column.
-        # 2) contiguous data (no NaNs between data values).
+        # 1) the same data value for each column (excluding NaNs and empty strings).
         # fmt: off
         valmap: List[List[Union[float, str]]] = [
             ["val", "val", "val", "val"],
-            ["val",   nan, "val", "val"],  # noqa: E241
-            ["val",   nan, "val",   nan],  # noqa: E241
-            [  nan,   nan, "val",   nan],  # noqa: E201, E241
-            [  nan,   nan, "val",   nan],  # noqa: E201, E241
+            ["val",    "", "val", "val"],  # noqa: E241
+            [   "", "val", "val",   nan],  # noqa: E201, E241
+            [  nan,   nan, "val", "val"],  # noqa: E201, E241
+            ["val",   nan,    "",   nan],  # noqa: E241
         ]
         # fmt: on
 

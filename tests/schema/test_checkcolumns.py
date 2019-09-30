@@ -1,4 +1,4 @@
-"""syphon.tests.schema.test_checkcolumns.py
+"""tests.schema.test_checkcolumns.py
 
    Copyright Keithley Instruments, LLC.
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)

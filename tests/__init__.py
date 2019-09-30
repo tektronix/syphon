@@ -1,4 +1,4 @@
-"""syphon.tests.__init__.py
+"""tests.__init__.py
 
    Copyright Keithley Instruments, LLC.
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
@@ -6,7 +6,7 @@
 """
 from random import choice
 from string import ascii_letters, digits
-from typing import Any, Callable, Optional
+from typing import Any, Callable, List, Optional
 
 from pandas import DataFrame
 
@@ -89,3 +89,13 @@ def rand_string(size: int = 6) -> str:
         str: Random string.
     """
     return "".join(choice(ascii_letters + digits) for _ in range(size))
+
+
+def randomize(*args: Any) -> List[Any]:
+    """Randomize the order of the given arguments."""
+    arguments = list(args)
+    result = []
+    while len(arguments) > 0:
+        index: int = choice([i for i in range(0, len(arguments))])
+        result.append(arguments.pop(index))
+    return result

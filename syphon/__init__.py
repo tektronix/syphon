@@ -5,14 +5,15 @@
    Licensed under MIT (https://github.com/tektronix/syphon/blob/master/LICENSE)
 
 """
-from ._cmdparser import get_parser
-from ._version import get_versions
-from .context import Context
+from . import _version
+from .core.archive.archive import archive
+from .core.build import build
+from .core.check import check
+from .core.init import init
 
 __url__ = "https://github.com/tektronix/syphon"
 
-__all__ = ["get_parser", "Context", "__url__", "__version__"]
+__version__ = _version.get_versions()["version"]
+del _version
 
-
-__version__ = get_versions()["version"]
-del get_versions
+__all__ = ["archive", "build", "check", "init", "__url__", "__version__"]

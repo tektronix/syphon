@@ -1,6 +1,7 @@
 # Data & Metadata
 *.csv
 *.meta
+\#lock
 !**/data/*.csv
 !**/data/*.meta
 
