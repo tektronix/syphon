@@ -2,4 +2,3 @@ include LICENSE
 include README.md
 include versioneer.py
 include syphon/_version.py
-prune syphon/tests

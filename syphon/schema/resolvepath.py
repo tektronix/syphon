@@ -10,15 +10,14 @@ from sortedcontainers import SortedDict
 
 def _normalize(directory: str) -> str:
     """Make lowercase and replace spaces with underscores."""
-    directory = directory.lower()
-    directory = directory.replace(' ', '_')
-    if directory[-1] == '.':
-        directory = directory[:-1]
-    return directory
+    result: str = directory.lower()
+    result = result.replace(" ", "_")
+    if result[-1] == ".":
+        result = result[:-1]
+    return result
 
 
-def resolve_path(
-        archive: str, schema: SortedDict, datapool: DataFrame) -> str:
+def resolve_path(archive: str, schema: SortedDict, datapool: DataFrame) -> str:
     """Use the given schema and dataset to make a path.
 
     The base path is `archive`. Additional directories are appended
@@ -32,6 +31,7 @@ def resolve_path(
         archive (str): Directory where data is stored.
         schema (SortedDict): Archive directory storage schema.
         datapool (DataFrame): Data to use during path resolution.
+            For best results, ensure all dtypes are strings.
 
     Return:
         str: The resolved path.
@@ -43,25 +43,30 @@ def resolve_path(
             entry contains more than one value.
     """
     from os.path import join
+    from typing import Any, List
 
     from numpy import nan
 
-    result = archive
+    result: str = archive
 
     for key in schema:
-        header = schema[key]
+        header: str = schema[key]
         if header not in list(datapool.columns):
             raise IndexError(
-                'Schema value {} is not a column in the current DataFrame.'
-                .format(header))
-        row_values = list(datapool.get(header).drop_duplicates().values)
+                "Schema value {} is not a column in the current DataFrame.".format(
+                    header
+                )
+            )
+        row_values: List[Any] = list(datapool.get(header).drop_duplicates().values)
         if nan in row_values:
             row_values.remove(nan)
+        if "" in row_values:
+            row_values.remove("")
         if len(row_values) > 1:
             raise ValueError(
-                'More than one value exists under the {} column.'
-                .format(header))
-        value = row_values.pop()
-        result = join(result, _normalize(value))
+                "More than one value exists under the {} column.".format(header)
+            )
+        value: Any = row_values.pop()
+        result = join(result, _normalize(str(value)))
 
     return result

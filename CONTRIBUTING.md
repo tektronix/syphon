@@ -19,10 +19,20 @@ To retrieve the Syphon source code, clone the git repository with:
 $ git clone https://github.com/tektronix/syphon
 ````
 
-This will clone the complete source to your local machine. Navigate to the project folder and install all dependencies:
+This will clone the complete source to your local machine.
+
+Syphon uses [**pipx**](https://pipxproject.github.io/pipx/) to create and maintain an isolated installation environment:
 
 ````
-$ pip install -e .[dev,test]
+$ python3.6 -m pip install --user pipx
+$ python3.6 -m pipx ensurepath
+````
+
+[**pipenv**](https://docs.pipenv.org/en/latest/) is used for its Pipfile support. To install it and all dependencies, navigate to the project directory and run:
+
+````
+$ pipx install pipenv
+$ pipenv install --dev
 ````
 
 This this will install everything required to package and test the project.

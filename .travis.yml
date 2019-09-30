@@ -1,8 +1,8 @@
 language: python
 
 python:
-  - 3.5
   - 3.6
+  - 3.7
 
 branches:
   # only master, canary, and tagged commits
@@ -19,7 +19,7 @@ install:
   - pip install tox-travis
 
 script:
-  - tox -- --slow --cov-report=xml
+  - tox -v -- --verbose --cov-report=xml --slow
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -c

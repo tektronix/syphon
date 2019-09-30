@@ -1,8 +1,16 @@
 # Data & Metadata
 *.csv
 *.meta
+\#lock
 !**/data/*.csv
 !**/data/*.meta
+
+# Python format and linter configurations are stored in dedicated files.
+# Everything else is up to the user.
+.vscode/settings.json
+
+# We target multiple Python versions, so ignore the pip lock file.
+Pipfile.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -94,3 +102,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Mypy
+.mypy_cache/

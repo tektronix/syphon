@@ -1,0 +1,126 @@
+Index,SepalLength,SepalWidth,PetalLength,PetalWidth,Species,PetalColor
+0,5.1,3.5,1.4,0.2,Iris setosa,violet
+1,4.9,3,1.4,0.2,Iris setosa,violet
+2,4.7,3.2,1.3,0.2,Iris setosa,violet
+3,4.6,3.1,1.5,0.2,Iris setosa,violet
+4,5,3.6,1.4,0.2,Iris setosa,violet
+5,5.4,3.9,1.7,0.4,Iris setosa,violet
+6,4.6,3.4,1.4,0.3,Iris setosa,violet
+7,5,3.4,1.5,0.2,Iris setosa,violet
+8,4.4,2.9,1.4,0.2,Iris setosa,violet
+9,4.9,3.1,1.5,0.1,Iris setosa,violet
+10,5.4,3.7,1.5,0.2,Iris setosa,violet
+11,4.8,3.4,1.6,0.2,Iris setosa,violet
+12,4.8,3,1.4,0.1,Iris setosa,violet
+13,4.3,3,1.1,0.1,Iris setosa,violet
+14,5.8,4,1.2,0.2,Iris setosa,violet
+15,5.7,4.4,1.5,0.4,Iris setosa,violet
+16,5.4,3.9,1.3,0.4,Iris setosa,violet
+17,5.1,3.5,1.4,0.3,Iris setosa,violet
+18,5.7,3.8,1.7,0.3,Iris setosa,violet
+19,5.1,3.8,1.5,0.3,Iris setosa,violet
+20,5.4,3.4,1.7,0.2,Iris setosa,violet
+21,5.1,3.7,1.5,0.4,Iris setosa,violet
+22,4.6,3.6,1,0.2,Iris setosa,violet
+23,5.1,3.3,1.7,0.5,Iris setosa,violet
+24,4.8,3.4,1.9,0.2,Iris setosa,violet
+25,5,3,1.6,0.2,Iris setosa,blue
+26,5,3.4,1.6,0.4,Iris setosa,blue
+27,5.2,3.5,1.5,0.2,Iris setosa,blue
+28,5.2,3.4,1.4,0.2,Iris setosa,blue
+29,4.7,3.2,1.6,0.2,Iris setosa,blue
+30,4.8,3.1,1.6,0.2,Iris setosa,blue
+31,5.4,3.4,1.5,0.4,Iris setosa,blue
+32,5.2,4.1,1.5,0.1,Iris setosa,blue
+33,5.5,4.2,1.4,0.2,Iris setosa,blue
+34,4.9,3.1,1.5,0.1,Iris setosa,blue
+35,5,3.2,1.2,0.2,Iris setosa,blue
+36,5.5,3.5,1.3,0.2,Iris setosa,blue
+37,4.9,3.1,1.5,0.1,Iris setosa,blue
+38,4.4,3,1.3,0.2,Iris setosa,blue
+39,5.1,3.4,1.5,0.2,Iris setosa,blue
+40,5,3.5,1.3,0.3,Iris setosa,blue
+41,4.5,2.3,1.3,0.3,Iris setosa,blue
+42,4.4,3.2,1.3,0.2,Iris setosa,blue
+43,5,3.5,1.6,0.6,Iris setosa,blue
+44,5.1,3.8,1.9,0.4,Iris setosa,blue
+45,4.8,3,1.4,0.3,Iris setosa,blue
+46,5.1,3.8,1.6,0.2,Iris setosa,blue
+47,4.6,3.2,1.4,0.2,Iris setosa,blue
+48,5.3,3.7,1.5,0.2,Iris setosa,blue
+49,5,3.3,1.4,0.2,Iris setosa,blue
+50,7,3.2,4.7,1.4,Iris versicolor,violet
+51,6.4,3.2,4.5,1.5,Iris versicolor,violet
+52,6.9,3.1,4.9,1.5,Iris versicolor,violet
+53,5.5,2.3,4,1.3,Iris versicolor,violet
+54,6.5,2.8,4.6,1.5,Iris versicolor,violet
+55,5.7,2.8,4.5,1.3,Iris versicolor,violet
+56,6.3,3.3,4.7,1.6,Iris versicolor,violet
+57,4.9,2.4,3.3,1,Iris versicolor,violet
+58,6.6,2.9,4.6,1.3,Iris versicolor,violet
+59,5.2,2.7,3.9,1.4,Iris versicolor,violet
+60,5,2,3.5,1,Iris versicolor,violet
+61,5.9,3,4.2,1.5,Iris versicolor,violet
+62,6,2.2,4,1,Iris versicolor,violet
+63,6.1,2.9,4.7,1.4,Iris versicolor,violet
+64,5.6,2.9,3.6,1.3,Iris versicolor,violet
+65,6.7,3.1,4.4,1.4,Iris versicolor,violet
+66,5.6,3,4.5,1.5,Iris versicolor,violet
+67,5.8,2.7,4.1,1,Iris versicolor,violet
+68,6.2,2.2,4.5,1.5,Iris versicolor,violet
+69,5.6,2.5,3.9,1.1,Iris versicolor,violet
+70,5.9,3.2,4.8,1.8,Iris versicolor,violet
+71,6.1,2.8,4,1.3,Iris versicolor,violet
+72,6.3,2.5,4.9,1.5,Iris versicolor,violet
+73,6.1,2.8,4.7,1.2,Iris versicolor,violet
+74,6.4,2.9,4.3,1.3,Iris versicolor,violet
+75,6.6,3,4.4,1.4,Iris versicolor,deep blue
+76,6.8,2.8,4.8,1.4,Iris versicolor,deep blue
+77,6.7,3,5,1.7,Iris versicolor,deep blue
+78,6,2.9,4.5,1.5,Iris versicolor,deep blue
+79,5.7,2.6,3.5,1,Iris versicolor,deep blue
+80,5.5,2.4,3.8,1.1,Iris versicolor,deep blue
+81,5.5,2.4,3.7,1,Iris versicolor,deep blue
+82,5.8,2.7,3.9,1.2,Iris versicolor,deep blue
+83,6,2.7,5.1,1.6,Iris versicolor,deep blue
+84,5.4,3,4.5,1.5,Iris versicolor,deep blue
+85,6,3.4,4.5,1.6,Iris versicolor,deep blue
+86,6.7,3.1,4.7,1.5,Iris versicolor,deep blue
+87,6.3,2.3,4.4,1.3,Iris versicolor,deep blue
+88,5.6,3,4.1,1.3,Iris versicolor,deep blue
+89,5.5,2.5,4,1.3,Iris versicolor,deep blue
+90,5.5,2.6,4.4,1.2,Iris versicolor,deep blue
+91,6.1,3,4.6,1.4,Iris versicolor,deep blue
+92,5.8,2.6,4,1.2,Iris versicolor,deep blue
+93,5,2.3,3.3,1,Iris versicolor,deep blue
+94,5.6,2.7,4.2,1.3,Iris versicolor,deep blue
+95,5.7,3,4.2,1.2,Iris versicolor,deep blue
+96,5.7,2.9,4.2,1.3,Iris versicolor,deep blue
+97,6.2,2.9,4.3,1.3,Iris versicolor,deep blue
+98,5.1,2.5,3,1.1,Iris versicolor,deep blue
+99,5.7,2.8,4.1,1.3,Iris versicolor,deep blue
+100,6.3,3.3,6,2.5,Iris virginica,white
+101,5.8,2.7,5.1,1.9,Iris virginica,white
+102,7.1,3,5.9,2.1,Iris virginica,white
+103,6.3,2.9,5.6,1.8,Iris virginica,white
+104,6.5,3,5.8,2.2,Iris virginica,white
+105,7.6,3,6.6,2.1,Iris virginica,white
+106,4.9,2.5,4.5,1.7,Iris virginica,white
+107,7.3,2.9,6.3,1.8,Iris virginica,white
+108,6.7,2.5,5.8,1.8,Iris virginica,white
+109,7.2,3.6,6.1,2.5,Iris virginica,white
+110,6.5,3.2,5.1,2,Iris virginica,white
+111,6.4,2.7,5.3,1.9,Iris virginica,white
+112,6.8,3,5.5,2.1,Iris virginica,white
+113,5.7,2.5,5,2,Iris virginica,white
+114,5.8,2.8,5.1,2.4,Iris virginica,white
+115,6.4,3.2,5.3,2.3,Iris virginica,white
+116,6.5,3,5.5,1.8,Iris virginica,white
+117,7.7,3.8,6.7,2.2,Iris virginica,white
+118,7.7,2.6,6.9,2.3,Iris virginica,white
+119,6,2.2,5,1.5,Iris virginica,white
+120,6.9,3.2,5.7,2.3,Iris virginica,white
+121,5.6,2.8,4.9,2,Iris virginica,white
+122,7.7,2.8,6.7,2,Iris virginica,white
+123,6.3,2.7,4.9,1.8,Iris virginica,white
+124,6.7,3.3,5.7,2.1,Iris virginica,white

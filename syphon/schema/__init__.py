@@ -9,9 +9,6 @@ from .load import load
 from .resolvepath import resolve_path
 from .save import save
 
-__all__ = [
-    'check_columns',
-    'load',
-    'resolve_path',
-    'save',
-]
+DEFAULT_FILE = ".schema.json"
+
+__all__ = ["check_columns", "DEFAULT_FILE", "load", "resolve_path", "save"]
