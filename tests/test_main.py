@@ -181,6 +181,19 @@ class TestMain(object):
 
 class TestMainHelp(object):
     @staticmethod
+    def _resolve_python_path() -> str:
+        path = ""
+        if "PYTHONPATH" in os.environ:
+            path = os.environ["PYTHONPATH"]
+        elif "TOX_ENV_DIR" in os.environ:
+            path = os.environ["TOX_ENV_DIR"]
+
+        if len(path) > 0:
+            path = os.path.join(path, "Scripts" if sys.platform == "win32" else "bin")
+
+        return os.path.join(path, "python.exe" if sys.platform == "win32" else "python")
+
+    @staticmethod
     def test_argument_prints_full_help():
         # syphon.__main__:main is the entry point, so make sure it inherits sys.argv
         # (subprocess.Popen is used so main doesn't use our sys.argv).
@@ -188,11 +201,7 @@ class TestMainHelp(object):
 
         proc = subprocess.Popen(
             [
-                os.path.join(
-                    os.environ["TOX_ENV_DIR"],
-                    "Scripts" if sys.platform == "win32" else "bin",
-                    "python.exe" if sys.platform == "win32" else "python",
-                ),
+                TestMainHelp._resolve_python_path(),
                 "-m",
                 "syphon",
                 "--help",
@@ -216,11 +225,7 @@ class TestMainHelp(object):
 
         proc = subprocess.Popen(
             [
-                os.path.join(
-                    os.environ["TOX_ENV_DIR"],
-                    "Scripts" if sys.platform == "win32" else "bin",
-                    "python.exe" if sys.platform == "win32" else "python",
-                ),
+                TestMainHelp._resolve_python_path(),
                 "-m",
                 "syphon",
             ],

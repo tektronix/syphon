@@ -30,11 +30,20 @@ def pytest_addoption(parser: Parser):
 
 def pytest_configure(config: Config):
     import os
+    import sys
 
     if config.option.help:
         return
 
+    # Make a random number if one is not provided.
+    if "PYTHONHASHSEED" not in os.environ:
+        # Use a similar method of calculating the max randint range as tox v3.14.0
+        # https://github.com/tox-dev/tox/blob/3.14.0/src/tox/config/__init__.py#L963
+        max_int = 1024 if sys.platform == "win32" else pow(2, 32) - 1
+        os.environ["PYTHONHASHSEED"] = str(random.randint(1, max_int))
+
     random.seed(a=int(os.environ["PYTHONHASHSEED"]))
+    print("PYTHONHASHSEED='%s'" % os.environ["PYTHONHASHSEED"])
 
 
 def pytest_collection_modifyitems(config: Config, items: List[Item]):
