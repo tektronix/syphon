@@ -28,7 +28,7 @@ $ python3.6 -m pip install --user pipx
 $ python3.6 -m pipx ensurepath
 ````
 
-[**pipenv**](https://docs.pipenv.org/en/latest/) is used for its Pipfile support. To install it and all dependencies, navigate to the project directory and run:
+[**pipenv**](https://pipenv.kennethreitz.org/en/latest/) is used for its Pipfile support. To install it and all dependencies, navigate to the project directory and run:
 
 ````
 $ pipx install pipenv
