@@ -37,16 +37,6 @@ $ pipenv install --dev
 
 This this will install everything required to package and test the project.
 
-### Ignoring `.vscode/settings.json`
-
-> 🚨 SECURITY WARNING 🚨
-
-If you're using Visual Studio Code with the Python plugin, be sure to run
-```
-$ git update-index --assume-unchanged .vscode/settings.json
-```
-so you don't accidentally commit the `python.pythonPath` field and leak your personal directory information!
-
 
 ## Code Quality
 
