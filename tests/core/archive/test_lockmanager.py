@@ -141,8 +141,8 @@ def test_lockmanager_release_all(nlocks: int, tmpdir: LocalPath):
     else:
         assert len(lockman.locks) == 0
 
-    for l in lock_list:
-        assert not exists(l)
+    for lock in lock_list:
+        assert not exists(lock)
 
 
 @pytest.mark.parametrize("nlocks", [x for x in range(1, MAX_UNIQUE_LOCKS + 1)])
