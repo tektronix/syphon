@@ -37,20 +37,37 @@ $ pipenv install --dev
 
 This this will install everything required to package and test the project.
 
+### Ignoring `.vscode/settings.json`
+
+> 🚨 SECURITY WARNING 🚨
+
+If you're using Visual Studio Code with the Python plugin, be sure to run
+```
+$ git update-index --assume-unchanged .vscode/settings.json
+```
+so you don't accidentally commit the `python.pythonPath` field and leak your personal directory information!
+
+
+## Code Quality
+
+### Formatting: `python ./scripts/format.py`
+
+Performs automatic formatting on all source files.
+
+
+### Linting: `python ./scripts/lint.py`
+
+Performs linting on all source files.
+
 
 ## Testing
 
 Syphon uses [**tox**](https://tox.readthedocs.io/en/latest/) for its environment management, [**pytest**](https://docs.pytest.org/en/latest/contents.html) for its testing framework, and [**pytest-cov**](https://pytest-cov.readthedocs.io/en/latest/) to calculate test coverage.
 
 
-### Source Linting: `pylint --rcfile=.pylintrc syphon`
-
-Performs linting on all source files.
-
-
 ### Unit Testing: `tox [-- --slow]`
 
-Executes quick tests (or all tests) against all supported Python environments. Code coverage is automatically calculated after all tests are performed.
+Executes quick tests (or all tests) against all supported Python environments, including formatting and linting checks. Code coverage is automatically calculated after all tests are performed.
 
 Testing be performed against a specific environment with
 ```
