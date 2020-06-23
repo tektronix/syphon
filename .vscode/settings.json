@@ -1,0 +1,7 @@
+{
+    "python.formatting.provider": "black",
+    "python.linting.pylintEnabled": false,
+    "python.linting.mypyEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.dataScience.enabled": false
+}
