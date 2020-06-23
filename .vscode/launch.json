@@ -6,7 +6,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": true,
-            "pythonPath": "${config:python.pythonPath}",
+            "pythonPath": "${command:python.interpreterPath}",
             "module": "syphon",
             "cwd": "${workspaceFolder}",
             "env": {},
@@ -23,7 +23,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": false,
-            "pythonPath": "${config:python.pythonPath}",
+            "pythonPath": "${command:python.interpreterPath}",
             "module": "pytest",
             "args": [
                 "-sv"
