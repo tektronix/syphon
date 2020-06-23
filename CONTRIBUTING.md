@@ -65,22 +65,24 @@ Performs linting on all source files.
 Syphon uses [**tox**](https://tox.readthedocs.io/en/latest/) for its environment management, [**pytest**](https://docs.pytest.org/en/latest/contents.html) for its testing framework, and [**pytest-cov**](https://pytest-cov.readthedocs.io/en/latest/) to calculate test coverage.
 
 
-### Unit Testing: `tox [-- --slow]`
+### Unit Testing: `pipenv run tox [-- --slow]`
 
 Executes quick tests (or all tests) against all supported Python environments, including formatting and linting checks. Code coverage is automatically calculated after all tests are performed.
 
-Testing be performed against a specific environment with
+### Targeted Unit Testing
+
+Testing can be performed against a specific environment with
 ```
-$ tox -e ENV [-- --slow]
+$ pipenv run tox -e ENV [-- --slow]
 ```
 where `ENV` is a supported environment, a list of which can be viewed by running
 ```
-$ tox --listenvs
+$ pipenv run tox --listenvs
 ```
 
 Unit test files are located in [`syphon/tests`](/syphon/tests). To run a single test file, you should call `pytest` directly:
 ```
-$ pytest syphon/test/test_something.py
+$ pipenv run pytest syphon/test/test_something.py
 ```
 
 
