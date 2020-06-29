@@ -152,11 +152,9 @@ def main(args: Optional[List[str]] = None) -> int:
     elif getattr(parsed_args, "check", False):
         return int(
             not check(
-                os.path.abspath(parsed_args.check_source),
+                parsed_args.check_source,
                 hash_filepath=(
-                    None
-                    if parsed_args.hashfile is None
-                    else os.path.abspath(parsed_args.hashfile)
+                    None if parsed_args.hashfile is None else parsed_args.hashfile
                 ),
                 verbose=parsed_args.verbose,
             )

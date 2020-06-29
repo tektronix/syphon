@@ -11,9 +11,7 @@
             "cwd": "${workspaceFolder}",
             "env": {},
             "envFile": "${workspaceFolder}/.env",
-            "debugOptions": [
-                "RedirectOutput"
-            ],
+            "redirectOutput": true,
             "args": [
                 "-h"
             ]
@@ -30,11 +28,7 @@
             ],
             "cwd": "${workspaceRoot}",
             "env": {},
-            "debugOptions": [
-                "WaitOnAbnormalExit",
-                "WaitOnNormalExit",
-                "RedirectOutput"
-            ]
+            "redirectOutput": true
         }
     ]
 }

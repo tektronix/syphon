@@ -16,6 +16,7 @@ from pandas.util.testing import makeCustomIndex
 from py._path.local import LocalPath
 
 from . import rand_string
+from .types import PathType
 
 MAX_DATA_FILES = 4
 MAX_METADATA_COLS = 5
@@ -33,6 +34,11 @@ def pytest_configure(config: Config):
 
     if config.option.help:
         return
+
+    if "PYTHONHASHSEED" not in os.environ:
+        print("PYTHONHASHSEED environment variable not provided. Rolling manually...")
+        os.environ["PYTHONHASHSEED"] = str(random.randint(0, 1000))
+        print(f"PYTHONHASHSEED={os.environ['PYTHONHASHSEED']}")
 
     random.seed(a=int(os.environ["PYTHONHASHSEED"]))
 
@@ -140,6 +146,16 @@ def incremental(request: FixtureRequest) -> bool:
 
 @pytest.fixture(params=[True, False])
 def overwrite(request: FixtureRequest) -> bool:
+    return request.param
+
+
+@pytest.fixture(params=[PathType.ABSOLUTE, PathType.RELATIVE, PathType.NONE])
+def path_type_cachefile(request: FixtureRequest) -> PathType:
+    return request.param
+
+
+@pytest.fixture(params=[PathType.ABSOLUTE, PathType.RELATIVE, PathType.NONE])
+def path_type_hashentry(request: FixtureRequest) -> PathType:
     return request.param
 
 

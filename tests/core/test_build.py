@@ -308,7 +308,7 @@ class TestBuild(object):
 
         with syphon.hash.HashFile(resolved_hashfile) as hashfile:
             for entry in hashfile:
-                if entry.filepath == str(cache_file):
+                if os.path.samefile(entry.filepath, str(cache_file)):
                     assert post_cache_hash == entry.hash
 
         actual_frame = DataFrame(read_csv(cache_file, dtype=str, index_col="Index"))
