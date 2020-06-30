@@ -135,7 +135,7 @@ def main(args: Optional[List[str]] = None) -> int:
                 if not file.startswith(LINUX_HIDDEN_CHAR):
                     file_list.append(os.path.join(root, file))
         build(
-            os.path.abspath(parsed_args.build_destination),
+            parsed_args.build_destination,
             *file_list,
             hash_filepath=(
                 None
