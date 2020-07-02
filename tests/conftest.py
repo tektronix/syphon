@@ -97,12 +97,11 @@ def metadata_columns(
     request: FixtureRequest, metadata_column_headers: List[str]
 ) -> Dict[str, List[str]]:
     """Make a metadata column header and column value dictionary."""
-    template = "val{}"
     columns: Dict[str, List[str]] = {}
     for header in metadata_column_headers:
         columns[header] = []
         for i in range(0, request.param):
-            columns[header].append(template.format(i))
+            columns[header].append(f"val{i}")
     return columns
 
 
@@ -114,12 +113,11 @@ def metadata_random_columns(metadata_column_headers: List[str]) -> Dict[str, Lis
     def _rand_depth(max_: int):
         return random.randint(1, max_)
 
-    template = "val{}"
     columns: Dict[str, List[str]] = {}
     for header in metadata_column_headers:
         columns[header] = []
         for i in range(0, _rand_depth(MAX_VALUES_PER_META_COL)):
-            columns[header].append(template.format(i))
+            columns[header].append(f"val{i}")
     return columns
 
 
@@ -127,7 +125,7 @@ def metadata_random_columns(metadata_column_headers: List[str]) -> Dict[str, Lis
 def random_data(request: FixtureRequest, import_dir: LocalPath) -> List[str]:
     files: List[str] = list()
     for _ in range(request.param):
-        files.append(str(import_dir.join("{}.csv".format(rand_string()))))
+        files.append(str(import_dir.join(f"{rand_string()}.csv")))
     return files
 
 
@@ -135,7 +133,7 @@ def random_data(request: FixtureRequest, import_dir: LocalPath) -> List[str]:
 def random_metadata(request: FixtureRequest, import_dir: LocalPath) -> List[str]:
     files: List[str] = list()
     for _ in range(request.param):
-        files.append(str(import_dir.join("{}.meta".format(rand_string()))))
+        files.append(str(import_dir.join(f"{rand_string()}.meta")))
     return files
 
 

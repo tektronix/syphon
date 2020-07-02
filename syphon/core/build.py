@@ -68,10 +68,10 @@ def build(
 
     if cache_path.exists():
         if not cache_path.is_file():
-            raise ValueError("Build output is not a file @ {}".format(cache_path))
+            raise ValueError(f"Build output is not a file @ {cache_path}")
 
         if not overwrite:
-            raise FileExistsError("Build output already exists @ {}".format(cache_path))
+            raise FileExistsError(f"Build output already exists @ {cache_path}")
 
         if incremental and not syphon.core.check.check(
             cache_filepath, hash_filepath=hash_filepath, verbose=verbose
@@ -89,7 +89,7 @@ def build(
 
     for file in files:
         if verbose:
-            print("Building from {0}".format(file))
+            print(f"Building from {file}")
 
         data = pd.DataFrame(pd.read_csv(file, dtype=str))
         # Reorder data columns to match the cache.
@@ -104,9 +104,8 @@ def build(
 
         if verbose:
             print(
-                "Building data {0} onto cache {1} => {2}".format(
-                    data_shape, cache_pre_shape, cache.shape
-                )
+                f"Building data {data_shape} onto cache "
+                + f"{cache_pre_shape} => {cache.shape}"
             )
 
         cache.reset_index(drop=True, inplace=True)
@@ -123,6 +122,6 @@ def build(
             hashfile.update(new_entry)
 
     if verbose:
-        print("Built {0}".format(cache_filepath))
+        print(f"Built {cache_filepath}")
 
     return True

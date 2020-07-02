@@ -87,9 +87,7 @@ def main(args: Optional[List[str]] = None) -> int:
             )
         except FileNotFoundError as err:
             print(
-                "{0}: cannot archive nonexistent file @ {1}".format(
-                    __package__, err.args[0]
-                ),
+                f"{__package__}: cannot archive nonexistent file @ {err.args[0]}",
                 file=sys.stderr,
             )
             return 2

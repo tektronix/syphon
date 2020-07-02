@@ -62,15 +62,13 @@ def write_filtered_data(
         ) if path is not None else datafilename
 
         if os.path.exists(target_filename) and not overwrite:
-            raise FileExistsError(
-                "File already exists in archive @ {}".format(target_filename)
-            )
+            raise FileExistsError(f"File already exists in archive @ {target_filename}")
 
         os.makedirs(path, exist_ok=True)
         data.to_csv(target_filename, index=False)
         written_files.append(target_filename)
         if verbose:
-            print("Archived {0}".format(target_filename))
+            print(f"Archived {target_filename}")
 
     return written_files
 
@@ -109,7 +107,7 @@ def collate_data(
 
         if data_frame.empty:
             if verbose:
-                print("Skipping empty data file @ {}".format(datafile))
+                print(f"Skipping empty data file @ {datafile}")
             continue
 
         # remove empty columns
@@ -121,7 +119,7 @@ def collate_data(
             )
         except InconsistentMetadataError as err:
             raise ValueError(
-                'More than one value exists under the "{}" column.'.format(err.column)
+                f'More than one value exists under the "{err.column}" column.'
             )
 
         if meta_frame is not None:
@@ -197,9 +195,7 @@ def archive(
     if schema_filepath is not None:
         if not os.path.exists(schema_filepath):
             raise FileNotFoundError(
-                "Cannot archive using nonexistent schema file @ {}".format(
-                    schema_filepath
-                )
+                f"Cannot archive using nonexistent schema file @ {schema_filepath}"
             )
         schema = schema_help.load(schema_filepath)
 
@@ -207,9 +203,7 @@ def archive(
     for d_file in data_files:
         if not os.path.exists(d_file):
             lock_manager.release_all()
-            raise FileNotFoundError(
-                "Cannot archive nonexistent data file @ {}".format(d_file)
-            )
+            raise FileNotFoundError(f"Cannot archive nonexistent data file @ {d_file}")
         lock_list.append(lock_manager.lock(os.path.dirname(d_file)))
 
     # add '#lock' file to all metadata directories
@@ -217,7 +211,7 @@ def archive(
         if not os.path.exists(m_file):
             lock_manager.release_all()
             raise FileNotFoundError(
-                "Cannot archive nonexistent metadata file @ {}".format(m_file)
+                f"Cannot archive nonexistent metadata file @ {m_file}"
             )
         lock_list.append(lock_manager.lock(os.path.dirname(m_file)))
 

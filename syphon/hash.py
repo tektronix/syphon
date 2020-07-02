@@ -45,7 +45,7 @@ class HashEntry(object):
             hash_type = DEFAULT_HASH_TYPE
 
         if hash_type not in hashlib.algorithms_available:
-            raise ValueError('Unsupported hash type "{}"'.format(hash_type))
+            raise ValueError(f'Unsupported hash type "{hash_type}"')
 
         super().__init__()
         self._hash_cache: str = ""
@@ -57,12 +57,7 @@ class HashEntry(object):
         self.filepath = pathlib.Path(filepath)
 
     def __str__(self) -> str:
-        return " ".join(
-            [
-                self.hash,
-                "{0}{1}".format("*" if self.binary else " ", self._original_filepath),
-            ]
-        )
+        return f"{self.hash} {'*' if self.binary else ' '}{self._original_filepath}"
 
     @property
     def cached(self) -> bool:
@@ -108,7 +103,7 @@ class HashEntry(object):
     @hash_type.setter
     def hash_type(self, value: str):
         if not isinstance(value, str):
-            raise TypeError("Expected {0}, received {1}".format(str, type(value)))
+            raise TypeError(f"Expected {str}, received {type(value)}")
 
         if self._hash_obj.name == value:
             return
@@ -116,7 +111,7 @@ class HashEntry(object):
         try:
             self._hash_obj = hashlib.new(value)
         except ValueError:
-            raise ValueError('Unsupported hash type "{}"'.format(value))
+            raise ValueError(f'Unsupported hash type "{value}"')
 
     def _hash(self) -> str:
         """Calculate a hash from the contents of the filepath."""
@@ -211,9 +206,7 @@ class _OpenHashFile(object):
         """
         if entry.hash_type != self.hash_type:
             raise ValueError(
-                "Expected hash type {0}, but received {1}".format(
-                    self.hash_type, entry.hash_type
-                )
+                f"Expected hash type {self.hash_type}, but received {entry.hash_type}"
             )
 
         initial_position = self.tell()
@@ -227,7 +220,7 @@ class _OpenHashFile(object):
         if here != 0:
             self._file_obj.seek(here - 1)
             add_newline = self._file_obj.read() != "\n"
-        self._file_obj.write("{0}{1}\n".format("\n" if add_newline else "", str(entry)))
+        self._file_obj.write(("\n" if add_newline else "") + str(entry) + "\n")
 
         self._file_obj.seek(initial_position)
 
@@ -260,9 +253,7 @@ class _OpenHashFile(object):
         """
         if entry.hash_type != self.hash_type:
             raise ValueError(
-                "Expected hash type {0}, but received {1}".format(
-                    self.hash_type, entry.hash_type
-                )
+                f"Expected hash type {self.hash_type}, but received {entry.hash_type}"
             )
 
         initial_position = self.tell()
@@ -296,7 +287,7 @@ class HashFile(object):
             hash_type = DEFAULT_HASH_TYPE
 
         if hash_type not in hashlib.algorithms_available:
-            raise ValueError('Unsupported hash type "{}"'.format(hash_type))
+            raise ValueError(f'Unsupported hash type "{hash_type}"')
 
         super().__init__()
         self._count: int = 0

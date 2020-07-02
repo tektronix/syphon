@@ -46,9 +46,7 @@ def test_hashentry_str(
 
     entry = HashEntry(str(cache_file), binary=binary_hash, hash_type=hash_type)
 
-    expected_str = "{0} {1}{2}".format(
-        entry._hash(), "*" if binary_hash else " ", str(cache_file)
-    )
+    expected_str = f"{entry._hash()} {'*' if binary_hash else ' '}{str(cache_file)}"
     # We've fed content to the hash object, so we have to reinitialize it.
     entry._hash_obj = hashlib.new(entry._hash_obj.name)
 

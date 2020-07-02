@@ -76,7 +76,7 @@ def make_dataframe_value(nrows: int, ncols: int) -> str:
     Returns:
         str: "RxCy" based on the given position.
     """
-    return "R{}C{}".format(nrows, ncols)
+    return f"R{nrows}C{ncols}"
 
 
 def rand_string(size: int = 6) -> str:

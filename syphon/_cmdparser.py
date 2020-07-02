@@ -12,7 +12,7 @@ def get_parser() -> argparse.ArgumentParser:
     from . import __url__
     from .core.check import DEFAULT_FILE as DEFAULT_HASH_FILE
 
-    epilog_last_line = "Syphon home page: <{}>".format(__url__)
+    epilog_last_line = f"Syphon home page: <{__url__}>"
     hashfile_epilog = "\n".join(
         [
             "If left unspecified, the HASHFILE defaults to a file named",

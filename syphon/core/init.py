@@ -30,4 +30,4 @@ def init(
     schema.save(new_schema, schema_filepath, overwrite)
 
     if verbose:
-        print("Init: wrote {0}".format(schema_filepath))
+        print(f"Init: wrote {schema_filepath}")

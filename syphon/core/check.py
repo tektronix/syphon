@@ -46,7 +46,7 @@ def check(
 
     actual_entry = syphon.hash.HashEntry(cache_filepath)
     if not actual_entry.filepath.exists():
-        _print("No file exists @ {}".format(actual_entry.filepath))
+        _print(f"No file exists @ {actual_entry.filepath}")
         return False
 
     hash_filepath = (
@@ -56,7 +56,7 @@ def check(
     )
     hash_path = pathlib.Path(hash_filepath)
     if not hash_path.exists():
-        _print("No file exists @ {}".format(hash_filepath))
+        _print(f"No file exists @ {hash_filepath}")
         return False
 
     expected_entry: Optional[syphon.hash.HashEntry] = None
@@ -72,24 +72,22 @@ def check(
                     expected_entry = entry
                     break
     except OSError:
-        _print("Error reading hash file @ {}".format(hash_path.absolute()))
+        _print(f"Error reading hash file @ {hash_path.absolute()}")
         return False
     except syphon.errors.MalformedLineError as err:
-        _print('Error parsing hash entry "{}"'.format(err.line))
+        _print(f'Error parsing hash entry "{err.line}"')
         return False
 
     if expected_entry is None:
-        _print(
-            'No entry for file "{0}" found in "{1}"'.format(cache_filepath, hash_path)
-        )
+        _print(f'No entry for file "{cache_filepath}" found in "{hash_path}"')
         return False
 
     try:
         # The expected entry's hash will already be cached as a side-effect of reading
         # it from the hashfile. That leaves the actual entry to blame for any OSErrors.
         result: bool = expected_entry.hash == actual_entry.hash
-        _print("{0}: {1}".format(cache_filepath, "OK" if result else "FAILED"))
+        _print(f"{cache_filepath}: {'OK' if result else 'FAILED'}")
         return result
     except OSError:
-        _print("Error reading cache file @ {}".format(cache_filepath))
+        _print(f"Error reading cache file @ {cache_filepath}")
         return False
