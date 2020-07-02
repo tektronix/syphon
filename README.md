@@ -8,10 +8,6 @@
 
 [![Keithley](https://tektronix.github.io/media/Keithley-opensource_badge-flat.svg)](https://github.com/tektronix)
 
-[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
-
-[![Keithley](https://tektronix.github.io/media/Keithley-opensource_badge-flat.svg)](https://github.com/tektronix)
-
 Syphon is a Python package that provides a simple interface to perform common tasks on labelled data.  Its aim is to fit seamlessly into any automation pipeline that requires organization and collation of large datasets.
 
 
