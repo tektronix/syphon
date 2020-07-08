@@ -157,7 +157,7 @@ def archive(
         meta_files: CSV files to treat as metadata files.
         filemap_behavior: How data and metadata files should be mapped.
         schema_filepath: Absolute path to a JSON file containing a storage schema.
-        cache_filepath: Absolute path to a build file to increment.
+        cache_filepath: Path to a build file to increment.
         hash_filepath: Path to a file containing a SHA256 sum of the cache. If not
             given, then the default is calculated by joining the cache directory with
             `syphon.core.check.DEFAULT_FILE`.

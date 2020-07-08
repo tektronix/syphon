@@ -10,6 +10,7 @@ from typing import List, Optional, Tuple
 import pytest
 from _pytest.capture import CaptureFixture
 from _pytest.fixtures import FixtureRequest
+from _pytest.monkeypatch import MonkeyPatch
 from pandas import DataFrame, concat, read_csv
 from pandas.testing import assert_frame_equal
 from py._path.local import LocalPath
@@ -23,6 +24,7 @@ from syphon.core.check import DEFAULT_FILE as DEFAULT_HASH_FILE
 
 from ... import get_data_path, rand_string
 from ...assert_utils import assert_captured_outerr
+from ...types import PathType
 
 
 @pytest.fixture(
@@ -77,6 +79,33 @@ def archive_meta_params(request: FixtureRequest) -> Tuple[str, str, SortedDict]:
     return request.param
 
 
+@pytest.fixture(params=[PathType.ABSOLUTE, PathType.RELATIVE])
+def styled_cache_file(request: FixtureRequest, cache_file: LocalPath) -> str:
+    """Breaks if any test in this file changes the current working directory!"""
+    if request.param == PathType.ABSOLUTE:
+        return str(cache_file)
+    elif request.param == PathType.RELATIVE:
+        return os.path.relpath(cache_file, os.getcwd())
+    else:
+        raise TypeError(f"Unsupported PathType '{request.param}'")
+
+
+@pytest.fixture(params=[PathType.ABSOLUTE, PathType.RELATIVE])
+def styled_hash_file(
+    request: FixtureRequest, hash_file: Optional[LocalPath]
+) -> Optional[str]:
+    """Breaks if any test in this file changes the current working directory!"""
+    if hash_file is None:
+        return None
+
+    if request.param == PathType.ABSOLUTE:
+        return str(hash_file)
+    elif request.param == PathType.RELATIVE:
+        return os.path.relpath(hash_file, os.getcwd())
+    else:
+        raise TypeError(f"Unsupported PathType '{request.param}'")
+
+
 def _get_expected_paths(
     path: str,
     schema: SortedDict,
@@ -108,9 +137,62 @@ def _get_expected_paths(
 
 
 class TestArchive(object):
-    @staticmethod
+    class ArchiveCacheAndHashPassthruChecker(object):
+        """Asserts that the cache and hash file paths are not edited before being sent
+        to the `build` subcommand.
+        """
+
+        def __init__(
+            self, monkeypatch: MonkeyPatch, cache_file: str, hash_file: Optional[str],
+        ):
+            from syphon.core.build import build
+
+            self._syphon_build = build
+            self._monkeypatch: MonkeyPatch = monkeypatch
+            self.cache_file: str = cache_file
+            self.hash_file: Optional[str] = hash_file
+
+        def __call__(self, *args, **kwargs) -> bool:
+            with self._monkeypatch.context() as m:
+                m.setattr(syphon.core.build, "build", value=self._build_shim)
+                return syphon.archive(*args, **kwargs)
+
+        def _build_shim(self, *args, **kwargs) -> bool:
+            """Everything is converted to str or None so test cases don't have to worry
+            about using LocalPath.
+            """
+            # XXX:  If the syphon.build argument order changes,
+            #       then we need to access a different index!
+            assert (
+                str(args[0]) == self.cache_file
+            ), f"Cache filepath edited from '{self.cache_file}' to '{args[0]}'"
+            # XXX:  If the name of the argument changes,
+            #       then we need to access a different key!
+            assert "hash_filepath" in kwargs
+            actual_hash_file = (
+                None
+                if kwargs["hash_filepath"] is None
+                else str(kwargs["hash_filepath"])
+            )
+            assert (
+                actual_hash_file == self.hash_file
+            ), f"Hash filepath edited from '{self.hash_file}' to '{actual_hash_file}'"
+
+            return self._syphon_build(*args, **kwargs)
+
+    @pytest.fixture(scope="function")
+    def archive_fixture(
+        self,
+        monkeypatch: MonkeyPatch,
+        styled_cache_file: str,
+        styled_hash_file: Optional[str],
+    ) -> "TestArchive.ArchiveCacheAndHashPassthruChecker":
+        return TestArchive.ArchiveCacheAndHashPassthruChecker(
+            monkeypatch, styled_cache_file, styled_hash_file
+        )
+
     def test_empty_datafile(
-        capsys: CaptureFixture, archive_dir: LocalPath, verbose: bool
+        self, capsys: CaptureFixture, archive_dir: LocalPath, verbose: bool
     ):
         datafile = os.path.join(get_data_path(), "empty.csv")
 
@@ -118,12 +200,11 @@ class TestArchive(object):
         assert_captured_outerr(capsys.readouterr(), verbose, False)
         assert not os.path.exists(os.path.join(os.path.dirname(datafile), "#lock"))
 
-    @staticmethod
     def test_increment_one_to_many_with_metadata_with_schema(
+        self,
         capsys: CaptureFixture,
         archive_dir: LocalPath,
-        cache_file: LocalPath,
-        hash_file: Optional[LocalPath],
+        archive_fixture: "TestArchive.ArchiveCacheAndHashPassthruChecker",
         schema_file: Optional[LocalPath],
         verbose: bool,
     ):
@@ -180,10 +261,12 @@ class TestArchive(object):
         ]
 
         expected_hashfile = (
-            cache_file.dirpath(DEFAULT_HASH_FILE) if hash_file is None else hash_file
+            LocalPath(archive_fixture.cache_file).dirpath(DEFAULT_HASH_FILE)
+            if archive_fixture.hash_file is None
+            else archive_fixture.hash_file
         )
         assert not os.path.exists(expected_hashfile)
-        assert not os.path.exists(cache_file)
+        assert not os.path.exists(archive_fixture.cache_file)
         assert len(archive_dir.listdir()) == 0
 
         expected_schemafile = (
@@ -198,7 +281,7 @@ class TestArchive(object):
         assert os.path.exists(expected_schemafile)
 
         for expected_frame_filename, data_filename, metadata_filenames in targets:
-            assert syphon.archive(
+            assert archive_fixture(
                 archive_dir,
                 [os.path.join(get_data_path(), data_filename)],
                 meta_files=[
@@ -206,8 +289,8 @@ class TestArchive(object):
                 ],
                 filemap_behavior=MappingBehavior.ONE_TO_MANY,
                 schema_filepath=schema_file,
-                cache_filepath=cache_file,
-                hash_filepath=hash_file,
+                cache_filepath=archive_fixture.cache_file,
+                hash_filepath=archive_fixture.hash_file,
                 verbose=verbose,
             )
             assert_captured_outerr(capsys.readouterr(), verbose, False)
@@ -221,7 +304,7 @@ class TestArchive(object):
             )
             expected_frame.sort_index(inplace=True)
             actual_frame = DataFrame(
-                read_csv(str(cache_file), dtype=str, index_col="Index")
+                read_csv(str(archive_fixture.cache_file), dtype=str, index_col="Index")
             )
             actual_frame = actual_frame.reindex(columns=expected_frame.columns)
             actual_frame.sort_index(inplace=True)
@@ -230,15 +313,16 @@ class TestArchive(object):
             assert_frame_equal(expected_frame, actual_frame)
             assert os.path.exists(expected_hashfile)
             assert syphon.check(
-                cache_file, hash_filepath=expected_hashfile, verbose=verbose
+                archive_fixture.cache_file,
+                hash_filepath=expected_hashfile,
+                verbose=verbose,
             )
 
-    @staticmethod
     def test_increment_with_metadata_with_schema(
+        self,
         capsys: CaptureFixture,
         archive_dir: LocalPath,
-        cache_file: LocalPath,
-        hash_file: Optional[LocalPath],
+        archive_fixture: "TestArchive.ArchiveCacheAndHashPassthruChecker",
         schema_file: Optional[LocalPath],
         verbose: bool,
     ):
@@ -261,10 +345,12 @@ class TestArchive(object):
         ]
 
         expected_hashfile = (
-            cache_file.dirpath(DEFAULT_HASH_FILE) if hash_file is None else hash_file
+            LocalPath(archive_fixture.cache_file).dirpath(DEFAULT_HASH_FILE)
+            if archive_fixture.hash_file is None
+            else archive_fixture.hash_file
         )
         assert not os.path.exists(expected_hashfile)
-        assert not os.path.exists(cache_file)
+        assert not os.path.exists(archive_fixture.cache_file)
         assert len(archive_dir.listdir()) == 0
 
         expected_schemafile = (
@@ -279,13 +365,13 @@ class TestArchive(object):
         assert os.path.exists(expected_schemafile)
 
         for expected_frame_filename, data_filename, metadata_filename in targets:
-            assert syphon.archive(
+            assert archive_fixture(
                 archive_dir,
                 [os.path.join(get_data_path(), data_filename)],
                 meta_files=[os.path.join(get_data_path(), metadata_filename)],
                 schema_filepath=schema_file,
-                cache_filepath=cache_file,
-                hash_filepath=hash_file,
+                cache_filepath=archive_fixture.cache_file,
+                hash_filepath=archive_fixture.hash_file,
                 verbose=verbose,
             )
             assert_captured_outerr(capsys.readouterr(), verbose, False)
@@ -299,7 +385,7 @@ class TestArchive(object):
             )
             expected_frame.sort_index(inplace=True)
             actual_frame = DataFrame(
-                read_csv(str(cache_file), dtype=str, index_col="Index")
+                read_csv(str(archive_fixture.cache_file), dtype=str, index_col="Index")
             )
             actual_frame.sort_index(inplace=True)
             assert_captured_outerr(capsys.readouterr(), False, False)
@@ -307,15 +393,16 @@ class TestArchive(object):
             assert_frame_equal(expected_frame, actual_frame)
             assert os.path.exists(expected_hashfile)
             assert syphon.check(
-                cache_file, hash_filepath=expected_hashfile, verbose=verbose
+                archive_fixture.cache_file,
+                hash_filepath=expected_hashfile,
+                verbose=verbose,
             )
 
-    @staticmethod
     def test_increment_with_metadata_without_schema(
+        self,
         capsys: CaptureFixture,
         archive_dir: LocalPath,
-        cache_file: LocalPath,
-        hash_file: Optional[LocalPath],
+        archive_fixture: "TestArchive.ArchiveCacheAndHashPassthruChecker",
         verbose: bool,
     ):
         # List of (expected frame filename, data filename, metadata filename) tuples
@@ -337,19 +424,21 @@ class TestArchive(object):
         ]
 
         expected_hashfile = (
-            cache_file.dirpath(DEFAULT_HASH_FILE) if hash_file is None else hash_file
+            LocalPath(archive_fixture.cache_file).dirpath(DEFAULT_HASH_FILE)
+            if archive_fixture.hash_file is None
+            else archive_fixture.hash_file
         )
         assert not os.path.exists(expected_hashfile)
-        assert not os.path.exists(cache_file)
+        assert not os.path.exists(archive_fixture.cache_file)
         assert len(archive_dir.listdir()) == 0
 
         for expected_frame_filename, data_filename, metadata_filename in targets:
-            assert syphon.archive(
+            assert archive_fixture(
                 archive_dir,
                 [os.path.join(get_data_path(), data_filename)],
                 meta_files=[os.path.join(get_data_path(), metadata_filename)],
-                cache_filepath=cache_file,
-                hash_filepath=hash_file,
+                cache_filepath=archive_fixture.cache_file,
+                hash_filepath=archive_fixture.hash_file,
                 verbose=verbose,
             )
             assert_captured_outerr(capsys.readouterr(), verbose, False)
@@ -363,7 +452,7 @@ class TestArchive(object):
             )
             expected_frame.sort_index(inplace=True)
             actual_frame = DataFrame(
-                read_csv(str(cache_file), dtype=str, index_col="Index")
+                read_csv(str(archive_fixture.cache_file), dtype=str, index_col="Index")
             )
             actual_frame.sort_index(inplace=True)
             assert_captured_outerr(capsys.readouterr(), False, False)
@@ -371,15 +460,16 @@ class TestArchive(object):
             assert_frame_equal(expected_frame, actual_frame)
             assert os.path.exists(expected_hashfile)
             assert syphon.check(
-                cache_file, hash_filepath=expected_hashfile, verbose=verbose
+                archive_fixture.cache_file,
+                hash_filepath=expected_hashfile,
+                verbose=verbose,
             )
 
-    @staticmethod
     def test_increment_without_metadata_with_schema(
+        self,
         capsys: CaptureFixture,
         archive_dir: LocalPath,
-        cache_file: LocalPath,
-        hash_file: Optional[LocalPath],
+        archive_fixture: "TestArchive.ArchiveCacheAndHashPassthruChecker",
         schema_file: Optional[LocalPath],
         verbose: bool,
     ):
@@ -394,10 +484,12 @@ class TestArchive(object):
         ]
 
         expected_hashfile = (
-            cache_file.dirpath(DEFAULT_HASH_FILE) if hash_file is None else hash_file
+            LocalPath(archive_fixture.cache_file).dirpath(DEFAULT_HASH_FILE)
+            if archive_fixture.hash_file is None
+            else archive_fixture.hash_file
         )
         assert not os.path.exists(expected_hashfile)
-        assert not os.path.exists(cache_file)
+        assert not os.path.exists(archive_fixture.cache_file)
         assert len(archive_dir.listdir()) == 0
 
         expected_schemafile = (
@@ -412,12 +504,12 @@ class TestArchive(object):
         assert os.path.exists(expected_schemafile)
 
         for expected_frame_filename, data_filename in targets:
-            assert syphon.archive(
+            assert archive_fixture(
                 archive_dir,
                 [os.path.join(get_data_path(), data_filename)],
                 schema_filepath=schema_file,
-                cache_filepath=cache_file,
-                hash_filepath=hash_file,
+                cache_filepath=archive_fixture.cache_file,
+                hash_filepath=archive_fixture.hash_file,
                 verbose=verbose,
             )
             assert_captured_outerr(capsys.readouterr(), verbose, False)
@@ -431,7 +523,7 @@ class TestArchive(object):
             )
             expected_frame.sort_index(inplace=True)
             actual_frame = DataFrame(
-                read_csv(str(cache_file), dtype=str, index_col="Index")
+                read_csv(str(archive_fixture.cache_file), dtype=str, index_col="Index")
             )
             actual_frame.sort_index(inplace=True)
             assert_captured_outerr(capsys.readouterr(), False, False)
@@ -439,15 +531,16 @@ class TestArchive(object):
             assert_frame_equal(expected_frame, actual_frame)
             assert os.path.exists(expected_hashfile)
             assert syphon.check(
-                cache_file, hash_filepath=expected_hashfile, verbose=verbose
+                archive_fixture.cache_file,
+                hash_filepath=expected_hashfile,
+                verbose=verbose,
             )
 
-    @staticmethod
     def test_increment_without_metadata_without_schema(
+        self,
         capsys: CaptureFixture,
         archive_dir: LocalPath,
-        cache_file: LocalPath,
-        hash_file: Optional[LocalPath],
+        archive_fixture: "TestArchive.ArchiveCacheAndHashPassthruChecker",
         schema_file: Optional[LocalPath],
         verbose: bool,
     ):
@@ -462,18 +555,20 @@ class TestArchive(object):
         ]
 
         expected_hashfile = (
-            cache_file.dirpath(DEFAULT_HASH_FILE) if hash_file is None else hash_file
+            LocalPath(archive_fixture.cache_file).dirpath(DEFAULT_HASH_FILE)
+            if archive_fixture.hash_file is None
+            else archive_fixture.hash_file
         )
         assert not os.path.exists(expected_hashfile)
-        assert not os.path.exists(cache_file)
+        assert not os.path.exists(archive_fixture.cache_file)
         assert len(archive_dir.listdir()) == 0
 
         for expected_frame_filename, data_filename in targets:
-            assert syphon.archive(
+            assert archive_fixture(
                 archive_dir,
                 [os.path.join(get_data_path(), data_filename)],
-                cache_filepath=cache_file,
-                hash_filepath=hash_file,
+                cache_filepath=archive_fixture.cache_file,
+                hash_filepath=archive_fixture.hash_file,
                 verbose=verbose,
             )
             assert_captured_outerr(capsys.readouterr(), verbose, False)
@@ -489,7 +584,7 @@ class TestArchive(object):
             del expected_frame["PetalColor"]
             expected_frame.sort_index(inplace=True)
             actual_frame = DataFrame(
-                read_csv(str(cache_file), dtype=str, index_col="Index")
+                read_csv(str(archive_fixture.cache_file), dtype=str, index_col="Index")
             )
             actual_frame.sort_index(inplace=True)
             assert_captured_outerr(capsys.readouterr(), False, False)
@@ -497,18 +592,19 @@ class TestArchive(object):
             assert_frame_equal(expected_frame, actual_frame)
             assert os.path.exists(expected_hashfile)
             assert syphon.check(
-                cache_file, hash_filepath=expected_hashfile, verbose=verbose
+                archive_fixture.cache_file,
+                hash_filepath=expected_hashfile,
+                verbose=verbose,
             )
 
-    @staticmethod
     def test_no_datafiles(
-        capsys: CaptureFixture, archive_dir: LocalPath, verbose: bool
+        self, capsys: CaptureFixture, archive_dir: LocalPath, verbose: bool
     ):
         assert not syphon.archive(archive_dir, [], verbose=verbose)
         assert_captured_outerr(capsys.readouterr(), verbose, False)
 
-    @staticmethod
     def test_without_metadata_with_schema(
+        self,
         capsys: CaptureFixture,
         archive_params: Tuple[str, SortedDict],
         archive_dir: LocalPath,
@@ -565,8 +661,8 @@ class TestArchive(object):
         assert_frame_equal(expected_df, actual_frame)
         assert_captured_outerr(capsys.readouterr(), verbose, False)
 
-    @staticmethod
     def test_without_metadata_without_schema(
+        self,
         capsys: CaptureFixture,
         archive_params: Tuple[str, SortedDict],
         archive_dir: LocalPath,
@@ -614,8 +710,8 @@ class TestArchive(object):
         assert_frame_equal(expected_df, actual_frame)
         assert_captured_outerr(capsys.readouterr(), verbose, False)
 
-    @staticmethod
     def test_with_metadata_with_schema(
+        self,
         capsys: CaptureFixture,
         archive_meta_params: Tuple[str, str, SortedDict],
         archive_dir: LocalPath,
@@ -677,8 +773,8 @@ class TestArchive(object):
         assert expected_paths == actual_paths
         assert_frame_equal(expected_df, actual_df)
 
-    @staticmethod
     def test_with_metadata_without_schema(
+        self,
         capsys: CaptureFixture,
         archive_meta_params: Tuple[str, str, SortedDict],
         archive_dir: LocalPath,
@@ -735,9 +831,8 @@ class TestArchive(object):
         assert expected_paths == actual_paths
         assert_frame_equal(expected_df, actual_df)
 
-    @staticmethod
     def test_raises_fileexistserror_on_existing_archive_file(
-        archive_params: Tuple[str, SortedDict], archive_dir: LocalPath
+        self, archive_params: Tuple[str, SortedDict], archive_dir: LocalPath
     ):
         filename: str
         schema: SortedDict
@@ -766,8 +861,9 @@ class TestArchive(object):
 
         assert not os.path.exists(os.path.join(os.path.dirname(datafile), "#lock"))
 
-    @staticmethod
-    def test_raises_filenotfounderror_when_data_cannot_be_found(archive_dir: LocalPath):
+    def test_raises_filenotfounderror_when_data_cannot_be_found(
+        self, archive_dir: LocalPath
+    ):
         datafile = os.path.join(get_data_path(), "nonexistantfile.csv")
 
         with pytest.raises(FileNotFoundError, match="data file"):
@@ -775,9 +871,8 @@ class TestArchive(object):
 
         assert not os.path.exists(os.path.join(os.path.dirname(datafile), "#lock"))
 
-    @staticmethod
     def test_raises_filenotfounderror_when_metadata_cannot_be_found(
-        archive_params: Tuple[str, SortedDict], archive_dir: LocalPath
+        self, archive_params: Tuple[str, SortedDict], archive_dir: LocalPath
     ):
         filename: str
         schema: SortedDict
@@ -791,9 +886,8 @@ class TestArchive(object):
 
         assert not os.path.exists(os.path.join(os.path.dirname(datafile), "#lock"))
 
-    @staticmethod
     def test_raises_filenotfounderror_when_schema_cannot_be_found(
-        archive_params: Tuple[str, SortedDict], archive_dir: LocalPath
+        self, archive_params: Tuple[str, SortedDict], archive_dir: LocalPath
     ):
         filename: str
         schema: SortedDict
@@ -806,9 +900,8 @@ class TestArchive(object):
 
         assert not os.path.exists(os.path.join(os.path.dirname(datafile), "#lock"))
 
-    @staticmethod
     def test_raises_indexerror_when_a_schema_column_does_not_exist(
-        archive_meta_params: Tuple[str, str, SortedDict], archive_dir: LocalPath
+        self, archive_meta_params: Tuple[str, str, SortedDict], archive_dir: LocalPath
     ):
         bad_column = "non_existent_column"
 
@@ -838,8 +931,8 @@ class TestArchive(object):
 
         assert not os.path.exists(os.path.join(os.path.dirname(datafile), "#lock"))
 
-    @staticmethod
     def test_raises_valueerror_when_metadata_is_inconsistent(
+        self,
         archive_meta_params: Tuple[str, str, SortedDict],
         archive_dir: LocalPath,
         import_dir: LocalPath,

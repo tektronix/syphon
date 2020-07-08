@@ -12,7 +12,7 @@ from _pytest.config import Config
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import FixtureRequest
 from _pytest.nodes import Item
-from pandas.util.testing import makeCustomIndex
+from pandas._testing import makeCustomIndex
 from py._path.local import LocalPath
 
 from . import rand_string

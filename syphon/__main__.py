@@ -117,10 +117,8 @@ def main(args: Optional[List[str]] = None) -> int:
                     if schema_filepath is None
                     else os.path.abspath(schema_filepath)
                 ),
-                cache_filepath=(
-                    None if increment is None else os.path.abspath(increment)
-                ),
-                hash_filepath=(None if hashfile is None else os.path.abspath(hashfile)),
+                cache_filepath=increment,
+                hash_filepath=hashfile,
                 overwrite=parsed_args.force,
                 verbose=parsed_args.verbose,
             )

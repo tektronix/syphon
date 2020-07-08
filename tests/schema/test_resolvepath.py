@@ -10,7 +10,7 @@ from typing import List, Union
 import pytest
 from numpy import nan
 from pandas import DataFrame, Index
-from pandas.util.testing import makeCustomIndex
+from pandas._testing import makeCustomIndex
 from sortedcontainers import SortedDict
 
 from syphon.schema import resolve_path
