@@ -50,15 +50,14 @@ def make_dataframe(
         return DataFrame(
             {"C_l0_g0": [make_dataframe_value(x, 0) for x in range(nrows)]}
         )
-    else:
-        return makeCustomDataframe(
-            nrows,
-            ncols,
-            c_idx_names=False,
-            r_idx_names=False,
-            data_gen_f=data_gen_f,
-            r_idx_type="i",
-        )
+    return makeCustomDataframe(
+        nrows,
+        ncols,
+        c_idx_names=False,
+        r_idx_names=False,
+        data_gen_f=data_gen_f,
+        r_idx_type="i",
+    )
 
 
 def make_dataframe_value(nrows: int, ncols: int) -> str:

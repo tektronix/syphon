@@ -122,10 +122,12 @@ class TestAppend(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.append(expected_final_entry)
 
+        actual_final_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_final_entry in hashfile:
                 pass
 
+        assert actual_final_entry is not None
         assert expected_final_entry.binary == actual_final_entry.binary
         assert os.path.samefile(
             expected_final_entry.filepath, actual_final_entry.filepath
@@ -146,10 +148,12 @@ class TestAppend(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.append(expected_final_entry)
 
+        actual_final_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_final_entry in hashfile:
                 pass
 
+        assert actual_final_entry is not None
         assert expected_final_entry.binary == actual_final_entry.binary
         assert os.path.samefile(
             expected_final_entry.filepath, actual_final_entry.filepath
@@ -170,10 +174,12 @@ class TestAppend(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.append(expected_final_entry)
 
+        actual_first_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_first_entry in hashfile:
                 break
 
+        assert actual_first_entry is not None
         assert expected_final_entry.binary == actual_first_entry.binary
         assert os.path.samefile(
             expected_final_entry.filepath, actual_first_entry.filepath
@@ -225,11 +231,13 @@ class TestUpdate(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.update(expected_entry)
 
+        actual_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_entry in hashfile:
                 if os.path.samefile(expected_entry.filepath, actual_entry.filepath):
                     break
 
+        assert actual_entry is not None
         assert expected_entry.binary == actual_entry.binary
         assert os.path.samefile(expected_entry.filepath, actual_entry.filepath)
         assert expected_entry.hash == actual_entry.hash

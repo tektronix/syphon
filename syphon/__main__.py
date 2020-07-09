@@ -93,10 +93,11 @@ def main(args: Optional[List[str]] = None) -> int:
             return 2
 
         # Resolve the filemapping behavior.
-        if getattr(parsed_args, "one_to_many", False):
-            behavior = MappingBehavior.ONE_TO_MANY
-        else:
-            behavior = MappingBehavior.ONE_TO_ONE
+        behavior = (
+            MappingBehavior.ONE_TO_MANY
+            if getattr(parsed_args, "one_to_many", False)
+            else MappingBehavior.ONE_TO_ONE
+        )
 
         # Get any incremental options.
         increment: Optional[str] = getattr(parsed_args, "increment")

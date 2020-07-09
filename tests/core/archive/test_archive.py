@@ -954,11 +954,13 @@ class TestArchive(object):
 
         # Find the column that will be in the message.
         metaframe = DataFrame(read_csv(metafile, dtype=str))
+        column: Optional[str] = None
         for column in metaframe.columns:
             if len(metaframe[column].drop_duplicates().values) > 1:
                 break
         del metaframe
 
+        assert column is not None
         with pytest.raises(ValueError, match=column):
             syphon.archive(
                 archive_dir,

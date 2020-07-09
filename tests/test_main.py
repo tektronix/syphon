@@ -35,17 +35,16 @@ def _archive_args(archive_dir_fixture: LocalPath, one_to_one: bool = True) -> Li
             "-m",
             ".meta",
         ]
-    else:
-        return [
-            "syphon",
-            "archive",
-            os.path.join(get_data_path(), "iris-part-1-of-6.csv"),
-            os.path.join(get_data_path(), "iris-part-1-of-6-meta-part-*-of-2.meta"),
-            str(archive_dir_fixture),
-            "-m",
-            ".meta",
-            "--one-to-many",
-        ]
+    return [
+        "syphon",
+        "archive",
+        os.path.join(get_data_path(), "iris-part-1-of-6.csv"),
+        os.path.join(get_data_path(), "iris-part-1-of-6-meta-part-*-of-2.meta"),
+        str(archive_dir_fixture),
+        "-m",
+        ".meta",
+        "--one-to-many",
+    ]
 
 
 def _build_args(

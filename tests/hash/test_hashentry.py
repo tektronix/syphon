@@ -61,7 +61,7 @@ def test_hashentry_cached_after_hash(cache_file: LocalPath, data_file: str):
     entry = HashEntry(str(cache_file))
     assert not entry.cached
 
-    entry.hash
+    _ = entry.hash
     assert entry.cached
 
 
