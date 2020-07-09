@@ -1,7 +1,9 @@
 # Data & Metadata
+.*sums
 *.csv
 *.meta
 \#lock
+!**/data/.*sums
 !**/data/*.csv
 !**/data/*.meta
 

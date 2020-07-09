@@ -38,32 +38,41 @@ $ pipenv install --dev
 This this will install everything required to package and test the project.
 
 
+## Code Quality
+
+### Formatting: `python ./scripts/format.py`
+
+Performs automatic formatting on all source files.
+
+
+### Linting: `python ./scripts/lint.py`
+
+Performs linting on all source files.
+
+
 ## Testing
 
 Syphon uses [**tox**](https://tox.readthedocs.io/en/latest/) for its environment management, [**pytest**](https://docs.pytest.org/en/latest/contents.html) for its testing framework, and [**pytest-cov**](https://pytest-cov.readthedocs.io/en/latest/) to calculate test coverage.
 
 
-### Source Linting: `pylint --rcfile=.pylintrc syphon`
+### Unit Testing: `pipenv run tox [-- --slow]`
 
-Performs linting on all source files.
+Executes quick tests (or all tests) against all supported Python environments, including formatting and linting checks. Code coverage is automatically calculated after all tests are performed.
 
+### Targeted Unit Testing
 
-### Unit Testing: `tox [-- --slow]`
-
-Executes quick tests (or all tests) against all supported Python environments. Code coverage is automatically calculated after all tests are performed.
-
-Testing be performed against a specific environment with
+Testing can be performed against a specific environment with
 ```
-$ tox -e ENV [-- --slow]
+$ pipenv run tox -e ENV [-- --slow]
 ```
 where `ENV` is a supported environment, a list of which can be viewed by running
 ```
-$ tox --listenvs
+$ pipenv run tox --listenvs
 ```
 
 Unit test files are located in [`syphon/tests`](/syphon/tests). To run a single test file, you should call `pytest` directly:
 ```
-$ pytest syphon/test/test_something.py
+$ pipenv run pytest syphon/test/test_something.py
 ```
 
 

@@ -30,13 +30,14 @@ def test_lockmanager_filename_default():
 @pytest.mark.parametrize("nlocks", [x for x in range(1, MAX_UNIQUE_LOCKS + 1)])
 def test_lockmanager_lock(nlocks: int, tmpdir: LocalPath):
     lockman = LockManager()
-    dir_template = "dir{}"
 
     expected_list = SortedList()
 
-    for n in range(nlocks):
+    for _ in range(nlocks):
         try:
-            path = tmpdir.mkdir(dir_template.format(n))
+            path: LocalPath = LocalPath.make_numbered_dir(
+                prefix="dir", rootdir=tmpdir, keep=nlocks, lock_timeout=300
+            )
             lockman.lock(str(path))
         except OSError:
             raise
@@ -67,13 +68,14 @@ def test_lockmanager_lock_returns_lockfile(tmpdir: LocalPath):
 @pytest.mark.parametrize("nlocks", [x for x in range(1, MAX_UNIQUE_LOCKS + 1)])
 def test_lockmanager_release(nlocks: int, tmpdir: LocalPath):
     lockman = LockManager()
-    dir_template = "dir{}"
 
     lock_list: List[str] = []
 
-    for n in range(nlocks):
+    for _ in range(nlocks):
         try:
-            path: LocalPath = tmpdir.mkdir(dir_template.format(n))
+            path: LocalPath = LocalPath.make_numbered_dir(
+                prefix="dir", rootdir=tmpdir, keep=nlocks, lock_timeout=300
+            )
             lockman.lock(str(path))
         except OSError:
             raise
@@ -121,13 +123,14 @@ def test_lockmanager_release_suppress_filenotfounderror(tmpdir: LocalPath):
 @pytest.mark.parametrize("nlocks", [x for x in range(1, MAX_UNIQUE_LOCKS + 1)])
 def test_lockmanager_release_all(nlocks: int, tmpdir: LocalPath):
     lockman = LockManager()
-    dir_template = "dir{}"
 
     lock_list: List[str] = []
 
-    for n in range(nlocks):
+    for _ in range(nlocks):
         try:
-            path: LocalPath = tmpdir.mkdir(dir_template.format(n))
+            path: LocalPath = LocalPath.make_numbered_dir(
+                prefix="dir", rootdir=tmpdir, keep=nlocks, lock_timeout=300
+            )
             lockman.lock(str(path))
         except OSError:
             raise
@@ -141,8 +144,8 @@ def test_lockmanager_release_all(nlocks: int, tmpdir: LocalPath):
     else:
         assert len(lockman.locks) == 0
 
-    for l in lock_list:
-        assert not exists(l)
+    for lock in lock_list:
+        assert not exists(lock)
 
 
 @pytest.mark.parametrize("nlocks", [x for x in range(1, MAX_UNIQUE_LOCKS + 1)])
@@ -150,11 +153,12 @@ def test_lockmanager_release_all_suppress_filenotfounderror(
     nlocks: int, tmpdir: LocalPath
 ):
     lockman = LockManager()
-    dir_template = "dir{}"
 
-    for n in range(nlocks):
+    for _ in range(nlocks):
         try:
-            path: LocalPath = tmpdir.mkdir(dir_template.format(n))
+            path: LocalPath = LocalPath.make_numbered_dir(
+                prefix="dir", rootdir=tmpdir, keep=nlocks, lock_timeout=300
+            )
             lockman.lock(str(path))
         except OSError:
             raise

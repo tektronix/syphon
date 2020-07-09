@@ -12,7 +12,7 @@ def get_parser() -> argparse.ArgumentParser:
     from . import __url__
     from .core.check import DEFAULT_FILE as DEFAULT_HASH_FILE
 
-    epilog_last_line = "Syphon home page: <{}>".format(__url__)
+    epilog_last_line = f"Syphon home page: <{__url__}>"
     hashfile_epilog = "\n".join(
         [
             "If left unspecified, the HASHFILE defaults to a file named",
@@ -21,10 +21,11 @@ def get_parser() -> argparse.ArgumentParser:
             "Entries in a valid HASHFILE must be in the same format used by",
             "the GNU coreutils sha256sum command. That is, each entry takes",
             "the form of",
-            "\tCHECKSUM [*| ]FILE",
+            "\tCHECKSUM [*| ]FILEPATH",
             'Where CHECKSUM is the computed message digest, "*" or " " (a',
             "space character) indicates the read mode of binary or text",
-            "respectively, and FILE is the hashed file.",
+            "respectively, and FILEPATH is the hashed file.",
+            "Relative FILEPATHs are always relative to the calling directory.",
             "Every entry in a HASHFILE is assumed to have been calculated",
             "with the SHA256 hashing function.",
             "",

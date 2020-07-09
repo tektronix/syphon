@@ -13,8 +13,8 @@ pytest-cov = "*"
 tox = "*"
 
 [packages]
-pandas = "<0.26"
-sortedcontainers = "~=2.1"
+pandas = "~=1.0"
+sortedcontainers = "~=2.2"
 
 [requires]
 python_version = "3.6"

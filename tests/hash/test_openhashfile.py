@@ -14,7 +14,6 @@ from _pytest.monkeypatch import MonkeyPatch
 from py._path.local import LocalPath
 
 import syphon.hash
-from _io import _IOBase
 
 from .. import get_data_path, rand_string, randomize
 
@@ -62,24 +61,23 @@ def test_openhashfile_init(hash_file: LocalPath, hash_type: Optional[str]):
     if hash_type is None:
         hash_type = syphon.hash.DEFAULT_HASH_TYPE
 
-    hash_file.write(rand_string())
+    expected_content = rand_string()
+    hash_file.write(expected_content)
 
-    file_obj: _IOBase = hash_file.open("r+t")
-    openhashfile = syphon.hash._OpenHashFile(file_obj, hash_type)
+    openhashfile = syphon.hash._OpenHashFile(hash_file, hash_type)
     try:
-        assert file_obj.fileno() == openhashfile._file_obj.fileno()
+        assert expected_content == openhashfile._file_obj.readline()
         assert not openhashfile._file_obj.closed
         assert openhashfile.hash_type == hash_type
         assert openhashfile.line_split is None
     finally:
-        file_obj.close()
         openhashfile._file_obj.close()
 
 
 def test_openhashfile_close(hash_file: LocalPath):
     hash_file.write(rand_string())
 
-    openhashfile = syphon.hash._OpenHashFile(hash_file.open("r+t"), "")
+    openhashfile = syphon.hash._OpenHashFile(hash_file, "")
 
     openhashfile.close()
     try:
@@ -104,7 +102,7 @@ def test_openhashfile_items_are_hashentries(tmpdir: LocalPath):
 def test_openhashfile_tell(hash_file: LocalPath):
     hash_file.write(rand_string())
 
-    openhashfile = syphon.hash._OpenHashFile(hash_file.open("r+t"), "")
+    openhashfile = syphon.hash._OpenHashFile(hash_file, "")
     assert openhashfile.tell() == 0
     assert openhashfile.tell() == openhashfile._file_obj.tell()
 
@@ -124,12 +122,16 @@ class TestAppend(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.append(expected_final_entry)
 
+        actual_final_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_final_entry in hashfile:
                 pass
 
+        assert actual_final_entry is not None
         assert expected_final_entry.binary == actual_final_entry.binary
-        assert expected_final_entry.filepath == actual_final_entry.filepath
+        assert os.path.samefile(
+            expected_final_entry.filepath, actual_final_entry.filepath
+        )
         assert expected_final_entry.hash == actual_final_entry.hash
         assert str(expected_final_entry) == str(actual_final_entry)
 
@@ -146,12 +148,16 @@ class TestAppend(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.append(expected_final_entry)
 
+        actual_final_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_final_entry in hashfile:
                 pass
 
+        assert actual_final_entry is not None
         assert expected_final_entry.binary == actual_final_entry.binary
-        assert expected_final_entry.filepath == actual_final_entry.filepath
+        assert os.path.samefile(
+            expected_final_entry.filepath, actual_final_entry.filepath
+        )
         assert expected_final_entry.hash == actual_final_entry.hash
         assert str(expected_final_entry) == str(actual_final_entry)
 
@@ -168,12 +174,16 @@ class TestAppend(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.append(expected_final_entry)
 
+        actual_first_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_first_entry in hashfile:
                 break
 
+        assert actual_first_entry is not None
         assert expected_final_entry.binary == actual_first_entry.binary
-        assert expected_final_entry.filepath == actual_first_entry.filepath
+        assert os.path.samefile(
+            expected_final_entry.filepath, actual_first_entry.filepath
+        )
         assert expected_final_entry.hash == actual_first_entry.hash
         assert str(expected_final_entry) == str(actual_first_entry)
 
@@ -221,13 +231,15 @@ class TestUpdate(object):
         with syphon.hash.HashFile(hash_file) as hashfile:
             hashfile.update(expected_entry)
 
+        actual_entry: Optional[syphon.hash.HashEntry] = None
         with syphon.hash.HashFile(hash_file) as hashfile:
             for actual_entry in hashfile:
-                if expected_entry.filepath == actual_entry.filepath:
+                if os.path.samefile(expected_entry.filepath, actual_entry.filepath):
                     break
 
+        assert actual_entry is not None
         assert expected_entry.binary == actual_entry.binary
-        assert expected_entry.filepath == actual_entry.filepath
+        assert os.path.samefile(expected_entry.filepath, actual_entry.filepath)
         assert expected_entry.hash == actual_entry.hash
         assert str(expected_entry) == str(actual_entry)
 

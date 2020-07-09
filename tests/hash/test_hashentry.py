@@ -6,6 +6,7 @@
 """
 import hashlib
 import os
+import pathlib
 from typing import List, Optional
 
 import pytest
@@ -22,9 +23,11 @@ def test_hashentry_init(data_file: str, binary_hash: bool, hash_type: Optional[s
     entry = HashEntry(data_file, binary=binary_hash, hash_type=hash_type)
     assert entry._hash_cache == ""
     assert entry._hash_obj.name == DEFAULT_HASH_TYPE if hash_type is None else hash_type
+    assert entry._original_filepath == data_file
     assert entry._raw_entry == ""
     assert entry.binary == binary_hash
-    assert entry.filepath == data_file
+    entry.filepath.write_text("")  # Touch the filepath so samefile will work.
+    assert entry.filepath.samefile(data_file)
 
 
 def test_hashentry_init_raises_valueerror():
@@ -43,9 +46,7 @@ def test_hashentry_str(
 
     entry = HashEntry(str(cache_file), binary=binary_hash, hash_type=hash_type)
 
-    expected_str = "{0} {1}{2}".format(
-        entry._hash(), "*" if binary_hash else " ", str(cache_file)
-    )
+    expected_str = f"{entry._hash()} {'*' if binary_hash else ' '}{str(cache_file)}"
     # We've fed content to the hash object, so we have to reinitialize it.
     entry._hash_obj = hashlib.new(entry._hash_obj.name)
 
@@ -60,7 +61,7 @@ def test_hashentry_cached_after_hash(cache_file: LocalPath, data_file: str):
     entry = HashEntry(str(cache_file))
     assert not entry.cached
 
-    entry.hash
+    _ = entry.hash
     assert entry.cached
 
 
@@ -158,7 +159,7 @@ def test_hashentry_from_str(
     actual_entry = HashEntry.from_str(str(expected_entry), hash_type=hash_type)
     assert str(expected_entry) == actual_entry._raw_entry
 
-    assert expected_entry.filepath == actual_entry.filepath
+    assert os.path.samefile(expected_entry.filepath, actual_entry.filepath)
     assert expected_entry.hash == actual_entry.hash
 
 
@@ -169,8 +170,9 @@ def test_hashentry_from_str_line_split():
 
     entry = HashEntry.from_str("hash datafile", line_split)
     assert entry._hash_cache == "hash"
-    assert entry.filepath == "datafile"
+    assert entry._original_filepath == "datafile"
     assert entry.binary
+    assert entry.filepath == pathlib.Path("datafile")
 
 
 def test_hashentry_from_str_raises_malformedlineerror():

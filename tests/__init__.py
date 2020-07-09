@@ -25,14 +25,14 @@ def get_data_path() -> str:
 def make_dataframe(
     nrows: int, ncols: int, data_gen_f: Optional[Callable[[int, int], Any]] = None
 ) -> DataFrame:
-    """Local mapping of `pandas.util.testing.makeCustomDataframe`.
+    """Local mapping of `pandas._testing.makeCustomDataframe`.
 
     Resulting `DataFrame` will have neither a columns name nor an index
     name. Indices will be a zero-based integer list.
 
     Parameter names and descriptions are based on those found in
-    `pandas.util.testing.py`.
-        https://github.com/pandas-dev/pandas/blob/f483321/pandas/util/testing.py
+    `pandas._testing.py`.
+        https://github.com/pandas-dev/pandas/blob/b687cd4d9e520666a956a60849568a98dd00c672/pandas/_testing.py#L1956
 
     Args:
         nrows (int): Number of rows.
@@ -43,31 +43,30 @@ def make_dataframe(
     Returns:
         DataFrame: Generated `DataFrame` object.
     """
-    from pandas.util.testing import makeCustomDataframe
+    from pandas._testing import makeCustomDataframe
 
     # pandas bug (?) in makeCustomIndex when nentries = 1
     if ncols == 1:
         return DataFrame(
             {"C_l0_g0": [make_dataframe_value(x, 0) for x in range(nrows)]}
         )
-    else:
-        return makeCustomDataframe(
-            nrows,
-            ncols,
-            c_idx_names=False,
-            r_idx_names=False,
-            data_gen_f=data_gen_f,
-            r_idx_type="i",
-        )
+    return makeCustomDataframe(
+        nrows,
+        ncols,
+        c_idx_names=False,
+        r_idx_names=False,
+        data_gen_f=data_gen_f,
+        r_idx_type="i",
+    )
 
 
 def make_dataframe_value(nrows: int, ncols: int) -> str:
     """The default value generator for
-    `pandas.util.testing.makeCustomDataframe`.
+    `pandas._testing.makeCustomDataframe`.
 
     Parameter names and descriptions are based on those found in
-    `pandas.util.testing.py`.
-        https://github.com/pandas-dev/pandas/blob/f483321/pandas/util/testing.py
+    `pandas._testing.py`.
+        https://github.com/pandas-dev/pandas/blob/b687cd4d9e520666a956a60849568a98dd00c672/pandas/_testing.py#L1956
 
     Args:
         nrows (int): Number of rows.
@@ -76,7 +75,7 @@ def make_dataframe_value(nrows: int, ncols: int) -> str:
     Returns:
         str: "RxCy" based on the given position.
     """
-    return "R{}C{}".format(nrows, ncols)
+    return f"R{nrows}C{ncols}"
 
 
 def rand_string(size: int = 6) -> str:

@@ -53,9 +53,7 @@ def resolve_path(archive: str, schema: SortedDict, datapool: DataFrame) -> str:
         header: str = schema[key]
         if header not in list(datapool.columns):
             raise IndexError(
-                "Schema value {} is not a column in the current DataFrame.".format(
-                    header
-                )
+                f"Schema value {header} is not a column in the current DataFrame."
             )
         row_values: List[Any] = list(datapool.get(header).drop_duplicates().values)
         if nan in row_values:
@@ -63,9 +61,7 @@ def resolve_path(archive: str, schema: SortedDict, datapool: DataFrame) -> str:
         if "" in row_values:
             row_values.remove("")
         if len(row_values) > 1:
-            raise ValueError(
-                "More than one value exists under the {} column.".format(header)
-            )
+            raise ValueError(f"More than one value exists under the {header} column.")
         value: Any = row_values.pop()
         result = join(result, _normalize(str(value)))
 

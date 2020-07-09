@@ -12,10 +12,11 @@ from _pytest.config import Config
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import FixtureRequest
 from _pytest.nodes import Item
-from pandas.util.testing import makeCustomIndex
+from pandas._testing import makeCustomIndex
 from py._path.local import LocalPath
 
 from . import rand_string
+from .types import PathType
 
 MAX_DATA_FILES = 4
 MAX_METADATA_COLS = 5
@@ -33,6 +34,11 @@ def pytest_configure(config: Config):
 
     if config.option.help:
         return
+
+    if "PYTHONHASHSEED" not in os.environ:
+        print("PYTHONHASHSEED environment variable not provided. Rolling manually...")
+        os.environ["PYTHONHASHSEED"] = str(random.randint(0, 1000))
+        print(f"PYTHONHASHSEED={os.environ['PYTHONHASHSEED']}")
 
     random.seed(a=int(os.environ["PYTHONHASHSEED"]))
 
@@ -91,12 +97,11 @@ def metadata_columns(
     request: FixtureRequest, metadata_column_headers: List[str]
 ) -> Dict[str, List[str]]:
     """Make a metadata column header and column value dictionary."""
-    template = "val{}"
     columns: Dict[str, List[str]] = {}
     for header in metadata_column_headers:
         columns[header] = []
         for i in range(0, request.param):
-            columns[header].append(template.format(i))
+            columns[header].append(f"val{i}")
     return columns
 
 
@@ -108,12 +113,11 @@ def metadata_random_columns(metadata_column_headers: List[str]) -> Dict[str, Lis
     def _rand_depth(max_: int):
         return random.randint(1, max_)
 
-    template = "val{}"
     columns: Dict[str, List[str]] = {}
     for header in metadata_column_headers:
         columns[header] = []
         for i in range(0, _rand_depth(MAX_VALUES_PER_META_COL)):
-            columns[header].append(template.format(i))
+            columns[header].append(f"val{i}")
     return columns
 
 
@@ -121,7 +125,7 @@ def metadata_random_columns(metadata_column_headers: List[str]) -> Dict[str, Lis
 def random_data(request: FixtureRequest, import_dir: LocalPath) -> List[str]:
     files: List[str] = list()
     for _ in range(request.param):
-        files.append(str(import_dir.join("{}.csv".format(rand_string()))))
+        files.append(str(import_dir.join(f"{rand_string()}.csv")))
     return files
 
 
@@ -129,7 +133,7 @@ def random_data(request: FixtureRequest, import_dir: LocalPath) -> List[str]:
 def random_metadata(request: FixtureRequest, import_dir: LocalPath) -> List[str]:
     files: List[str] = list()
     for _ in range(request.param):
-        files.append(str(import_dir.join("{}.meta".format(rand_string()))))
+        files.append(str(import_dir.join(f"{rand_string()}.meta")))
     return files
 
 
@@ -140,6 +144,16 @@ def incremental(request: FixtureRequest) -> bool:
 
 @pytest.fixture(params=[True, False])
 def overwrite(request: FixtureRequest) -> bool:
+    return request.param
+
+
+@pytest.fixture(params=[PathType.ABSOLUTE, PathType.RELATIVE, PathType.NONE])
+def path_type_cachefile(request: FixtureRequest) -> PathType:
+    return request.param
+
+
+@pytest.fixture(params=[PathType.ABSOLUTE, PathType.RELATIVE, PathType.NONE])
+def path_type_hashentry(request: FixtureRequest) -> PathType:
     return request.param
 
 

@@ -6,14 +6,12 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": true,
-            "pythonPath": "${config:python.pythonPath}",
+            "pythonPath": "${command:python.interpreterPath}",
             "module": "syphon",
             "cwd": "${workspaceFolder}",
             "env": {},
             "envFile": "${workspaceFolder}/.env",
-            "debugOptions": [
-                "RedirectOutput"
-            ],
+            "redirectOutput": true,
             "args": [
                 "-h"
             ]
@@ -23,18 +21,14 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": false,
-            "pythonPath": "${config:python.pythonPath}",
+            "pythonPath": "${command:python.interpreterPath}",
             "module": "pytest",
             "args": [
                 "-sv"
             ],
             "cwd": "${workspaceRoot}",
             "env": {},
-            "debugOptions": [
-                "WaitOnAbnormalExit",
-                "WaitOnNormalExit",
-                "RedirectOutput"
-            ]
+            "redirectOutput": true
         }
     ]
 }

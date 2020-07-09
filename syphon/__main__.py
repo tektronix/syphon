@@ -87,18 +87,17 @@ def main(args: Optional[List[str]] = None) -> int:
             )
         except FileNotFoundError as err:
             print(
-                "{0}: cannot archive nonexistent file @ {1}".format(
-                    __package__, err.args[0]
-                ),
+                f"{__package__}: cannot archive nonexistent file @ {err.args[0]}",
                 file=sys.stderr,
             )
             return 2
 
         # Resolve the filemapping behavior.
-        if getattr(parsed_args, "one_to_many", False):
-            behavior = MappingBehavior.ONE_TO_MANY
-        else:
-            behavior = MappingBehavior.ONE_TO_ONE
+        behavior = (
+            MappingBehavior.ONE_TO_MANY
+            if getattr(parsed_args, "one_to_many", False)
+            else MappingBehavior.ONE_TO_ONE
+        )
 
         # Get any incremental options.
         increment: Optional[str] = getattr(parsed_args, "increment")
@@ -119,10 +118,8 @@ def main(args: Optional[List[str]] = None) -> int:
                     if schema_filepath is None
                     else os.path.abspath(schema_filepath)
                 ),
-                cache_filepath=(
-                    None if increment is None else os.path.abspath(increment)
-                ),
-                hash_filepath=(None if hashfile is None else os.path.abspath(hashfile)),
+                cache_filepath=increment,
+                hash_filepath=hashfile,
                 overwrite=parsed_args.force,
                 verbose=parsed_args.verbose,
             )
@@ -135,7 +132,7 @@ def main(args: Optional[List[str]] = None) -> int:
                 if not file.startswith(LINUX_HIDDEN_CHAR):
                     file_list.append(os.path.join(root, file))
         build(
-            os.path.abspath(parsed_args.build_destination),
+            parsed_args.build_destination,
             *file_list,
             hash_filepath=(
                 None
@@ -152,11 +149,9 @@ def main(args: Optional[List[str]] = None) -> int:
     elif getattr(parsed_args, "check", False):
         return int(
             not check(
-                os.path.abspath(parsed_args.check_source),
+                parsed_args.check_source,
                 hash_filepath=(
-                    None
-                    if parsed_args.hashfile is None
-                    else os.path.abspath(parsed_args.hashfile)
+                    None if parsed_args.hashfile is None else parsed_args.hashfile
                 ),
                 verbose=parsed_args.verbose,
             )

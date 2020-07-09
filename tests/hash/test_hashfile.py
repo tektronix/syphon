@@ -21,7 +21,9 @@ def test_hashfile_init(data_file: str, hash_type: Optional[str]):
     assert hashfile._hash_type == (
         syphon.hash.DEFAULT_HASH_TYPE if hash_type is None else hash_type
     )
-    assert hashfile.filepath == data_file
+    assert hashfile._original_filepath == data_file
+    hashfile.filepath.write_text("")  # Touch the filepath so samefile will work.
+    assert hashfile.filepath.samefile(data_file)
 
 
 def test_hashfile_init_raises_valueerror():
