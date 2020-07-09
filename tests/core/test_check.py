@@ -34,20 +34,20 @@ class HashFileOSError(syphon.hash.HashFile):
 
 
 def make_cache(
-    dir: LocalPath, n: int = 1, name_formatter: Optional[str] = None
+    directory: LocalPath, n: int = 1, name_formatter: Optional[str] = None
 ) -> Iterator[LocalPath]:
     if name_formatter is None:
         name_formatter = "cache%d.csv"
 
     for i in range(n):
-        cache: LocalPath = dir.join(name_formatter % i)
+        cache: LocalPath = directory.join(name_formatter % i)
         cache.write(rand_string())
         yield cache
 
 
-def make_random_file(dir: LocalPath, n) -> Iterator[LocalPath]:
+def make_random_file(directory: LocalPath, n) -> Iterator[LocalPath]:
     for i in range(n):
-        file: LocalPath = dir.join(rand_string())
+        file: LocalPath = directory.join(rand_string())
         file.write(rand_string())  # Automatically closed.
         yield file
 

@@ -309,4 +309,4 @@ class HashFile(object):
             if self._count == 0:
                 self._file.close()
                 self._file = None
-        return None
+        return
