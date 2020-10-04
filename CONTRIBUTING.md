@@ -70,9 +70,9 @@ where `ENV` is a supported environment, a list of which can be viewed by running
 $ pipenv run tox --listenvs
 ```
 
-Unit test files are located in [`syphon/tests`](/syphon/tests). To run a single test file, you should call `pytest` directly:
+Unit test files are located in [**/tests**](/tests). To run a single test file, you should invoke `pytest` from `tox`:
 ```
-$ pipenv run pytest syphon/test/test_something.py
+$ pipenv run tox -e py36 -- -x tests/test_main.py
 ```
 
 
