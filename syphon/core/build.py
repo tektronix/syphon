@@ -92,9 +92,6 @@ def build(
             print(f"Building from {file}")
 
         data = pd.DataFrame(pd.read_csv(file, dtype=str))
-        # Reorder data columns to match the cache.
-        if len(cache.columns) > 0:
-            data = data.reindex(columns=cache.columns)
 
         if verbose:
             data_shape: Tuple[int, int] = data.shape

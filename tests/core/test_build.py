@@ -334,7 +334,7 @@ class TestBuild(object):
         assert_captured_outerr(capsys.readouterr(), verbose, False)
 
     @staticmethod
-    def test_incremental_maintains_data_fidelity(
+    def test_incremental_maintains_data_fidelity_when_new_data_has_same_columns(
         capsys: CaptureFixture,
         archive_dir: LocalPath,
         import_dir: LocalPath,
@@ -395,6 +395,269 @@ class TestBuild(object):
         expected_frame = DataFrame(
             read_csv(
                 os.path.join(get_data_path(), "iris_plus.csv"),
+                dtype=str,
+                index_col="Index",
+            )
+        )
+        expected_frame.sort_index(inplace=True)
+
+        assert pre_cache_hash != post_cache_hash
+        assert pre_hash_hash != post_hash_hash
+
+        with syphon.hash.HashFile(resolved_hashfile) as hashfile:
+            for entry in hashfile:
+                if os.path.samefile(entry.filepath, str(cache_file)):
+                    assert post_cache_hash == entry.hash
+
+        actual_frame = DataFrame(read_csv(cache_file, dtype=str, index_col="Index"))
+        actual_frame.sort_index(inplace=True)
+
+        assert_frame_equal(expected_frame, actual_frame, check_exact=True)
+
+    @staticmethod
+    def test_incremental_maintains_data_fidelity_when_new_data_has_new_columns(
+        capsys: CaptureFixture,
+        archive_dir: LocalPath,
+        import_dir: LocalPath,
+        cache_file: LocalPath,
+        hash_file: Optional[LocalPath],
+        verbose: bool,
+    ):
+        """Incremental build maintains data fidelity when new data has new columns not
+        present in the existing data cache.
+
+        Addresses Issue #32 (https://github.com/tektronix/syphon/issues/32).
+        """
+
+        pre_datafiles: List[str] = [
+            os.path.join(get_data_path(), "iris-part-1-of-6.csv"),
+            os.path.join(get_data_path(), "iris-part-2-of-6.csv"),
+            os.path.join(get_data_path(), "iris-part-3-of-6.csv"),
+        ]
+        datafiles: List[str] = [
+            os.path.join(get_data_path(), "iris-part-4-of-6-combined.csv"),
+            os.path.join(get_data_path(), "iris-part-5-of-6-combined.csv"),
+            os.path.join(get_data_path(), "iris-part-6-of-6-combined.csv"),
+        ]
+
+        resolved_hashfile = (
+            cache_file.dirpath(syphon.core.check.DEFAULT_FILE)
+            if hash_file is None
+            else hash_file
+        )
+
+        assert syphon.archive(archive_dir, pre_datafiles)
+        assert not os.path.exists(os.path.join(get_data_path(), "#lock"))
+
+        # Pre-build
+        assert syphon.build(
+            cache_file,
+            *get_data_files(archive_dir),
+            hash_filepath=hash_file,
+            incremental=False,
+            overwrite=False,
+            post_hash=True,
+            verbose=False,
+        )
+        # Get the hash of the cache file before our main build.
+        pre_cache_hash: str = syphon.hash.HashEntry(cache_file).hash
+        # Get the hash of the hash file for easy file change checking.
+        pre_hash_hash: str = syphon.hash.HashEntry(resolved_hashfile).hash
+
+        # Main build
+        assert syphon.build(
+            cache_file,
+            *datafiles,
+            hash_filepath=hash_file,
+            incremental=True,
+            overwrite=True,
+            post_hash=True,
+            verbose=verbose,
+        )
+        assert_captured_outerr(capsys.readouterr(), verbose, False)
+
+        post_cache_hash: str = syphon.hash.HashEntry(cache_file).hash
+        post_hash_hash: str = syphon.hash.HashEntry(resolved_hashfile).hash
+
+        expected_frame = DataFrame(
+            read_csv(
+                os.path.join(
+                    get_data_path(), "iris_plus_partial-new-data-new-columns.csv"
+                ),
+                dtype=str,
+                index_col="Index",
+            )
+        )
+        expected_frame.sort_index(inplace=True)
+
+        assert pre_cache_hash != post_cache_hash
+        assert pre_hash_hash != post_hash_hash
+
+        with syphon.hash.HashFile(resolved_hashfile) as hashfile:
+            for entry in hashfile:
+                if os.path.samefile(entry.filepath, str(cache_file)):
+                    assert post_cache_hash == entry.hash
+
+        actual_frame = DataFrame(read_csv(cache_file, dtype=str, index_col="Index"))
+        actual_frame.sort_index(inplace=True)
+
+        assert_frame_equal(expected_frame, actual_frame, check_exact=True)
+
+    @staticmethod
+    def test_incremental_maintains_data_fidelity_when_new_data_has_missing_columns(
+        capsys: CaptureFixture,
+        archive_dir: LocalPath,
+        import_dir: LocalPath,
+        cache_file: LocalPath,
+        hash_file: Optional[LocalPath],
+        verbose: bool,
+    ):
+        """Incremental build maintains data fidelity when columns present in the
+        existing data cache are missing in new data.
+        """
+
+        pre_datafiles: List[str] = [
+            os.path.join(get_data_path(), "iris-part-1-of-6-combined.csv"),
+            os.path.join(get_data_path(), "iris-part-2-of-6-combined.csv"),
+            os.path.join(get_data_path(), "iris-part-3-of-6-combined.csv"),
+        ]
+        datafiles: List[str] = [
+            os.path.join(get_data_path(), "iris-part-4-of-6.csv"),
+            os.path.join(get_data_path(), "iris-part-5-of-6.csv"),
+            os.path.join(get_data_path(), "iris-part-6-of-6.csv"),
+        ]
+
+        resolved_hashfile = (
+            cache_file.dirpath(syphon.core.check.DEFAULT_FILE)
+            if hash_file is None
+            else hash_file
+        )
+
+        assert syphon.archive(archive_dir, pre_datafiles)
+        assert not os.path.exists(os.path.join(get_data_path(), "#lock"))
+
+        # Pre-build
+        assert syphon.build(
+            cache_file,
+            *get_data_files(archive_dir),
+            hash_filepath=hash_file,
+            incremental=False,
+            overwrite=False,
+            post_hash=True,
+            verbose=False,
+        )
+        # Get the hash of the cache file before our main build.
+        pre_cache_hash: str = syphon.hash.HashEntry(cache_file).hash
+        # Get the hash of the hash file for easy file change checking.
+        pre_hash_hash: str = syphon.hash.HashEntry(resolved_hashfile).hash
+
+        # Main build
+        assert syphon.build(
+            cache_file,
+            *datafiles,
+            hash_filepath=hash_file,
+            incremental=True,
+            overwrite=True,
+            post_hash=True,
+            verbose=verbose,
+        )
+        assert_captured_outerr(capsys.readouterr(), verbose, False)
+
+        post_cache_hash: str = syphon.hash.HashEntry(cache_file).hash
+        post_hash_hash: str = syphon.hash.HashEntry(resolved_hashfile).hash
+
+        expected_frame = DataFrame(
+            read_csv(
+                os.path.join(
+                    get_data_path(), "iris_plus_partial-new-data-missing-columns.csv"
+                ),
+                dtype=str,
+                index_col="Index",
+            )
+        )
+        expected_frame.sort_index(inplace=True)
+
+        assert pre_cache_hash != post_cache_hash
+        assert pre_hash_hash != post_hash_hash
+
+        with syphon.hash.HashFile(resolved_hashfile) as hashfile:
+            for entry in hashfile:
+                if os.path.samefile(entry.filepath, str(cache_file)):
+                    assert post_cache_hash == entry.hash
+
+        actual_frame = DataFrame(read_csv(cache_file, dtype=str, index_col="Index"))
+        actual_frame.sort_index(inplace=True)
+
+        assert_frame_equal(expected_frame, actual_frame, check_exact=True)
+
+    @staticmethod
+    def test_incremental_maintains_data_fidelity_when_new_data_new_and_missing_columns(
+        capsys: CaptureFixture,
+        archive_dir: LocalPath,
+        import_dir: LocalPath,
+        cache_file: LocalPath,
+        hash_file: Optional[LocalPath],
+        verbose: bool,
+    ):
+        """Incremental build maintains data fidelity when new data
+
+        * has columns not present in the existing data cache.
+
+        * is missing columns found in the existing data cache.
+        """
+
+        pre_datafiles: List[str] = [
+            os.path.join(get_data_path(), "iris_plus_partial-1-of-2-no-species.csv")
+        ]
+        datafiles: List[str] = [
+            os.path.join(get_data_path(), "iris_plus_partial-2-of-2-no-petalcolor.csv")
+        ]
+
+        resolved_hashfile = (
+            cache_file.dirpath(syphon.core.check.DEFAULT_FILE)
+            if hash_file is None
+            else hash_file
+        )
+
+        assert syphon.archive(archive_dir, pre_datafiles)
+        assert not os.path.exists(os.path.join(get_data_path(), "#lock"))
+
+        # Pre-build
+        assert syphon.build(
+            cache_file,
+            *get_data_files(archive_dir),
+            hash_filepath=hash_file,
+            incremental=False,
+            overwrite=False,
+            post_hash=True,
+            verbose=False,
+        )
+        # Get the hash of the cache file before our main build.
+        pre_cache_hash: str = syphon.hash.HashEntry(cache_file).hash
+        # Get the hash of the hash file for easy file change checking.
+        pre_hash_hash: str = syphon.hash.HashEntry(resolved_hashfile).hash
+
+        # Main build
+        assert syphon.build(
+            cache_file,
+            *datafiles,
+            hash_filepath=hash_file,
+            incremental=True,
+            overwrite=True,
+            post_hash=True,
+            verbose=verbose,
+        )
+        assert_captured_outerr(capsys.readouterr(), verbose, False)
+
+        post_cache_hash: str = syphon.hash.HashEntry(cache_file).hash
+        post_hash_hash: str = syphon.hash.HashEntry(resolved_hashfile).hash
+
+        expected_frame = DataFrame(
+            read_csv(
+                os.path.join(
+                    get_data_path(),
+                    "iris_plus_partial-new-data-new-and-missing-columns.csv",
+                ),
                 dtype=str,
                 index_col="Index",
             )
