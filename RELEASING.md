@@ -4,7 +4,7 @@ This document records the rite of Software Release for the Syphon project. This 
 
 The **Continuous Deployment** section documents the steps required to perform the ceremony automatically (via [Travis-CI](https://travis-ci.com/tektronix/syphon)) after a successful build on any Tag branch. It assumes that you'll be configuring continuous deployment from scratch following some unknown cataclysm. This method is recommended.
 
-The **Manual Deployment** section documents how to perform a Software Release by hand. It is not a long-term alternative to Continuous Deployment, but simply a 
+The **Manual Deployment** section documents how to perform a Software Release by hand. It is not a long-term alternative to Continuous Deployment, but may come in handy should a truly desperate situation arise.
 
 
 # Continuous Deployment
